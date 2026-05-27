@@ -8,33 +8,26 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="CADIM PUDIM" />
-
   <title>CADIM PUDIM 🍮</title>
-
   <link rel="manifest" href="/manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <style>
-    /* ── Reset ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── Tokens ── */
     :root {
-      --cream:   #FDFAF6;
-      --accent:  #C8843A;
-      --gold:    #D4A853;
-      --green:   #4A8C5C;
-      --text:    #3A2E1E;
-      --muted:   #8A7A68;
-      --surface: #FAF5EE;
-      --border:  #E8DDD0;
-      --nav-h:   64px;
-      --banner-h: auto;
+      --cream:  #FDFAF6;
+      --accent: #C8843A;
+      --gold:   #D4A853;
+      --green:  #4A8C5C;
+      --red:    #C0392B;
+      --text:   #3A2E1E;
+      --muted:  #8A7A68;
+      --surface:#FAF5EE;
+      --border: #E8DDD0;
+      --nav-h:  64px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
@@ -50,322 +43,246 @@
 
     /* ── Security Banner ── */
     .security-banner {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       background: linear-gradient(135deg, var(--green) 0%, #3a7049 100%);
-      color: #fff;
-      padding: 10px 20px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
+      color: #fff; padding: 10px 20px;
+      display: flex; align-items: flex-start; gap: 12px;
       box-shadow: 0 2px 12px rgba(74,140,92,0.25);
     }
-
-    .security-banner__icon {
-      font-size: 18px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .security-banner__text {
-      font-family: 'Nunito', sans-serif;
-      font-size: 11.5px;
-      font-weight: 500;
-      line-height: 1.55;
-      letter-spacing: 0.01em;
-      opacity: 0.97;
-    }
-
+    .security-banner__icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .security-banner__text { font-size: 11.5px; font-weight: 500; line-height: 1.55; opacity: 0.97; }
     .security-banner__close {
-      flex-shrink: 0;
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.75);
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      padding: 0 0 0 4px;
-      margin-top: 1px;
-      transition: color 0.2s;
+      flex-shrink: 0; background: none; border: none;
+      color: rgba(255,255,255,0.75); cursor: pointer;
+      font-size: 18px; line-height: 1; padding: 0 0 0 4px; margin-top: 1px; transition: color 0.2s;
     }
     .security-banner__close:hover { color: #fff; }
 
-    /* ── Layout shell ── */
-    #app {
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-    }
+    /* ── App shell ── */
+    #app { display: flex; flex-direction: column; min-height: 100%; }
 
-    /* ── Header ── */
     .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      height: 60px;
-      background: var(--cream);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      gap: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 60px;
+      background: var(--cream); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50; gap: 12px;
     }
-
     .app-header__brand {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: 0.04em;
-      white-space: nowrap;
+      font-size: 22px; font-weight: 700; color: var(--accent);
+      letter-spacing: 0.04em; white-space: nowrap;
     }
-
     .app-header__subtitle {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      white-space: nowrap;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted); white-space: nowrap;
     }
-
-    .app-header__actions {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
+    .app-header__actions { display: flex; align-items: center; gap: 8px; }
     .icon-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 10px;
-      font-size: 18px;
-      transition: background 0.15s;
+      background: none; border: none; cursor: pointer;
+      padding: 8px; border-radius: 10px; font-size: 18px; transition: background 0.15s;
     }
     .icon-btn:hover { background: var(--border); }
 
-    /* ── Main scroll area ── */
     .app-content {
-      flex: 1;
-      overflow-y: auto;
+      flex: 1; overflow-y: auto;
       padding: 24px 20px calc(var(--nav-h) + var(--safe-bottom) + 24px);
     }
 
-    /* ── Section panels ── */
     .section { display: none; }
     .section.active { display: block; }
 
-    /* ── Dashboard grid ── */
-    .dashboard-welcome {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
-      border-radius: 20px;
-      padding: 28px 24px;
-      color: #fff;
-      margin-bottom: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-    .dashboard-welcome::before {
-      content: '🍮';
-      position: absolute;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 72px;
-      opacity: 0.18;
-    }
-    .dashboard-welcome h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 26px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-    .dashboard-welcome p {
-      font-size: 13px;
-      opacity: 0.9;
-      max-width: 220px;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 24px;
-    }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 16px;
-      position: relative;
-      overflow: hidden;
-    }
-    .stat-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      border-radius: 16px 0 0 16px;
-    }
-    .stat-card--accent::after { background: var(--accent); }
-    .stat-card--gold::after   { background: var(--gold); }
-    .stat-card--green::after  { background: var(--green); }
-    .stat-card--muted::after  { background: var(--muted); }
-
-    .stat-card__icon { font-size: 22px; margin-bottom: 8px; }
-    .stat-card__value {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
-      margin-bottom: 4px;
-    }
-    .stat-card__label {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-    }
-
+    /* ── Shared components ── */
     .section-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 20px; font-weight: 700; color: var(--text);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
     }
-
     .empty-state {
-      background: var(--surface);
-      border: 1.5px dashed var(--border);
-      border-radius: 16px;
-      padding: 40px 24px;
-      text-align: center;
+      background: var(--surface); border: 1.5px dashed var(--border);
+      border-radius: 16px; padding: 40px 24px; text-align: center;
     }
     .empty-state__icon { font-size: 40px; margin-bottom: 12px; }
     .empty-state__title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 6px;
+      font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 6px;
     }
-    .empty-state__desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
+    .empty-state__desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
     .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      display: inline-flex; align-items: center; gap: 8px;
       background: linear-gradient(135deg, var(--accent), var(--gold));
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 22px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 16px;
-      transition: opacity 0.2s, transform 0.15s;
-      letter-spacing: 0.02em;
+      color: #fff; border: none; border-radius: 12px;
+      padding: 12px 22px; font-family: 'Nunito', sans-serif;
+      font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 16px;
+      transition: opacity 0.2s, transform 0.15s; letter-spacing: 0.02em;
     }
     .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-primary:active { transform: translateY(0); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--accent);
+      border: 1.5px solid var(--accent); border-radius: 12px;
+      padding: 11px 22px; font-family: 'Nunito', sans-serif;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-secondary:hover { background: rgba(200,132,58,0.07); }
+
+    /* ── Dashboard ── */
+    .dashboard-welcome {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
+      border-radius: 20px; padding: 28px 24px;
+      color: #fff; margin-bottom: 24px;
+      position: relative; overflow: hidden;
+    }
+    .dashboard-welcome::before {
+      content: '🍮'; position: absolute; right: 20px; top: 50%;
+      transform: translateY(-50%); font-size: 72px; opacity: 0.18;
+    }
+    .dashboard-welcome h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 700; margin-bottom: 4px;
+    }
+    .dashboard-welcome p { font-size: 13px; opacity: 0.9; max-width: 220px; }
+    .dashboard-welcome__date { font-size: 11px; opacity: 0.75; margin-top: 8px; letter-spacing: 0.03em; }
+
+    /* Revenue card */
+    .revenue-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 20px 18px; margin-bottom: 20px;
+    }
+    .revenue-card__header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .revenue-card__label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .revenue-card__value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px; font-weight: 700; color: var(--text); line-height: 1;
+    }
+    .revenue-card__goal { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .revenue-card__badge {
+      background: rgba(74,140,92,0.12); color: var(--green);
+      font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 20px; letter-spacing: 0.03em;
+    }
+    .revenue-card__badge--warn { background: rgba(200,132,58,0.12); color: var(--accent); }
+    .progress-bar {
+      height: 8px; background: var(--border); border-radius: 8px; overflow: hidden;
+    }
+    .progress-bar__fill {
+      height: 100%; border-radius: 8px;
+      background: linear-gradient(90deg, var(--green), #5fad76);
+      transition: width 0.6s ease;
+    }
+    .progress-bar__fill--warn { background: linear-gradient(90deg, var(--accent), var(--gold)); }
+    .progress-bar__info {
+      display: flex; justify-content: space-between;
+      margin-top: 6px; font-size: 11px; color: var(--muted);
+    }
+
+    /* Alert list */
+    .alert-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .alert-item {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(192,57,43,0.06); border: 1px solid rgba(192,57,43,0.2);
+      border-radius: 12px; padding: 12px 14px;
+    }
+    .alert-item__icon { font-size: 20px; flex-shrink: 0; }
+    .alert-item__info { flex: 1; min-width: 0; }
+    .alert-item__name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .alert-item__qty { font-size: 12px; color: var(--red); font-weight: 600; }
+    .alert-item__action {
+      font-size: 12px; font-weight: 700; color: var(--accent);
+      background: none; border: none; cursor: pointer; white-space: nowrap;
+      padding: 4px 0;
+    }
+
+    /* Quick actions */
+    .quick-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 24px;
+    }
+    .quick-btn {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 18px 14px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+      cursor: pointer; transition: border-color 0.15s, transform 0.15s;
+      text-align: left;
+    }
+    .quick-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .quick-btn:active { transform: translateY(0); }
+    .quick-btn__icon { font-size: 26px; }
+    .quick-btn__label { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
+
+    /* Products ready */
+    .product-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .product-item {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px;
+    }
+    .product-item__icon { font-size: 22px; flex-shrink: 0; }
+    .product-item__info { flex: 1; min-width: 0; }
+    .product-item__name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .product-item__meta { font-size: 12px; color: var(--muted); }
+    .product-item__qty {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px; font-weight: 700; color: var(--green);
+    }
+
+    /* Last sale */
+    .last-sale {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px 18px; margin-bottom: 24px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .last-sale__icon { font-size: 28px; flex-shrink: 0; }
+    .last-sale__info { flex: 1; min-width: 0; }
+    .last-sale__label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 2px; }
+    .last-sale__client { font-size: 15px; font-weight: 700; color: var(--text); }
+    .last-sale__detail { font-size: 12px; color: var(--muted); }
+    .last-sale__value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 700; color: var(--accent);
+    }
 
     /* ── Generic page content ── */
     .page-hero {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 32px 24px;
-      text-align: center;
-      margin-bottom: 20px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px 24px; text-align: center; margin-bottom: 20px;
     }
     .page-hero__icon { font-size: 48px; margin-bottom: 12px; }
     .page-hero__title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
+      font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 8px;
     }
     .page-hero__desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* ── Bottom Navigation ── */
+    /* ── Bottom Nav ── */
     .app-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 50;
-      background: var(--cream);
-      border-top: 1px solid var(--border);
-      display: flex;
-      height: calc(var(--nav-h) + var(--safe-bottom));
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+      background: var(--cream); border-top: 1px solid var(--border);
+      display: flex; height: calc(var(--nav-h) + var(--safe-bottom));
       padding-bottom: var(--safe-bottom);
       box-shadow: 0 -4px 20px rgba(58,46,30,0.07);
     }
-
     .nav-tab {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px 4px;
-      transition: background 0.15s;
-      -webkit-tap-highlight-color: transparent;
-      border-radius: 0;
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 3px;
+      background: none; border: none; cursor: pointer; padding: 8px 4px;
+      transition: background 0.15s; -webkit-tap-highlight-color: transparent;
+      position: relative;
     }
     .nav-tab:active { background: var(--border); }
-
-    .nav-tab__icon {
-      font-size: 22px;
-      line-height: 1;
-      transition: transform 0.2s;
-    }
+    .nav-tab__icon { font-size: 22px; line-height: 1; transition: transform 0.2s; }
     .nav-tab.active .nav-tab__icon { transform: scale(1.15); }
-
-    .nav-tab__label {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: var(--muted);
-      transition: color 0.2s;
-    }
+    .nav-tab__label { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; color: var(--muted); transition: color 0.2s; }
     .nav-tab.active .nav-tab__label { color: var(--accent); }
-
     .nav-tab__dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--accent);
-      opacity: 0;
-      transition: opacity 0.2s;
-      position: absolute;
-      bottom: calc(var(--safe-bottom) + 8px);
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent); opacity: 0; transition: opacity 0.2s;
+      position: absolute; bottom: calc(var(--safe-bottom) + 8px);
     }
     .nav-tab.active .nav-tab__dot { opacity: 1; }
 
@@ -373,269 +290,758 @@
     .offline-toast {
       position: fixed;
       bottom: calc(var(--nav-h) + var(--safe-bottom) + 12px);
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--text);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 40px;
-      font-size: 13px;
-      font-weight: 600;
-      opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
-      pointer-events: none;
-      white-space: nowrap;
-      z-index: 200;
+      left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--text); color: #fff; padding: 10px 20px;
+      border-radius: 40px; font-size: 13px; font-weight: 600;
+      opacity: 0; transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none; white-space: nowrap; z-index: 300;
     }
-    .offline-toast.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    .offline-toast.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── ONBOARDING OVERLAY ── */
+    .onboarding {
+      position: fixed; inset: 0; z-index: 400;
+      background: var(--cream);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+    .onboarding.hidden { display: none; }
+
+    .ob-progress {
+      display: flex; gap: 6px; padding: 20px 24px 0;
+    }
+    .ob-progress__dot {
+      flex: 1; height: 4px; border-radius: 4px;
+      background: var(--border); transition: background 0.3s;
+    }
+    .ob-progress__dot.done { background: var(--accent); }
+
+    .ob-skip {
+      position: absolute; top: 18px; right: 20px;
+      background: none; border: none; cursor: pointer;
+      font-size: 13px; font-weight: 700; color: var(--muted);
+      padding: 4px 8px; border-radius: 8px; transition: color 0.15s;
+      z-index: 10;
+    }
+    .ob-skip:hover { color: var(--accent); }
+
+    .ob-slides {
+      flex: 1; display: flex; overflow: hidden; position: relative;
+    }
+    .ob-slide {
+      min-width: 100%; padding: 32px 28px 20px;
+      display: flex; flex-direction: column;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+      position: absolute; inset: 0;
+      opacity: 0; pointer-events: none;
+      transform: translateX(40px);
+    }
+    .ob-slide.active {
+      position: relative; opacity: 1; pointer-events: all;
+      transform: translateX(0);
+    }
+    .ob-slide.out {
+      position: absolute; opacity: 0; pointer-events: none;
+      transform: translateX(-40px);
     }
 
-    /* ── Responsive ── */
+    .ob-emoji { font-size: 64px; margin-bottom: 20px; display: block; }
+    .ob-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px; font-weight: 700; color: var(--text);
+      margin-bottom: 10px; line-height: 1.2;
+    }
+    .ob-desc { font-size: 15px; color: var(--muted); line-height: 1.65; margin-bottom: 28px; }
+
+    .ob-field { margin-bottom: 18px; }
+    .ob-label {
+      display: block; font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .ob-input {
+      width: 100%; padding: 14px 16px;
+      border: 1.5px solid var(--border); border-radius: 12px;
+      background: var(--surface); color: var(--text);
+      font-family: 'Nunito', sans-serif; font-size: 15px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .ob-input:focus { border-color: var(--accent); }
+    .ob-input::placeholder { color: var(--muted); opacity: 0.7; }
+
+    .ob-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .ob-chip {
+      padding: 9px 16px; border-radius: 20px;
+      border: 1.5px solid var(--border); background: var(--surface);
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      cursor: pointer; transition: all 0.15s; white-space: nowrap;
+    }
+    .ob-chip.selected {
+      border-color: var(--accent); background: rgba(200,132,58,0.1);
+      color: var(--accent);
+    }
+
+    .ob-rate-row {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .ob-rate-row label { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+    .ob-rate-input {
+      width: 80px; padding: 10px 12px; text-align: right;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      background: var(--surface); color: var(--text);
+      font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+      outline: none; transition: border-color 0.2s;
+    }
+    .ob-rate-input:focus { border-color: var(--accent); }
+    .ob-rate-unit { font-size: 12px; color: var(--muted); font-weight: 600; width: 20px; }
+
+    .ob-success-list { list-style: none; margin: 0 0 24px; }
+    .ob-success-list li {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--text);
+    }
+    .ob-success-list li:last-child { border-bottom: none; }
+    .ob-success-list li::before { content: '✓'; color: var(--green); font-weight: 700; font-size: 16px; }
+
+    .ob-footer {
+      padding: 16px 28px calc(var(--safe-bottom) + 20px);
+      display: flex; gap: 12px; align-items: center;
+    }
+    .ob-btn-back {
+      background: none; border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 13px 20px;
+      font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+      color: var(--muted); cursor: pointer; transition: border-color 0.15s;
+    }
+    .ob-btn-back:hover { border-color: var(--muted); }
+    .ob-btn-next {
+      flex: 1; background: linear-gradient(135deg, var(--accent), var(--gold));
+      color: #fff; border: none; border-radius: 12px;
+      padding: 14px 22px; font-family: 'Nunito', sans-serif;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s; letter-spacing: 0.02em;
+    }
+    .ob-btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+    .ob-btn-next:active { transform: translateY(0); }
+
     @media (min-width: 480px) {
       .app-content { max-width: 480px; margin: 0 auto; }
       .app-header  { max-width: 480px; margin: 0 auto; left: 0; right: 0; }
       .app-nav     { max-width: 480px; margin: 0 auto; left: 50%; transform: translateX(-50%); right: auto; width: 480px; }
+      .onboarding  { max-width: 480px; left: 50%; transform: translateX(-50%); right: auto; }
     }
   </style>
 </head>
-
 <body>
 
-  <!-- Security Banner -->
-  <div class="security-banner" id="securityBanner" role="banner" aria-label="Aviso de segurança">
-    <span class="security-banner__icon" aria-hidden="true">🔒</span>
-    <p class="security-banner__text">
-      <strong>Confiabilidade em cada clique:</strong> Experimente a segurança inabalável do nosso app com conexão segura que protege seus dados em todo momento. Além disso, nosso avançado sistema antiqueda garante que sua navegação seja suave, sem interrupções indesejadas, para que você se concentre no que realmente importa.
-    </p>
-    <button
-      class="security-banner__close"
-      id="closeBanner"
-      aria-label="Fechar aviso de segurança"
-      title="Fechar"
-    >×</button>
+<!-- ══════════════════════════════════
+     ONBOARDING OVERLAY
+══════════════════════════════════ -->
+<div class="onboarding hidden" id="onboarding" role="dialog" aria-modal="true" aria-label="Configuração inicial">
+
+  <div class="ob-progress" id="obProgress">
+    <div class="ob-progress__dot"></div>
+    <div class="ob-progress__dot"></div>
+    <div class="ob-progress__dot"></div>
+    <div class="ob-progress__dot"></div>
+    <div class="ob-progress__dot"></div>
   </div>
 
-  <div id="app">
+  <button class="ob-skip" id="obSkip" type="button">Pular configuração</button>
 
-    <!-- Header -->
-    <header class="app-header" id="appHeader">
-      <div>
-        <div class="app-header__brand">CADIM PUDIM 🍮</div>
-        <div class="app-header__subtitle">Gestão artesanal</div>
+  <div class="ob-slides" id="obSlides">
+
+    <!-- Passo 1: Boas-vindas -->
+    <div class="ob-slide active" id="ob-step-0">
+      <span class="ob-emoji">🍮</span>
+      <h1 class="ob-title">Bem-vinda ao CADIM PUDIM!</h1>
+      <p class="ob-desc">Seu ateliê artesanal de doces na palma da mão. Vamos configurar tudo em poucos minutos para você começar a vender com muito mais organização.</p>
+    </div>
+
+    <!-- Passo 2: Nome da empresa -->
+    <div class="ob-slide" id="ob-step-1">
+      <span class="ob-emoji">🏷️</span>
+      <h2 class="ob-title">Como se chama seu negócio?</h2>
+      <p class="ob-desc">Esse nome aparecerá no app e nos seus relatórios.</p>
+      <div class="ob-field">
+        <label class="ob-label" for="obCompanyName">Nome da empresa</label>
+        <input class="ob-input" type="text" id="obCompanyName" placeholder="Ex: Ateliê da Camila" maxlength="60" autocomplete="organization" />
       </div>
-      <div class="app-header__actions">
-        <button class="icon-btn" aria-label="Notificações" title="Notificações">🔔</button>
-        <button class="icon-btn" aria-label="Perfil" title="Perfil">👤</button>
+      <div class="ob-field">
+        <label class="ob-label" for="obOwnerName">Seu nome</label>
+        <input class="ob-input" type="text" id="obOwnerName" placeholder="Ex: Camila" maxlength="40" autocomplete="given-name" />
       </div>
-    </header>
+    </div>
 
-    <!-- Main content -->
-    <main class="app-content" id="appContent">
-
-      <!-- Início -->
-      <section class="section active" id="section-inicio" aria-label="Início">
-        <div class="dashboard-welcome">
-          <h2>Bem-vinda! ✨</h2>
-          <p>Seu ateliê de pudins começa aqui.</p>
+    <!-- Passo 3: Metas -->
+    <div class="ob-slide" id="ob-step-2">
+      <span class="ob-emoji">🎯</span>
+      <h2 class="ob-title">Quais são suas metas?</h2>
+      <p class="ob-desc">Defina sua meta mensal de faturamento e escolha onde você vende.</p>
+      <div class="ob-field">
+        <label class="ob-label" for="obGoalRevenue">Meta de faturamento mensal (R$)</label>
+        <input class="ob-input" type="number" id="obGoalRevenue" placeholder="Ex: 3000" min="0" max="999999" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label">Canais de venda</label>
+        <div class="ob-chips" id="obChannels">
+          <button type="button" class="ob-chip" data-val="whatsapp">WhatsApp</button>
+          <button type="button" class="ob-chip" data-val="instagram">Instagram</button>
+          <button type="button" class="ob-chip" data-val="ifood">iFood</button>
+          <button type="button" class="ob-chip" data-val="loja">Loja física</button>
+          <button type="button" class="ob-chip" data-val="encomendas">Encomendas</button>
+          <button type="button" class="ob-chip" data-val="feiras">Feiras</button>
         </div>
+      </div>
+    </div>
 
-        <div class="stats-grid">
-          <div class="stat-card stat-card--accent">
-            <div class="stat-card__icon">🍮</div>
-            <div class="stat-card__value">0</div>
-            <div class="stat-card__label">Receitas</div>
+    <!-- Passo 4: Taxas de pagamento -->
+    <div class="ob-slide" id="ob-step-3">
+      <span class="ob-emoji">💳</span>
+      <h2 class="ob-title">Taxas de pagamento</h2>
+      <p class="ob-desc">Configure as taxas para calcular o lucro real em cada venda.</p>
+      <div class="ob-rate-row">
+        <label>Cartão de crédito</label>
+        <input class="ob-rate-input" type="number" id="rateCredit" value="3.5" min="0" max="30" step="0.1" />
+        <span class="ob-rate-unit">%</span>
+      </div>
+      <div class="ob-rate-row">
+        <label>Cartão de débito</label>
+        <input class="ob-rate-input" type="number" id="rateDebit" value="1.5" min="0" max="30" step="0.1" />
+        <span class="ob-rate-unit">%</span>
+      </div>
+      <div class="ob-rate-row">
+        <label>Pix</label>
+        <input class="ob-rate-input" type="number" id="ratePix" value="0" min="0" max="30" step="0.1" />
+        <span class="ob-rate-unit">%</span>
+      </div>
+      <div class="ob-rate-row">
+        <label>iFood / delivery</label>
+        <input class="ob-rate-input" type="number" id="rateIfood" value="12" min="0" max="50" step="0.1" />
+        <span class="ob-rate-unit">%</span>
+      </div>
+    </div>
+
+    <!-- Passo 5: Conclusão -->
+    <div class="ob-slide" id="ob-step-4">
+      <span class="ob-emoji">🎉</span>
+      <h2 class="ob-title">Tudo pronto!</h2>
+      <p class="ob-desc">Seu ateliê está configurado. Aqui está um resumo do que foi salvo:</p>
+      <ul class="ob-success-list" id="obSummaryList"></ul>
+    </div>
+
+  </div>
+
+  <div class="ob-footer">
+    <button class="ob-btn-back" id="obBack" type="button" style="display:none">Voltar</button>
+    <button class="ob-btn-next" id="obNext" type="button">Começar →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     SECURITY BANNER
+══════════════════════════════════ -->
+<div class="security-banner" id="securityBanner" role="banner" aria-label="Aviso de segurança">
+  <span class="security-banner__icon" aria-hidden="true">🔒</span>
+  <p class="security-banner__text">
+    <strong>Confiabilidade em cada clique:</strong> Experimente a segurança inabalável do nosso app com conexão segura que protege seus dados em todo momento. Além disso, nosso avançado sistema antiqueda garante que sua navegação seja suave, sem interrupções indesejadas, para que você se concentre no que realmente importa.
+  </p>
+  <button class="security-banner__close" id="closeBanner" aria-label="Fechar aviso de segurança" title="Fechar">×</button>
+</div>
+
+<!-- ══════════════════════════════════
+     APP
+══════════════════════════════════ -->
+<div id="app">
+
+  <header class="app-header" id="appHeader">
+    <div>
+      <div class="app-header__brand" id="headerBrand">CADIM PUDIM 🍮</div>
+      <div class="app-header__subtitle">Gestão artesanal</div>
+    </div>
+    <div class="app-header__actions">
+      <button class="icon-btn" aria-label="Notificações" title="Notificações">🔔</button>
+      <button class="icon-btn" aria-label="Perfil" title="Perfil">👤</button>
+    </div>
+  </header>
+
+  <main class="app-content" id="appContent">
+
+    <!-- ── INÍCIO / DASHBOARD ── -->
+    <section class="section active" id="section-inicio" aria-label="Início">
+
+      <div class="dashboard-welcome" id="dashWelcome">
+        <h2 id="dashGreeting">Bem-vinda! ✨</h2>
+        <p id="dashSubtitle">Seu ateliê de pudins começa aqui.</p>
+        <div class="dashboard-welcome__date" id="dashDate"></div>
+      </div>
+
+      <!-- Faturamento do mês -->
+      <h3 class="section-title">💰 Faturamento do mês</h3>
+      <div class="revenue-card" id="revenueCard">
+        <div class="revenue-card__header">
+          <div>
+            <div class="revenue-card__label">Receita acumulada</div>
+            <div class="revenue-card__value" id="revenueValue">R$ 0,00</div>
+            <div class="revenue-card__goal" id="revenueGoal">Meta: R$ —</div>
           </div>
-          <div class="stat-card stat-card--green">
-            <div class="stat-card__icon">📦</div>
-            <div class="stat-card__value">0</div>
-            <div class="stat-card__label">Produções</div>
-          </div>
-          <div class="stat-card stat-card--gold">
-            <div class="stat-card__icon">💰</div>
-            <div class="stat-card__value">R$ 0</div>
-            <div class="stat-card__label">Vendas hoje</div>
-          </div>
-          <div class="stat-card stat-card--muted">
-            <div class="stat-card__icon">📋</div>
-            <div class="stat-card__value">0</div>
-            <div class="stat-card__label">Pedidos</div>
-          </div>
+          <span class="revenue-card__badge revenue-card__badge--warn" id="revenueBadge">0%</span>
         </div>
+        <div class="progress-bar">
+          <div class="progress-bar__fill progress-bar__fill--warn" id="revenueBar" style="width:0%"></div>
+        </div>
+        <div class="progress-bar__info">
+          <span id="revenueLeft">Faltam R$ — para a meta</span>
+          <span id="revenueMonth"></span>
+        </div>
+      </div>
 
-        <h3 class="section-title">📅 Atividade recente</h3>
-        <div class="empty-state">
-          <div class="empty-state__icon">🌟</div>
-          <div class="empty-state__title">Tudo começa aqui</div>
-          <div class="empty-state__desc">
-            Adicione sua primeira receita ou registre<br>uma produção para começar.
-          </div>
-          <button class="btn-primary" onclick="navigate('receitas')">
-            ✨ Criar primeira receita
-          </button>
-        </div>
-      </section>
+      <!-- Alertas de estoque -->
+      <div id="alertsSection" style="display:none">
+        <h3 class="section-title">⚠️ Estoque baixo</h3>
+        <div class="alert-list" id="alertList"></div>
+      </div>
 
-      <!-- Receitas -->
-      <section class="section" id="section-receitas" aria-label="Receitas">
-        <div class="page-hero">
-          <div class="page-hero__icon">📖</div>
-          <div class="page-hero__title">Minhas Receitas</div>
-          <div class="page-hero__desc">Guarde e organize todas as suas receitas artesanais com ingredientes, modo de preparo e rendimento.</div>
-        </div>
-        <div class="empty-state">
-          <div class="empty-state__icon">🍮</div>
-          <div class="empty-state__title">Nenhuma receita ainda</div>
-          <div class="empty-state__desc">Suas receitas ficarão salvas aqui, disponíveis mesmo offline.</div>
-          <button class="btn-primary">+ Nova receita</button>
-        </div>
-      </section>
+      <!-- Ações rápidas -->
+      <h3 class="section-title">⚡ Ações rápidas</h3>
+      <div class="quick-grid">
+        <button class="quick-btn" onclick="navigate('vendas')" aria-label="Registrar venda">
+          <span class="quick-btn__icon">💵</span>
+          <span class="quick-btn__label">Registrar Venda</span>
+        </button>
+        <button class="quick-btn" onclick="navigate('producao')" aria-label="Ver estoque">
+          <span class="quick-btn__icon">📦</span>
+          <span class="quick-btn__label">Ver Estoque</span>
+        </button>
+        <button class="quick-btn" onclick="navigate('mais')" aria-label="Lista de compras">
+          <span class="quick-btn__icon">🛒</span>
+          <span class="quick-btn__label">Lista de Compras</span>
+        </button>
+        <button class="quick-btn" onclick="navigate('producao')" aria-label="Nova produção">
+          <span class="quick-btn__icon">🍮</span>
+          <span class="quick-btn__label">Nova Produção</span>
+        </button>
+      </div>
 
-      <!-- Produção -->
-      <section class="section" id="section-producao" aria-label="Produção">
-        <div class="page-hero">
-          <div class="page-hero__icon">🏭</div>
-          <div class="page-hero__title">Controle de Produção</div>
-          <div class="page-hero__desc">Registre lotes, quantidades produzidas, custos e datas de validade dos seus pudins.</div>
-        </div>
+      <!-- Produtos prontos -->
+      <h3 class="section-title">✅ Prontos para vender</h3>
+      <div id="productsSection">
         <div class="empty-state">
           <div class="empty-state__icon">📦</div>
-          <div class="empty-state__title">Nenhuma produção registrada</div>
-          <div class="empty-state__desc">Comece registrando seu primeiro lote de produção.</div>
-          <button class="btn-primary">+ Registrar lote</button>
+          <div class="empty-state__title">Nenhum produto em estoque</div>
+          <div class="empty-state__desc">Registre uma produção para ver os produtos prontos aqui.</div>
+          <button class="btn-primary" onclick="navigate('producao')">+ Registrar produção</button>
         </div>
-      </section>
+      </div>
 
-      <!-- Vendas -->
-      <section class="section" id="section-vendas" aria-label="Vendas">
-        <div class="page-hero">
-          <div class="page-hero__icon">💰</div>
-          <div class="page-hero__title">Gestão de Vendas</div>
-          <div class="page-hero__desc">Acompanhe pedidos, faturamento e clientes. Tudo organizado para o seu negócio crescer.</div>
-        </div>
+      <!-- Última venda -->
+      <h3 class="section-title" style="margin-top:24px">🛍️ Última venda</h3>
+      <div id="lastSaleSection">
         <div class="empty-state">
-          <div class="empty-state__icon">🛍️</div>
-          <div class="empty-state__title">Nenhuma venda registrada</div>
-          <div class="empty-state__desc">Registre sua primeira venda e acompanhe seu faturamento.</div>
-          <button class="btn-primary">+ Nova venda</button>
+          <div class="empty-state__icon">🌟</div>
+          <div class="empty-state__title">Nenhuma venda ainda</div>
+          <div class="empty-state__desc">Sua última venda registrada aparecerá aqui.</div>
+          <button class="btn-primary" onclick="navigate('vendas')">Registrar primeira venda</button>
         </div>
-      </section>
+      </div>
 
-      <!-- Mais -->
-      <section class="section" id="section-mais" aria-label="Mais opções">
-        <div class="page-hero">
-          <div class="page-hero__icon">⚙️</div>
-          <div class="page-hero__title">Mais opções</div>
-          <div class="page-hero__desc">Configurações, relatórios, backup e personalização do seu ateliê.</div>
-        </div>
-        <div class="empty-state">
-          <div class="empty-state__icon">🌸</div>
-          <div class="empty-state__title">Em breve</div>
-          <div class="empty-state__desc">Relatórios, exportação de dados, temas e muito mais estão a caminho.</div>
-        </div>
-      </section>
+    </section>
 
-    </main>
+    <!-- ── RECEITAS ── -->
+    <section class="section" id="section-receitas" aria-label="Receitas">
+      <div class="page-hero">
+        <div class="page-hero__icon">📖</div>
+        <div class="page-hero__title">Minhas Receitas</div>
+        <div class="page-hero__desc">Guarde e organize todas as suas receitas artesanais com ingredientes, modo de preparo e rendimento.</div>
+      </div>
+      <div class="empty-state">
+        <div class="empty-state__icon">🍮</div>
+        <div class="empty-state__title">Nenhuma receita ainda</div>
+        <div class="empty-state__desc">Suas receitas ficarão salvas aqui, disponíveis mesmo offline.</div>
+        <button class="btn-primary">+ Nova receita</button>
+      </div>
+    </section>
 
-    <!-- Bottom Navigation -->
-    <nav class="app-nav" aria-label="Navegação principal">
-      <button class="nav-tab active" id="tab-inicio" onclick="navigate('inicio')" aria-label="Início">
-        <span class="nav-tab__dot"></span>
-        <span class="nav-tab__icon">🏠</span>
-        <span class="nav-tab__label">Início</span>
-      </button>
-      <button class="nav-tab" id="tab-receitas" onclick="navigate('receitas')" aria-label="Receitas">
-        <span class="nav-tab__dot"></span>
-        <span class="nav-tab__icon">📖</span>
-        <span class="nav-tab__label">Receitas</span>
-      </button>
-      <button class="nav-tab" id="tab-producao" onclick="navigate('producao')" aria-label="Produção">
-        <span class="nav-tab__dot"></span>
-        <span class="nav-tab__icon">🏭</span>
-        <span class="nav-tab__label">Produção</span>
-      </button>
-      <button class="nav-tab" id="tab-vendas" onclick="navigate('vendas')" aria-label="Vendas">
-        <span class="nav-tab__dot"></span>
-        <span class="nav-tab__icon">💰</span>
-        <span class="nav-tab__label">Vendas</span>
-      </button>
-      <button class="nav-tab" id="tab-mais" onclick="navigate('mais')" aria-label="Mais">
-        <span class="nav-tab__dot"></span>
-        <span class="nav-tab__icon">⋯</span>
-        <span class="nav-tab__label">Mais</span>
-      </button>
-    </nav>
+    <!-- ── PRODUÇÃO ── -->
+    <section class="section" id="section-producao" aria-label="Produção">
+      <div class="page-hero">
+        <div class="page-hero__icon">🏭</div>
+        <div class="page-hero__title">Controle de Produção</div>
+        <div class="page-hero__desc">Registre lotes, quantidades produzidas, custos e datas de validade dos seus pudins.</div>
+      </div>
+      <div class="empty-state">
+        <div class="empty-state__icon">📦</div>
+        <div class="empty-state__title">Nenhuma produção registrada</div>
+        <div class="empty-state__desc">Comece registrando seu primeiro lote de produção.</div>
+        <button class="btn-primary">+ Registrar lote</button>
+      </div>
+    </section>
 
-  </div>
+    <!-- ── VENDAS ── -->
+    <section class="section" id="section-vendas" aria-label="Vendas">
+      <div class="page-hero">
+        <div class="page-hero__icon">💰</div>
+        <div class="page-hero__title">Gestão de Vendas</div>
+        <div class="page-hero__desc">Acompanhe pedidos, faturamento e clientes. Tudo organizado para o seu negócio crescer.</div>
+      </div>
+      <div class="empty-state">
+        <div class="empty-state__icon">🛍️</div>
+        <div class="empty-state__title">Nenhuma venda registrada</div>
+        <div class="empty-state__desc">Registre sua primeira venda e acompanhe seu faturamento.</div>
+        <button class="btn-primary">+ Nova venda</button>
+      </div>
+    </section>
 
-  <!-- Offline toast -->
-  <div class="offline-toast" id="offlineToast" role="status" aria-live="polite"></div>
+    <!-- ── MAIS ── -->
+    <section class="section" id="section-mais" aria-label="Mais opções">
+      <div class="page-hero">
+        <div class="page-hero__icon">⚙️</div>
+        <div class="page-hero__title">Mais opções</div>
+        <div class="page-hero__desc">Configurações, relatórios, backup e personalização do seu ateliê.</div>
+      </div>
+      <div class="empty-state">
+        <div class="empty-state__icon">🌸</div>
+        <div class="empty-state__title">Em breve</div>
+        <div class="empty-state__desc">Relatórios, exportação de dados, temas e muito mais estão a caminho.</div>
+      </div>
+    </section>
 
-  <script>
-    // ── Navigation ──
-    const TABS = ['inicio', 'receitas', 'producao', 'vendas', 'mais'];
-    let currentTab = 'inicio';
+  </main>
 
-    function navigate(tab) {
-      if (!TABS.includes(tab)) return;
-      document.getElementById('section-' + currentTab).classList.remove('active');
-      document.getElementById('tab-' + currentTab).classList.remove('active');
-      currentTab = tab;
-      document.getElementById('section-' + tab).classList.add('active');
-      document.getElementById('tab-' + tab).classList.add('active');
-      document.getElementById('appContent').scrollTop = 0;
-    }
+  <nav class="app-nav" aria-label="Navegação principal">
+    <button class="nav-tab active" id="tab-inicio" onclick="navigate('inicio')" aria-label="Início">
+      <span class="nav-tab__dot"></span>
+      <span class="nav-tab__icon">🏠</span>
+      <span class="nav-tab__label">Início</span>
+    </button>
+    <button class="nav-tab" id="tab-receitas" onclick="navigate('receitas')" aria-label="Receitas">
+      <span class="nav-tab__dot"></span>
+      <span class="nav-tab__icon">📖</span>
+      <span class="nav-tab__label">Receitas</span>
+    </button>
+    <button class="nav-tab" id="tab-producao" onclick="navigate('producao')" aria-label="Produção">
+      <span class="nav-tab__dot"></span>
+      <span class="nav-tab__icon">🏭</span>
+      <span class="nav-tab__label">Produção</span>
+    </button>
+    <button class="nav-tab" id="tab-vendas" onclick="navigate('vendas')" aria-label="Vendas">
+      <span class="nav-tab__dot"></span>
+      <span class="nav-tab__icon">💰</span>
+      <span class="nav-tab__label">Vendas</span>
+    </button>
+    <button class="nav-tab" id="tab-mais" onclick="navigate('mais')" aria-label="Mais">
+      <span class="nav-tab__dot"></span>
+      <span class="nav-tab__icon">⋯</span>
+      <span class="nav-tab__label">Mais</span>
+    </button>
+  </nav>
 
-    // ── Security banner ──
-    (function () {
-      const banner = document.getElementById('securityBanner');
-      const header = document.getElementById('appHeader');
-      const closeBtn = document.getElementById('closeBanner');
+</div>
 
-      function applyBannerOffset() {
-        const h = banner.offsetHeight;
-        header.style.top = h + 'px';
+<div class="offline-toast" id="offlineToast" role="status" aria-live="polite"></div>
+
+<script>
+// ══════════════════════════════════
+// STORAGE KEYS
+// ══════════════════════════════════
+var STORE = {
+  ONBOARDING: 'cp_onboarding_v1',
+  PROFILE:    'cp_profile_v1',
+  SETTINGS:   'cp_settings_v1'
+};
+
+function storeGet(key) {
+  try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return null; }
+}
+function storeSet(key, val) {
+  try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {}
+}
+
+// ══════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════
+var TABS = ['inicio','receitas','producao','vendas','mais'];
+var currentTab = 'inicio';
+
+function navigate(tab) {
+  if (!TABS.includes(tab)) return;
+  document.getElementById('section-' + currentTab).classList.remove('active');
+  document.getElementById('tab-' + currentTab).classList.remove('active');
+  currentTab = tab;
+  document.getElementById('section-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('appContent').scrollTop = 0;
+}
+
+// ══════════════════════════════════
+// SECURITY BANNER
+// ══════════════════════════════════
+(function() {
+  var banner = document.getElementById('securityBanner');
+  var header = document.getElementById('appHeader');
+  var closeBtn = document.getElementById('closeBanner');
+  function applyOffset() { header.style.top = (banner.offsetHeight || 0) + 'px'; }
+  applyOffset();
+  window.addEventListener('resize', applyOffset);
+  closeBtn.addEventListener('click', function() {
+    banner.style.display = 'none';
+    header.style.top = '0';
+  });
+})();
+
+// ══════════════════════════════════
+// DASHBOARD RENDER
+// ══════════════════════════════════
+function formatBRL(n) {
+  return 'R$ ' + Number(n).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function renderDashboard() {
+  var profile  = storeGet(STORE.PROFILE)   || {};
+  var settings = storeGet(STORE.SETTINGS)  || {};
+
+  // Greeting
+  var hour = new Date().getHours();
+  var greet = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
+  var name = profile.ownerName || profile.companyName || '';
+  document.getElementById('dashGreeting').textContent = greet + (name ? ', ' + name.split(' ')[0] : '') + '! ✨';
+  document.getElementById('dashSubtitle').textContent = profile.companyName || 'Seu ateliê de pudins';
+
+  // Date
+  var now = new Date();
+  var months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  document.getElementById('dashDate').textContent = now.getDate() + ' de ' + months[now.getMonth()] + ' de ' + now.getFullYear();
+  document.getElementById('revenueMonth').textContent = months[now.getMonth()].charAt(0).toUpperCase() + months[now.getMonth()].slice(1);
+
+  // Revenue (seeded zero for now — real data comes from future Vendas module)
+  var revenue = 0;
+  var goal = Number(settings.goalRevenue) || 0;
+  var pct = goal > 0 ? Math.min(100, Math.round((revenue / goal) * 100)) : 0;
+  var onTrack = pct >= 50;
+
+  document.getElementById('revenueValue').textContent = formatBRL(revenue);
+  document.getElementById('revenueGoal').textContent  = goal > 0 ? 'Meta: ' + formatBRL(goal) : 'Meta não configurada';
+  document.getElementById('revenueBadge').textContent = pct + '%';
+  document.getElementById('revenueBadge').className   = 'revenue-card__badge' + (onTrack ? '' : ' revenue-card__badge--warn');
+  document.getElementById('revenueBar').style.width   = pct + '%';
+  document.getElementById('revenueBar').className     = 'progress-bar__fill' + (onTrack ? '' : ' progress-bar__fill--warn');
+
+  var left = goal > 0 ? 'Faltam ' + formatBRL(goal - revenue) + ' para a meta' : 'Configure uma meta no onboarding';
+  document.getElementById('revenueLeft').textContent = left;
+
+  // Low stock alerts (demo data — empty until stock module)
+  var alerts = storeGet('cp_stock_alerts') || [];
+  var alertSection = document.getElementById('alertsSection');
+  var alertList = document.getElementById('alertList');
+  if (alerts.length > 0) {
+    alertSection.style.display = 'block';
+    alertList.innerHTML = alerts.map(function(a) {
+      return '<div class="alert-item">' +
+        '<span class="alert-item__icon">' + (a.icon || '⚠️') + '</span>' +
+        '<div class="alert-item__info">' +
+          '<div class="alert-item__name">' + escHtml(a.name) + '</div>' +
+          '<div class="alert-item__qty">Restam ' + a.qty + ' ' + (a.unit || 'un') + '</div>' +
+        '</div>' +
+        '<button class="alert-item__action" onclick="navigate(\'mais\')">Comprar</button>' +
+      '</div>';
+    }).join('');
+  } else {
+    alertSection.style.display = 'none';
+  }
+
+  // Products ready (demo)
+  var products = storeGet('cp_products_ready') || [];
+  var prodSection = document.getElementById('productsSection');
+  if (products.length > 0) {
+    prodSection.innerHTML = '<div class="product-list">' +
+      products.map(function(p) {
+        return '<div class="product-item">' +
+          '<span class="product-item__icon">' + (p.icon || '🍮') + '</span>' +
+          '<div class="product-item__info">' +
+            '<div class="product-item__name">' + escHtml(p.name) + '</div>' +
+            '<div class="product-item__meta">' + escHtml(p.meta || '') + '</div>' +
+          '</div>' +
+          '<span class="product-item__qty">' + p.qty + ' un</span>' +
+        '</div>';
+      }).join('') +
+    '</div>';
+  }
+
+  // Last sale
+  var lastSale = storeGet('cp_last_sale');
+  var saleSection = document.getElementById('lastSaleSection');
+  if (lastSale) {
+    saleSection.innerHTML =
+      '<div class="last-sale">' +
+        '<span class="last-sale__icon">🛍️</span>' +
+        '<div class="last-sale__info">' +
+          '<div class="last-sale__label">Última venda</div>' +
+          '<div class="last-sale__client">' + escHtml(lastSale.client || 'Cliente') + '</div>' +
+          '<div class="last-sale__detail">' + escHtml(lastSale.detail || '') + '</div>' +
+        '</div>' +
+        '<span class="last-sale__value">' + formatBRL(lastSale.value || 0) + '</span>' +
+      '</div>';
+  }
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════
+// ONBOARDING
+// ══════════════════════════════════
+(function() {
+  var overlay   = document.getElementById('onboarding');
+  var dots      = document.querySelectorAll('.ob-progress__dot');
+  var skipBtn   = document.getElementById('obSkip');
+  var backBtn   = document.getElementById('obBack');
+  var nextBtn   = document.getElementById('obNext');
+  var slides    = [
+    document.getElementById('ob-step-0'),
+    document.getElementById('ob-step-1'),
+    document.getElementById('ob-step-2'),
+    document.getElementById('ob-step-3'),
+    document.getElementById('ob-step-4')
+  ];
+  var LAST = slides.length - 1;
+  var current = 0;
+
+  var nextLabels = ['Começar →', 'Próximo →', 'Próximo →', 'Próximo →', 'Entrar no app 🎉'];
+
+  function isOnboardingDone() {
+    return storeGet(STORE.ONBOARDING) === true;
+  }
+
+  function showSlide(idx) {
+    slides.forEach(function(s, i) {
+      s.classList.remove('active', 'out');
+      if (i === idx) s.classList.add('active');
+      else if (i < idx) s.classList.add('out');
+    });
+    dots.forEach(function(d, i) {
+      d.classList.toggle('done', i <= idx);
+    });
+    backBtn.style.display = idx === 0 ? 'none' : 'block';
+    nextBtn.textContent   = nextLabels[idx];
+    skipBtn.style.display = idx === LAST ? 'none' : 'block';
+  }
+
+  function collectData() {
+    var profile = {
+      companyName: (document.getElementById('obCompanyName').value || '').trim(),
+      ownerName:   (document.getElementById('obOwnerName').value   || '').trim()
+    };
+    var selectedChannels = [];
+    document.querySelectorAll('#obChannels .ob-chip.selected').forEach(function(c) {
+      selectedChannels.push(c.dataset.val);
+    });
+    var settings = {
+      goalRevenue: Number(document.getElementById('obGoalRevenue').value) || 0,
+      channels:    selectedChannels,
+      rates: {
+        credit: Number(document.getElementById('rateCredit').value) || 0,
+        debit:  Number(document.getElementById('rateDebit').value)  || 0,
+        pix:    Number(document.getElementById('ratePix').value)    || 0,
+        ifood:  Number(document.getElementById('rateIfood').value)  || 0
       }
+    };
+    return { profile: profile, settings: settings };
+  }
 
-      applyBannerOffset();
-      window.addEventListener('resize', applyBannerOffset);
+  function buildSummary(data) {
+    var p = data.profile;
+    var s = data.settings;
+    var items = [];
+    items.push(p.companyName ? 'Negócio: ' + p.companyName : 'Nome do negócio não informado');
+    items.push(p.ownerName   ? 'Responsável: ' + p.ownerName : 'Nome não informado');
+    items.push(s.goalRevenue > 0 ? 'Meta mensal: R$ ' + s.goalRevenue.toLocaleString('pt-BR') : 'Sem meta definida');
+    items.push(s.channels.length > 0 ? 'Canais: ' + s.channels.join(', ') : 'Canais não selecionados');
+    items.push('Taxas configuradas (crédito, débito, Pix, iFood)');
+    var ul = document.getElementById('obSummaryList');
+    ul.innerHTML = items.map(function(t) { return '<li>' + escHtml(t) + '</li>'; }).join('');
+  }
 
-      closeBtn.addEventListener('click', () => {
-        banner.style.display = 'none';
-        header.style.top = '0';
-      });
-    })();
+  function finishOnboarding() {
+    var data = collectData();
+    storeSet(STORE.PROFILE,    data.profile);
+    storeSet(STORE.SETTINGS,   data.settings);
+    storeSet(STORE.ONBOARDING, true);
+    overlay.classList.add('hidden');
+    renderDashboard();
+  }
 
-    // ── Service Worker registration ──
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then((reg) => {
-          console.log('[SW] Registered, scope:', reg.scope);
-        }).catch((err) => {
-          console.warn('[SW] Registration failed:', err);
-        });
-      });
-    }
+  // Chip toggle
+  document.querySelectorAll('#obChannels .ob-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      chip.classList.toggle('selected');
+    });
+  });
 
-    // ── Offline / online detection ──
-    const toast = document.getElementById('offlineToast');
-    let toastTimer = null;
-
-    function showToast(msg, duration) {
-      toast.textContent = msg;
-      toast.classList.add('visible');
-      clearTimeout(toastTimer);
-      if (duration) {
-        toastTimer = setTimeout(() => toast.classList.remove('visible'), duration);
+  nextBtn.addEventListener('click', function() {
+    if (current < LAST) {
+      if (current === LAST - 1) {
+        var data = collectData();
+        storeSet(STORE.PROFILE,  data.profile);
+        storeSet(STORE.SETTINGS, data.settings);
+        buildSummary(data);
       }
+      current++;
+      showSlide(current);
+    } else {
+      finishOnboarding();
     }
+  });
 
-    window.addEventListener('offline', () => showToast('📵 Sem conexão — modo offline ativo', 0));
-    window.addEventListener('online',  () => showToast('✅ Conexão restaurada', 3000));
+  backBtn.addEventListener('click', function() {
+    if (current > 0) { current--; showSlide(current); }
+  });
 
-    if (!navigator.onLine) showToast('📵 Sem conexão — modo offline ativo', 0);
-  </script>
+  skipBtn.addEventListener('click', function() {
+    storeSet(STORE.ONBOARDING, true);
+    overlay.classList.add('hidden');
+    renderDashboard();
+  });
+
+  // Init: show onboarding on first open, skip otherwise
+  if (!isOnboardingDone()) {
+    overlay.classList.remove('hidden');
+    showSlide(0);
+  } else {
+    overlay.classList.add('hidden');
+    renderDashboard();
+  }
+})();
+
+// ══════════════════════════════════
+// SERVICE WORKER
+// ══════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').then(function(reg) {
+      console.log('[SW] Registered, scope:', reg.scope);
+    }).catch(function(err) {
+      console.warn('[SW] Registration failed:', err);
+    });
+  });
+}
+
+// ══════════════════════════════════
+// OFFLINE TOAST
+// ══════════════════════════════════
+var toastEl = document.getElementById('offlineToast');
+var toastTimer = null;
+function showToast(msg, duration) {
+  toastEl.textContent = msg;
+  toastEl.classList.add('visible');
+  clearTimeout(toastTimer);
+  if (duration) { toastTimer = setTimeout(function() { toastEl.classList.remove('visible'); }, duration); }
+}
+window.addEventListener('offline', function() { showToast('📵 Sem conexão — modo offline ativo', 0); });
+window.addEventListener('online',  function() { showToast('✅ Conexão restaurada', 3000); });
+if (!navigator.onLine) showToast('📵 Sem conexão — modo offline ativo', 0);
+</script>
 
 </body>
 </html>
