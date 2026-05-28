@@ -1,7 +1,7 @@
 {
-  "name": "CADIM PUDIM",
-  "short_name": "CadimPudim",
-  "description": "Gestão artesanal de pudins e doces",
+  "name": "Confei",
+  "short_name": "Confei",
+  "description": "Gestão de doces artesanais",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

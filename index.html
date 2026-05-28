@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#C8843A" />
-  <meta name="description" content="Gestão artesanal de pudins e doces — CADIM PUDIM" />
+  <meta name="description" content="Gestão artesanal de doces e confeitaria — Confei" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="CADIM PUDIM" />
-  <title>CADIM PUDIM 🍮</title>
+  <meta name="apple-mobile-web-app-title" content="Confei" />
+  <title>Confei 🍬</title>
   <link rel="manifest" href="/manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -987,7 +987,7 @@
 
     <div class="ob-slide active" id="ob-step-0">
       <span class="ob-emoji">🍮</span>
-      <h1 class="ob-title">Bem-vinda ao CADIM PUDIM!</h1>
+      <h1 class="ob-title">Bem-vinda ao Confei!</h1>
       <p class="ob-desc">Seu ateliê artesanal de doces na palma da mão. Vamos configurar tudo em poucos minutos para você começar a vender com muito mais organização.</p>
     </div>
 
@@ -1083,7 +1083,7 @@
 <div id="app">
   <header class="app-header" id="appHeader">
     <div>
-      <div class="app-header__brand" id="headerBrand">CADIM PUDIM 🍮</div>
+      <div class="app-header__brand" id="headerBrand">Confei 🍬</div>
       <div class="app-header__subtitle">Gestão artesanal</div>
     </div>
     <div class="app-header__actions">
@@ -1183,8 +1183,6 @@
         </div>
         <div class="cat-tabs" id="recipeCatTabs">
           <button class="cat-tab active" data-cat="todos" type="button">Todas</button>
-          <button class="cat-tab" data-cat="pudim" type="button">🍮 Pudins</button>
-          <button class="cat-tab" data-cat="picole" type="button">🍦 Picolés</button>
         </div>
         <div class="recipe-list" id="recipeList"></div>
         <div class="empty-state" id="recipeEmpty">
@@ -1470,7 +1468,7 @@
           <div class="fin-section-title">🏢 Empresa</div>
           <div class="ob-field">
             <label class="ob-label" for="cfgCompanyName">Nome da empresa</label>
-            <input class="ob-input" type="text" id="cfgCompanyName" maxlength="60" placeholder="Ex: CADIM PUDIM" />
+            <input class="ob-input" type="text" id="cfgCompanyName" maxlength="60" placeholder="Ex: Minha Confeitaria" />
           </div>
           <div class="ob-field">
             <label class="ob-label" for="cfgOwnerName">Responsável</label>
@@ -1537,6 +1535,13 @@
             <span style="font-size:14px;color:var(--text)">🌙 Modo escuro</span>
             <label class="cfg-toggle"><input type="checkbox" id="cfgDarkMode" onchange="onToggleDarkMode()" /><span class="cfg-slider"></span></label>
           </div>
+        </div>
+        <!-- Categorias de Produtos -->
+        <div class="fin-section">
+          <div class="fin-section-title">🏷 Categorias de Produtos</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Define as categorias dos seus produtos. Aparecem nos filtros e formulários de receitas.</p>
+          <div id="categoriasConfigList"></div>
+          <button class="btn-secondary" onclick="openCatForm(null)" type="button" style="width:100%;margin-top:8px">+ Nova categoria</button>
         </div>
         <!-- Banco de Ingredientes -->
         <div class="fin-section">
@@ -2058,10 +2063,8 @@
       </div>
       <div class="form-row">
         <div class="ob-field" style="flex:1">
-          <label class="ob-label" for="rfType">Tipo</label>
+          <label class="ob-label" for="rfType">Categoria</label>
           <select class="ob-input" id="rfType">
-            <option value="pudim">🍮 Pudim</option>
-            <option value="picole">🍦 Picolé</option>
           </select>
         </div>
         <div class="ob-field" style="flex:1">
@@ -2439,6 +2442,34 @@
   </div>
 </div>
 
+<!-- MODAL CATEGORIA -->
+<div class="modal-backdrop" id="modalCategoria" role="dialog" aria-modal="true" aria-label="Categoria">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalCategoria')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="catFormTitle">Nova categoria</span>
+      <button class="modal-close" onclick="closeModal('modalCategoria')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="catFormId" value="" />
+      <div class="ob-field">
+        <label class="ob-label">Ícone (emoji)</label>
+        <input type="text" class="ob-input" id="catIcon" maxlength="4" placeholder="🍮" style="font-size:24px;text-align:center;width:70px" />
+      </div>
+      <div class="ob-field" style="margin-top:10px">
+        <label class="ob-label">Nome da categoria *</label>
+        <input type="text" class="ob-input" id="catName" maxlength="30" placeholder="Ex: Brigadeiro" autocomplete="off" />
+      </div>
+      <p id="catFormError" style="color:var(--red);font-size:13px;margin-top:4px"></p>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn-secondary" onclick="closeModal('modalCategoria')" type="button" style="flex:1">Cancelar</button>
+        <button class="btn-primary" onclick="saveCatForm()" type="button" style="flex:1">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════
      BANCO DE INGREDIENTES
 ══════════════════════════════════ -->
@@ -2572,7 +2603,8 @@ var STORE = {
   TAREFAS:       'cp_tarefas_v1',
   METAS:         'cp_metas_v1',
   DATAS_COM:     'cp_datas_com_v1',
-  NUTRI_CUSTOM:  'cp_nutri_custom_v1'
+  NUTRI_CUSTOM:  'cp_nutri_custom_v1',
+  CATEGORIAS:    'cp_categorias_v1'
 };
 
 function storeGet(key) {
@@ -3135,6 +3167,50 @@ function onSaveManualItem() {
   showToast('✅ Item adicionado!', 2000);
 }
 
+// ── Categorias de produtos ──────────────────────────────────────
+var DEFAULT_CATEGORIAS = [
+  { id: 'pudim',      name: 'Pudim',      icon: '🍮' },
+  { id: 'bolo',       name: 'Bolo',       icon: '🎂' },
+  { id: 'torta',      name: 'Torta',      icon: '🥧' },
+  { id: 'brigadeiro', name: 'Brigadeiro', icon: '🍫' },
+  { id: 'picole',     name: 'Picolé',     icon: '🍦' },
+  { id: 'biscoito',   name: 'Biscoito',   icon: '🍪' },
+  { id: 'doce',       name: 'Doce',       icon: '🍬' },
+  { id: 'outro',      name: 'Outro',      icon: '📦' }
+];
+
+function categoriaGetAll() {
+  var saved = storeGet(STORE.CATEGORIAS);
+  if (!saved || !saved.length) return DEFAULT_CATEGORIAS.slice();
+  return saved;
+}
+function categoriaSave(arr) { storeSet(STORE.CATEGORIAS, arr); }
+function categoriaAdd(data) {
+  var arr = categoriaGetAll();
+  arr.push({ id: genId(), name: data.name, icon: data.icon || '🍬' });
+  categoriaSave(arr);
+}
+function categoriaUpdate(id, data) {
+  var arr = categoriaGetAll();
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i].id === id) { arr[i].name = data.name; arr[i].icon = data.icon || arr[i].icon; break; }
+  }
+  categoriaSave(arr);
+}
+function categoriaDelete(id) {
+  categoriaSave(categoriaGetAll().filter(function(c) { return c.id !== id; }));
+}
+function getCategoryIcon(typeId) {
+  var cats = categoriaGetAll();
+  for (var i = 0; i < cats.length; i++) { if (cats[i].id === typeId) return cats[i].icon; }
+  return '🍬';
+}
+function getCategoryName(typeId) {
+  var cats = categoriaGetAll();
+  for (var i = 0; i < cats.length; i++) { if (cats[i].id === typeId) return cats[i].name; }
+  return typeId || 'Produto';
+}
+
 // ════════════════════════════════
 // RECIPE MODULE
 // ════════════════════════════════
@@ -3446,6 +3522,7 @@ function calcMargin(price, cost, yieldQty) {
 
 // ── List rendering ──
 function renderRecipes() {
+  renderRecipeCatTabs();
   if (recipeView === 'detail') {
     document.getElementById('rcListView').style.display    = 'none';
     document.getElementById('rcDetailView').style.display  = '';
@@ -3475,8 +3552,8 @@ function renderRecipeList() {
 }
 
 function buildRecipeCardHTML(r) {
-  var icon      = r.icon || (r.type === 'picole' ? '🍦' : '🍮');
-  var typeLabel = r.type === 'picole' ? 'Picolé' : 'Pudim';
+  var icon      = r.icon || getCategoryIcon(r.type);
+  var typeLabel = getCategoryName(r.type);
   var cost      = Number(r.cost) || 0;
   var sizes     = ['g','m','p'];
   var bestMargin = null;
@@ -3540,8 +3617,8 @@ function closeRecipeDetail() {
 function renderRecipeDetail() {
   var r = recipeFindById(recipeDetailId);
   if (!r) { closeRecipeDetail(); return; }
-  var icon      = r.icon || (r.type === 'picole' ? '🍦' : '🍮');
-  var typeLabel = r.type === 'picole' ? 'Picolé' : 'Pudim';
+  var icon      = r.icon || getCategoryIcon(r.type);
+  var typeLabel = getCategoryName(r.type);
   var cost      = Number(r.cost) || 0;
   var id        = escHtml(r.id);
 
@@ -3713,7 +3790,16 @@ function openAddRecipe() {
   document.getElementById('rfFormTitle').textContent  = 'Nova Receita';
   document.getElementById('rfIcon').value      = '';
   document.getElementById('rfName').value      = '';
-  document.getElementById('rfType').value      = 'pudim';
+  // Populate category select
+  var catSel = document.getElementById('rfType');
+  var cats = categoriaGetAll();
+  catSel.innerHTML = '';
+  for (var ci = 0; ci < cats.length; ci++) {
+    var opt = document.createElement('option');
+    opt.value = cats[ci].id;
+    opt.textContent = cats[ci].icon + ' ' + cats[ci].name;
+    catSel.appendChild(opt);
+  }
   document.getElementById('rfPrepTime').value  = '';
   document.getElementById('rfCost').value      = '';
   document.getElementById('rfSizeG').value     = '';
@@ -3753,7 +3839,16 @@ function openEditRecipe(id) {
   document.getElementById('rfFormTitle').textContent  = 'Editar Receita';
   document.getElementById('rfIcon').value     = r.icon      || '';
   document.getElementById('rfName').value     = r.name      || '';
-  document.getElementById('rfType').value     = r.type      || 'pudim';
+  var catSel = document.getElementById('rfType');
+  var cats = categoriaGetAll();
+  catSel.innerHTML = '';
+  for (var ci = 0; ci < cats.length; ci++) {
+    var opt = document.createElement('option');
+    opt.value = cats[ci].id;
+    opt.textContent = cats[ci].icon + ' ' + cats[ci].name;
+    catSel.appendChild(opt);
+  }
+  catSel.value = r.type || (cats.length ? cats[0].id : 'pudim');
   document.getElementById('rfPrepTime').value = r.prepTime  || '';
   document.getElementById('rfCost').value     = r.cost      || '';
   var rSz = r.sizes || {};
@@ -3967,17 +4062,28 @@ function openDeleteRecipe(id) {
   });
 }
 
-// Recipe category tabs
-var rcTabEls = document.querySelectorAll('#recipeCatTabs .cat-tab');
-for (var _ri = 0; _ri < rcTabEls.length; _ri++) {
-  (function(tab) {
-    tab.addEventListener('click', function() {
-      for (var j = 0; j < rcTabEls.length; j++) rcTabEls[j].classList.remove('active');
-      tab.classList.add('active');
-      recipeFilter = tab.dataset.cat;
-      renderRecipeList();
-    });
-  })(rcTabEls[_ri]);
+// Recipe category tabs — rebuilt dynamically
+function renderRecipeCatTabs() {
+  var cats = categoriaGetAll();
+  var container = document.getElementById('recipeCatTabs');
+  var html = '<button class="cat-tab' + (recipeFilter === 'todos' ? ' active' : '') + '" data-cat="todos" type="button">Todas</button>';
+  for (var ci = 0; ci < cats.length; ci++) {
+    var c = cats[ci];
+    html += '<button class="cat-tab' + (recipeFilter === c.id ? ' active' : '') + '" data-cat="' + escHtml(c.id) + '" type="button">' + escHtml(c.icon) + ' ' + escHtml(c.name) + '</button>';
+  }
+  container.innerHTML = html;
+  // Re-bind click events
+  var tabs = container.querySelectorAll('.cat-tab');
+  for (var ti = 0; ti < tabs.length; ti++) {
+    (function(tab) {
+      tab.addEventListener('click', function() {
+        for (var j = 0; j < tabs.length; j++) tabs[j].classList.remove('active');
+        tab.classList.add('active');
+        recipeFilter = tab.dataset.cat;
+        renderRecipeList();
+      });
+    })(tabs[ti]);
+  }
 }
 
 // Recipe search
@@ -5454,7 +5560,7 @@ var DEFAULT_TEMPLATES = [
   { id: 'dtpl1', titulo: 'Confirmação de encomenda', texto: 'Olá {nome}! Sua encomenda foi confirmada para {data}. Qualquer dúvida é só chamar! 🍮' },
   { id: 'dtpl2', titulo: 'Lembrete de entrega',      texto: 'Oi {nome}! Seu pedido está pronto para retirada/entrega em {data}. 🎉' },
   { id: 'dtpl3', titulo: 'Pós-venda',                texto: 'Oi {nome}! Espero que tenha adorado o pudim! Conta pra mim como foi! 💛' },
-  { id: 'dtpl4', titulo: 'Aniversário',              texto: 'Feliz aniversário, {nome}! 🎂 Que sua data seja muito especial! Com carinho, CADIM PUDIM.' }
+  { id: 'dtpl4', titulo: 'Aniversário',              texto: 'Feliz aniversário, {nome}! 🎂 Que sua data seja muito especial! Com carinho, Confei.' }
 ];
 
 function clienteGetAll()      { return storeGet(STORE.CLIENTES) || []; }
@@ -5965,7 +6071,7 @@ function printDocument(html) {
 
 function getEmpresaNome() {
   var p = storeGet(STORE.PROFILE) || {};
-  return p.companyName || 'CADIM PUDIM';
+  return p.companyName || 'Confei';
 }
 
 function pdfStyles() {
@@ -6733,7 +6839,7 @@ function exportarDados() {
   var a    = document.createElement('a');
   var date = new Date().toISOString().slice(0, 10);
   a.href     = url;
-  a.download = 'cadim-pudim-backup-' + date + '.json';
+  a.download = 'confei-backup-' + date + '.json';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -6994,6 +7100,7 @@ function renderConfig() {
   document.getElementById('cfgAlertaAniversario').checked = settings.alertaAniversario !== false;
   document.getElementById('cfgAlertaMeta').checked        = settings.alertaMeta        !== false;
   document.getElementById('cfgDarkMode').checked          = !!settings.darkMode;
+  renderCategoriasConfig();
 }
 
 function onSaveConfigEmpresa() {
@@ -7151,6 +7258,75 @@ function checkAppAlerts() {
       setTimeout(function() { showToast(a.msg, a.dur); }, delay * 2200 + 800);
     })(ai, alerts[ai]);
   }
+}
+
+// ════════════════════════════════
+// CATEGORIAS DE PRODUTOS
+// ════════════════════════════════
+
+var _catEditId = null;
+
+function renderCategoriasConfig() {
+  var cats = categoriaGetAll();
+  var el = document.getElementById('categoriasConfigList');
+  if (!el) return;
+  var html = '';
+  for (var i = 0; i < cats.length; i++) {
+    var c = cats[i];
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">' +
+      '<span style="font-size:22px;width:30px;text-align:center">' + escHtml(c.icon) + '</span>' +
+      '<span style="flex:1;font-size:14px;font-weight:600;color:var(--text)">' + escHtml(c.name) + '</span>' +
+      '<button class="btn-secondary" style="padding:5px 10px;font-size:12px" onclick="openCatForm(\'' + escHtml(c.id) + '\')" type="button">✏️</button>' +
+      '<button class="btn-secondary" style="padding:5px 10px;font-size:12px;color:var(--red)" onclick="deleteCat(\'' + escHtml(c.id) + '\')" type="button">🗑</button>' +
+    '</div>';
+  }
+  if (!html) html = '<p style="color:var(--muted);font-size:13px">Nenhuma categoria. Clique em "+ Nova categoria".</p>';
+  el.innerHTML = html;
+}
+
+function openCatForm(editId) {
+  _catEditId = editId || null;
+  document.getElementById('catFormId').value = editId || '';
+  document.getElementById('catFormError').textContent = '';
+  if (editId) {
+    var cats = categoriaGetAll();
+    var found = null;
+    for (var i = 0; i < cats.length; i++) { if (cats[i].id === editId) { found = cats[i]; break; } }
+    if (!found) return;
+    document.getElementById('catFormTitle').textContent = 'Editar categoria';
+    document.getElementById('catIcon').value = found.icon || '';
+    document.getElementById('catName').value = found.name || '';
+  } else {
+    document.getElementById('catFormTitle').textContent = 'Nova categoria';
+    document.getElementById('catIcon').value = '';
+    document.getElementById('catName').value = '';
+  }
+  openModal('modalCategoria');
+}
+
+function saveCatForm() {
+  var name = document.getElementById('catName').value.trim();
+  var icon = document.getElementById('catIcon').value.trim() || '🍬';
+  if (!name) { document.getElementById('catFormError').textContent = 'Informe o nome da categoria.'; return; }
+  if (_catEditId) {
+    categoriaUpdate(_catEditId, { name: name, icon: icon });
+    showToast('✅ Categoria atualizada!', 2000);
+  } else {
+    categoriaAdd({ name: name, icon: icon });
+    showToast('✅ Categoria criada!', 2000);
+  }
+  closeModal('modalCategoria');
+  renderCategoriasConfig();
+  renderRecipeCatTabs();
+}
+
+function deleteCat(id) {
+  openConfirmDelete('esta categoria', function() {
+    categoriaDelete(id);
+    renderCategoriasConfig();
+    renderRecipeCatTabs();
+    showToast('🗑 Categoria removida', 2000);
+  });
 }
 
 // ════════════════════════════════

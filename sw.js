@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cadim-pudim-v2';
+const CACHE_NAME = 'confei-v1';
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -21,7 +21,7 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
-          .filter((name) => name.startsWith('cadim-pudim-') && name !== CACHE_NAME)
+          .filter((name) => name.startsWith('confei-') && name !== CACHE_NAME)
           .map((name) => caches.delete(name))
       );
     }).then(() => self.clients.claim())
