@@ -30,6 +30,17 @@
       --nav-h:  64px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
+    html.dark {
+      --cream:   #1A1208;
+      --accent:  #E8994A;
+      --gold:    #E8B856;
+      --green:   #5FAD72;
+      --red:     #E05547;
+      --text:    #F0E6D3;
+      --muted:   #9A8A72;
+      --surface: #251C13;
+      --border:  #3A2E20;
+    }
 
     html, body {
       height: 100%;
@@ -1113,6 +1124,10 @@
           <span class="quick-btn__icon">🍮</span>
           <span class="quick-btn__label">Nova Produção</span>
         </button>
+        <button class="quick-btn" onclick="openCalcForm()" aria-label="Calculadora de ingredientes">
+          <span class="quick-btn__icon">🧮</span>
+          <span class="quick-btn__label">Calculadora</span>
+        </button>
       </div>
 
       <h3 class="section-title">✅ Itens em estoque</h3>
@@ -1495,6 +1510,21 @@
             <label class="cfg-toggle"><input type="checkbox" id="cfgAlertaMeta" onchange="onSaveConfigAlertas()" /><span class="cfg-slider"></span></label>
           </div>
         </div>
+        <!-- Aparência -->
+        <div class="fin-section">
+          <div class="fin-section-title">🎨 Aparência</div>
+          <div class="toggle-row">
+            <span style="font-size:14px;color:var(--text)">🌙 Modo escuro</span>
+            <label class="cfg-toggle"><input type="checkbox" id="cfgDarkMode" onchange="onToggleDarkMode()" /><span class="cfg-slider"></span></label>
+          </div>
+        </div>
+        <!-- Backup -->
+        <div class="fin-section">
+          <div class="fin-section-title">💾 Backup de Dados</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Exporte todos os seus dados para guardar ou transferir para outro dispositivo.</p>
+          <button class="btn-secondary" onclick="exportarDados()" type="button" style="width:100%;margin-bottom:8px">📥 Exportar todos os dados</button>
+          <button class="btn-secondary" onclick="importarDados()" type="button" style="width:100%">📤 Importar backup</button>
+        </div>
         <div style="height:16px"></div>
       </div>
 
@@ -1542,6 +1572,40 @@
 
 <!-- Offline toast -->
 <div class="offline-toast" id="offlineToast" role="status" aria-live="polite"></div>
+
+<!-- ══════════════════════════════════
+     FULL-SCREEN FORM: Calculadora de Ingredientes
+══════════════════════════════════ -->
+<div class="recipe-form" id="calcForm" role="dialog" aria-modal="true" aria-label="Calculadora de ingredientes">
+  <header class="recipe-form__header">
+    <button class="rf-cancel-btn" onclick="closeCalcForm()" type="button">← Fechar</button>
+    <span class="rf-form-title">🧮 Calculadora</span>
+    <span style="width:80px"></span>
+  </header>
+  <div class="recipe-form__body">
+    <div class="rf-section">
+      <div class="rf-section-title">O que você quer produzir?</div>
+      <div class="ob-field">
+        <label class="ob-label" for="calcRecipe">Receita</label>
+        <select class="ob-input" id="calcRecipe" onchange="calcOnRecipeChange()">
+          <option value="">Selecionar receita…</option>
+        </select>
+      </div>
+      <div class="ob-field" id="calcSizeRow" style="display:none">
+        <label class="ob-label" for="calcSize">Tamanho</label>
+        <select class="ob-input" id="calcSize" onchange="calcOnSizeChange()">
+          <option value="">Selecionar tamanho…</option>
+        </select>
+      </div>
+      <div class="ob-field" id="calcQtyRow" style="display:none">
+        <label class="ob-label" for="calcQty">Quantas unidades quer produzir?</label>
+        <input class="ob-input" type="number" id="calcQty" min="1" value="1" oninput="calcCompute()" />
+      </div>
+    </div>
+    <div id="calcResult"></div>
+    <div style="height:20px"></div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════
      FULL-SCREEN FORM: Cliente
@@ -3351,15 +3415,21 @@ function renderRecipeDetail() {
     var epr = Number(r.price && r.price[esd.key]) || 0;
     var eyd = Number(r.yield && r.yield[esd.key]) || 0;
     if (epr === 0 && eyd === 0) continue;
-    etiqBtns += '<button class="btn-secondary" style="padding:6px 12px;font-size:13px" ' +
-      'onclick="generateEtiqueta(\'' + id + '\',\'' + esd.key + '\')" type="button">🏷 ' + escHtml(esd.label) + '</button>';
+    etiqBtns +=
+      '<button class="btn-secondary" style="padding:6px 10px;font-size:12px" ' +
+        'onclick="generateEtiqueta(\'' + id + '\',\'' + esd.key + '\')" type="button">🏷 ' + escHtml(esd.label) + '</button>' +
+      '<button class="btn-secondary" style="padding:6px 10px;font-size:12px" ' +
+        'onclick="shareEtiqueta(\'' + id + '\',\'' + esd.key + '\')" type="button">📤 ' + escHtml(esd.label) + '</button>';
   }
   var xSizes2 = r.extraSizes || [];
   for (var xei2 = 0; xei2 < xSizes2.length; xei2++) {
     var xs2 = xSizes2[xei2];
     if ((Number(xs2.price) || 0) === 0 && (Number(xs2.yield) || 0) === 0) continue;
-    etiqBtns += '<button class="btn-secondary" style="padding:6px 12px;font-size:13px" ' +
-      'onclick="generateEtiqueta(\'' + id + '\',\'x' + xei2 + '\')" type="button">🏷 ' + escHtml(xs2.label) + '</button>';
+    etiqBtns +=
+      '<button class="btn-secondary" style="padding:6px 10px;font-size:12px" ' +
+        'onclick="generateEtiqueta(\'' + id + '\',\'x' + xei2 + '\')" type="button">🏷 ' + escHtml(xs2.label) + '</button>' +
+      '<button class="btn-secondary" style="padding:6px 10px;font-size:12px" ' +
+        'onclick="shareEtiqueta(\'' + id + '\',\'x' + xei2 + '\')" type="button">📤 ' + escHtml(xs2.label) + '</button>';
   }
 
   var html =
@@ -3392,9 +3462,15 @@ function renderRecipeDetail() {
       '<div class="nut-table">' + nutHTML + '</div>' : '') +
     (etiqBtns ?
       '<div style="margin-top:16px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px">' +
-      '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">🏷 Imprimir Etiqueta</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+        '<div style="font-size:13px;font-weight:700;color:var(--text)">🏷 Etiqueta</div>' +
+        '<button class="btn-secondary" style="padding:5px 10px;font-size:12px" onclick="openCalcForm(\'' + id + '\')" type="button">🧮 Calcular ingredientes</button>' +
+      '</div>' +
       '<div style="display:flex;flex-wrap:wrap;gap:8px">' + etiqBtns + '</div>' +
       '</div>' : '') +
+    '<div style="margin-top:12px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px">' +
+      '<button class="btn-secondary" style="width:100%;justify-content:center" onclick="openCalcForm(\'' + id + '\')" type="button">🧮 Calculadora de Ingredientes</button>' +
+    '</div>' +
     '<div style="height:20px"></div>';
 
   document.getElementById('rcDetailView').innerHTML = html;
@@ -4395,6 +4471,7 @@ function buildEncCardHTML(e) {
     '<div class="enc-card__actions">' +
       nextBtn +
       '<button class="enc-action-btn" onclick="generateNotaEncomenda(\'' + id + '\')" type="button">🧾 Nota</button>' +
+      waEncBtn(e) +
       '<button class="enc-action-btn" onclick="openEditEncomenda(\'' + id + '\')" type="button">✏️ Editar</button>' +
       '<button class="enc-action-btn enc-action-btn--del" onclick="openDeleteEncomenda(\'' + id + '\')" type="button">🗑 Excluir</button>' +
     '</div>' +
@@ -5322,6 +5399,12 @@ function renderClDetail(id) {
     '<div class="cl-detail-meta">' + (cl.contato ? escHtml(cl.contato) : '') + '</div>' +
     '</div>' +
     '<div style="margin-left:auto;display:flex;gap:6px">' +
+    (cl.contato ? (function() {
+      var ph = cl.contato.replace(/\D/g,'');
+      if (ph.length < 8) return '';
+      if (ph.length <= 11) ph = '55' + ph;
+      return '<a href="https://wa.me/' + ph + '?text=' + encodeURIComponent('Olá ' + cl.nome + '! 🍮') + '" target="_blank" class="btn-secondary" style="padding:8px 12px;text-decoration:none;line-height:1.4" title="Abrir WhatsApp">💬</a>';
+    })() : '') +
     '<button class="btn-secondary" style="padding:8px 12px" onclick="openEditCliente(\'' + id + '\')" type="button">✏️</button>' +
     '<button class="btn-secondary" style="padding:8px 12px;color:var(--red)" onclick="openConfirmDelete(\'' + escHtml(cl.nome) + '\',function(){clienteDelete(\'' + id + '\');clBackToList();})" type="button">🗑</button>' +
     '</div>' +
@@ -6388,6 +6471,282 @@ function renderRelatorios() {
 // ════════════════════════════════
 // CONFIGURAÇÕES
 // ════════════════════════════════
+// ════════════════════════════════
+// DARK MODE
+// ════════════════════════════════
+function applyTheme() {
+  var s = storeGet(STORE.SETTINGS) || {};
+  if (s.darkMode) { document.documentElement.classList.add('dark'); }
+  else            { document.documentElement.classList.remove('dark'); }
+}
+function onToggleDarkMode() {
+  var s = storeGet(STORE.SETTINGS) || {};
+  s.darkMode = document.getElementById('cfgDarkMode').checked;
+  storeSet(STORE.SETTINGS, s);
+  applyTheme();
+}
+
+// ════════════════════════════════
+// BACKUP / EXPORT / IMPORT
+// ════════════════════════════════
+function exportarDados() {
+  var backup = {};
+  var keys = Object.keys(STORE);
+  for (var i = 0; i < keys.length; i++) {
+    var k = STORE[keys[i]];
+    backup[k] = storeGet(k);
+  }
+  var json = JSON.stringify(backup, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  var date = new Date().toISOString().slice(0, 10);
+  a.href     = url;
+  a.download = 'cadim-pudim-backup-' + date + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ Backup exportado com sucesso!', 2500);
+}
+function importarDados() {
+  var input = document.createElement('input');
+  input.type   = 'file';
+  input.accept = '.json';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        var data = JSON.parse(ev.target.result);
+        var keys = Object.keys(data);
+        for (var i = 0; i < keys.length; i++) {
+          if (data[keys[i]] !== null && data[keys[i]] !== undefined) {
+            localStorage.setItem(keys[i], JSON.stringify(data[keys[i]]));
+          }
+        }
+        showToast('✅ Backup importado! Recarregando...', 2000);
+        setTimeout(function() { location.reload(); }, 2000);
+      } catch(err) { showToast('❌ Arquivo inválido. Verifique o arquivo.', 3000); }
+    };
+    reader.readAsText(file);
+  };
+  document.body.appendChild(input);
+  input.click();
+  document.body.removeChild(input);
+}
+
+// ════════════════════════════════
+// SHARE ETIQUETA (Web Share API)
+// ════════════════════════════════
+function shareEtiqueta(recipeId, sizeKey) {
+  var r = recipeFindById(recipeId);
+  if (!r) return;
+  var sLabel, yd, pr;
+  if (sizeKey.charAt(0) === 'x') {
+    var xIdx = parseInt(sizeKey.substring(1), 10);
+    var xs = (r.extraSizes || [])[xIdx] || {};
+    sLabel = xs.label || sizeKey; yd = Number(xs.yield)||0; pr = Number(xs.price)||0;
+  } else {
+    sLabel = (r.sizes && r.sizes[sizeKey]) || sizeKey.toUpperCase();
+    yd = Number(r.yield && r.yield[sizeKey])||0;
+    pr = Number(r.price && r.price[sizeKey])||0;
+  }
+  var empresa = getEmpresaNome();
+  var today   = new Date();
+  var expiry  = new Date(today.getTime() + 7*24*60*60*1000);
+  var fmt = function(d){ return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); };
+  var ings = '';
+  if (r.ingredients && r.ingredients.length) {
+    var names = [];
+    for (var i = 0; i < r.ingredients.length; i++) names.push(r.ingredients[i].name);
+    ings = '\nIngredientes: ' + names.join(', ');
+  }
+  var nutText = '';
+  var n = r.nutrition || {};
+  if (n.calories) nutText = '\nTabela Nutricional (por 100g): ' + n.calories + ' kcal | Carb: ' + (n.carbs||'—') + 'g | Prot: ' + (n.protein||'—') + 'g | Gord: ' + (n.fat||'—') + 'g | Sódio: ' + (n.sodium||'—') + 'mg';
+  var text =
+    empresa + ' 🍮\n' +
+    r.name + ' — ' + sLabel + (yd > 0 ? ' (' + yd + ' un)' : '') +
+    (pr > 0 ? '\nPreço: R$ ' + pr.toFixed(2).replace('.',',') : '') +
+    ings +
+    '\nFabricação: ' + fmt(today) + '  |  Validade: ' + fmt(expiry) + ' (7 dias)' +
+    nutText +
+    '\nProduto artesanal · Feito com amor 💛';
+  if (navigator.share) {
+    navigator.share({ title: empresa + ' — ' + r.name, text: text }).catch(function(){});
+  } else {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      showToast('📋 Etiqueta copiada para a área de transferência!', 2500);
+    } else {
+      generateEtiqueta(recipeId, sizeKey);
+    }
+  }
+}
+
+// ════════════════════════════════
+// WHATSAPP HELPER (encomenda)
+// ════════════════════════════════
+function waEncBtn(e) {
+  var phone = '';
+  var all = clienteGetAll();
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].nome && e.client && all[i].nome.toLowerCase() === e.client.toLowerCase()) {
+      phone = (all[i].contato || '').replace(/\D/g,'');
+      break;
+    }
+  }
+  if (!phone || phone.length < 8) return '';
+  if (phone.length <= 11) phone = '55' + phone;
+  var st = e.status || 'pendente';
+  var stLabel = { pendente:'pendente', pronto:'pronto para retirada', entregue:'entregue' };
+  var msg = 'Olá ' + e.client + '! Seu pedido de ' + e.product + ' está ' + (stLabel[st]||st) + '. 🍮';
+  return '<a href="https://wa.me/' + phone + '?text=' + encodeURIComponent(msg) + '" target="_blank" class="enc-action-btn" style="text-decoration:none">💬 WhatsApp</a>';
+}
+
+// ════════════════════════════════
+// CALCULADORA DE INGREDIENTES
+// ════════════════════════════════
+function openCalcForm(preRecipeId) {
+  var recipes = recipeGetAll();
+  var sel = document.getElementById('calcRecipe');
+  sel.innerHTML = '<option value="">Selecionar receita…</option>';
+  for (var i = 0; i < recipes.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = recipes[i].id;
+    opt.textContent = (recipes[i].icon || '🍮') + ' ' + recipes[i].name;
+    sel.appendChild(opt);
+  }
+  if (preRecipeId) sel.value = preRecipeId;
+  document.getElementById('calcSizeRow').style.display  = 'none';
+  document.getElementById('calcQtyRow').style.display   = 'none';
+  document.getElementById('calcResult').innerHTML        = '';
+  document.getElementById('calcForm').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  calcOnRecipeChange();
+}
+function closeCalcForm() {
+  document.getElementById('calcForm').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function calcOnRecipeChange() {
+  var recipeId = document.getElementById('calcRecipe').value;
+  var sizeRow  = document.getElementById('calcSizeRow');
+  var qtyRow   = document.getElementById('calcQtyRow');
+  var result   = document.getElementById('calcResult');
+  result.innerHTML = '';
+  if (!recipeId) { sizeRow.style.display = 'none'; qtyRow.style.display = 'none'; return; }
+  var r = recipeFindById(recipeId);
+  if (!r) return;
+  var sel = document.getElementById('calcSize');
+  sel.innerHTML = '<option value="">Selecionar tamanho…</option>';
+  var keys = ['g','m','p'];
+  var sz = r.sizes || {};
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    var yld = Number(r.yield && r.yield[k]) || 0;
+    if (yld === 0) continue;
+    var opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = (sz[k] || k.toUpperCase()) + ' — ' + yld + ' un/receita';
+    sel.appendChild(opt);
+  }
+  var xSizes = r.extraSizes || [];
+  for (var xi = 0; xi < xSizes.length; xi++) {
+    var xs = xSizes[xi];
+    if ((Number(xs.yield)||0) === 0) continue;
+    var xopt = document.createElement('option');
+    xopt.value = 'x' + xi;
+    xopt.textContent = xs.label + ' — ' + xs.yield + ' un/receita';
+    sel.appendChild(xopt);
+  }
+  sizeRow.style.display = sel.options.length > 1 ? '' : 'none';
+  qtyRow.style.display  = sel.options.length > 1 ? '' : 'none';
+  if (sel.options.length === 2) { sel.selectedIndex = 1; calcOnSizeChange(); }
+}
+function calcOnSizeChange() {
+  document.getElementById('calcResult').innerHTML = '';
+  calcCompute();
+}
+function calcCompute() {
+  var recipeId = document.getElementById('calcRecipe').value;
+  var sizeKey  = document.getElementById('calcSize').value;
+  var qty      = Math.max(1, Number(document.getElementById('calcQty').value) || 1);
+  var result   = document.getElementById('calcResult');
+  if (!recipeId || !sizeKey) { result.innerHTML = ''; return; }
+  var r = recipeFindById(recipeId);
+  if (!r) return;
+  var yld, sLabel;
+  if (sizeKey.charAt(0) === 'x') {
+    var xIdx = parseInt(sizeKey.substring(1), 10);
+    var xs = (r.extraSizes || [])[xIdx] || {};
+    yld = Number(xs.yield) || 0; sLabel = xs.label || sizeKey;
+  } else {
+    yld = Number(r.yield && r.yield[sizeKey]) || 0;
+    sLabel = (r.sizes && r.sizes[sizeKey]) || sizeKey.toUpperCase();
+  }
+  if (yld === 0) { result.innerHTML = '<p style="color:var(--muted);font-size:13px">Rendimento não definido para este tamanho.</p>'; return; }
+  var batches   = qty / yld;
+  var batchesCeil = Math.ceil(batches);
+  var cost      = (Number(r.cost) || 0) * batches;
+  var allStock  = stockGetAll();
+  var ingRows   = '';
+  var allOk     = true;
+  if (r.ingredients && r.ingredients.length) {
+    for (var i = 0; i < r.ingredients.length; i++) {
+      var ing     = r.ingredients[i];
+      var needed  = (Number(ing.qty) || 0) * batches;
+      var have    = 0;
+      for (var si = 0; si < allStock.length; si++) {
+        if (allStock[si].name.toLowerCase().trim() === (ing.name||'').toLowerCase().trim()) {
+          have = Number(allStock[si].qty) || 0; break;
+        }
+      }
+      var ok  = needed <= have;
+      if (!ok) allOk = false;
+      var nStr = needed === Math.round(needed) ? String(Math.round(needed)) : needed.toFixed(2).replace(/\.?0+$/,'');
+      ingRows += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px">' +
+        '<span style="font-size:16px">' + (ok ? '✅' : '⚠️') + '</span>' +
+        '<span style="flex:1;font-weight:600">' + escHtml(ing.name) + '</span>' +
+        '<span style="color:var(--muted)">' + nStr + ' ' + escHtml(ing.unit) + '</span>' +
+        '<span style="font-size:11px;color:' + (ok ? 'var(--green)' : 'var(--red)') + ';margin-left:4px">' +
+          '(estoque: ' + have + ')' +
+        '</span>' +
+      '</div>';
+    }
+  }
+  var timeMin = (Number(r.prepTime) || 0) * batches;
+  result.innerHTML =
+    '<div class="rf-section">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">' +
+        '<div style="background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">' +
+          '<div style="font-size:22px;font-weight:900;color:var(--accent)">' + batchesCeil + '</div>' +
+          '<div style="font-size:11px;color:var(--muted)">receita(s) necessárias</div>' +
+        '</div>' +
+        '<div style="background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">' +
+          '<div style="font-size:22px;font-weight:900;color:var(--accent)">' + qty + '</div>' +
+          '<div style="font-size:11px;color:var(--muted)">unidades ' + escHtml(sLabel) + '</div>' +
+        '</div>' +
+        (cost > 0 ?
+          '<div style="background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">' +
+            '<div style="font-size:20px;font-weight:900;color:var(--green)">' + formatBRL(cost) + '</div>' +
+            '<div style="font-size:11px;color:var(--muted)">custo estimado</div>' +
+          '</div>' : '') +
+        (timeMin > 0 ?
+          '<div style="background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center">' +
+            '<div style="font-size:20px;font-weight:900;color:var(--gold)">' + Math.ceil(timeMin) + ' min</div>' +
+            '<div style="font-size:11px;color:var(--muted)">tempo estimado</div>' +
+          '</div>' : '') +
+      '</div>' +
+      (ingRows ?
+        '<div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px">' +
+          'Ingredientes necessários ' + (allOk ? '✅' : '⚠️ Estoque insuficiente para alguns itens') + ':' +
+        '</div>' + ingRows : '<p style="color:var(--muted);font-size:13px">Nenhum ingrediente cadastrado nesta receita.</p>') +
+    '</div>';
+}
+
 function renderConfig() {
   var profile  = storeGet(STORE.PROFILE)  || {};
   var settings = storeGet(STORE.SETTINGS) || {};
@@ -6403,6 +6762,7 @@ function renderConfig() {
   document.getElementById('cfgAlertaEstoque').checked     = settings.alertaEstoque     !== false;
   document.getElementById('cfgAlertaAniversario').checked = settings.alertaAniversario !== false;
   document.getElementById('cfgAlertaMeta').checked        = settings.alertaMeta        !== false;
+  document.getElementById('cfgDarkMode').checked          = !!settings.darkMode;
 }
 
 function onSaveConfigEmpresa() {
@@ -6576,6 +6936,7 @@ function showToast(msg, duration) {
 window.addEventListener('offline', function() { showToast('📵 Sem conexão — modo offline ativo', 0); });
 window.addEventListener('online',  function() { showToast('✅ Conexão restaurada', 3000); });
 if (!navigator.onLine) showToast('📵 Sem conexão — modo offline ativo', 0);
+try { applyTheme(); } catch(e) {}
 try { checkAppAlerts(); } catch(e) {}
 </script>
 
