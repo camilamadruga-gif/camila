@@ -1097,7 +1097,7 @@
 
       <h3 class="section-title">⚡ Ações rápidas</h3>
       <div class="quick-grid">
-        <button class="quick-btn" onclick="navigate('vendas')" aria-label="Registrar venda">
+        <button class="quick-btn" onclick="navigate('mais');switchMaisSeg('vendas')" aria-label="Registrar venda">
           <span class="quick-btn__icon">💵</span>
           <span class="quick-btn__label">Registrar Venda</span>
         </button>
@@ -1105,11 +1105,11 @@
           <span class="quick-btn__icon">📦</span>
           <span class="quick-btn__label">Ver Estoque</span>
         </button>
-        <button class="quick-btn" onclick="navigate('mais')" aria-label="Lista de compras">
+        <button class="quick-btn" onclick="navigate('mais');switchMaisSeg('compras')" aria-label="Lista de compras">
           <span class="quick-btn__icon">🛒</span>
           <span class="quick-btn__label">Lista de Compras</span>
         </button>
-        <button class="quick-btn" onclick="navigate('producao')" aria-label="Nova produção">
+        <button class="quick-btn" onclick="navigate('vendas')" aria-label="Nova produção">
           <span class="quick-btn__icon">🍮</span>
           <span class="quick-btn__label">Nova Produção</span>
         </button>
@@ -1131,7 +1131,7 @@
           <div class="empty-state__icon">🌟</div>
           <div class="empty-state__title">Nenhuma venda ainda</div>
           <div class="empty-state__desc">Sua última venda registrada aparecerá aqui.</div>
-          <button class="btn-primary" onclick="navigate('vendas')">Registrar primeira venda</button>
+          <button class="btn-primary" onclick="navigate('mais');switchMaisSeg('vendas')">Registrar primeira venda</button>
         </div>
       </div>
     </section>
