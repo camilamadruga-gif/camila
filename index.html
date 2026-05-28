@@ -1056,8 +1056,8 @@
       <div class="app-header__subtitle">Gestão artesanal</div>
     </div>
     <div class="app-header__actions">
-      <button class="icon-btn" aria-label="Notificações" title="Notificações">🔔</button>
-      <button class="icon-btn" aria-label="Perfil" title="Perfil">👤</button>
+      <button class="icon-btn" aria-label="Notificações" title="Notificações" onclick="openNotificacoes()" type="button">🔔</button>
+      <button class="icon-btn" aria-label="Perfil" title="Perfil" onclick="navigate('mais');switchMaisSeg('config')" type="button">👤</button>
     </div>
   </header>
 
@@ -1353,9 +1353,10 @@
       <div id="segClientes" style="display:none">
         <!-- List view -->
         <div id="clListView">
-          <div class="search-bar" style="margin-bottom:12px">
+          <div class="search-bar" style="margin-bottom:8px">
             <input class="search-input" type="search" id="clSearchInput" placeholder="Buscar cliente…" oninput="clOnSearch()" aria-label="Buscar cliente" />
           </div>
+          <button class="btn-secondary" onclick="openMensagensModal()" type="button" style="width:100%;margin-bottom:12px;justify-content:center;font-size:13px">💬 Mensagens prontas para clientes</button>
           <div id="clList"></div>
           <div class="empty-state" id="clEmpty">
             <div class="empty-state__icon">👥</div>
@@ -1545,13 +1546,13 @@
 <!-- ══════════════════════════════════
      FULL-SCREEN FORM: Cliente
 ══════════════════════════════════ -->
-<div class="recipe-form hidden" id="clFormOverlay" role="dialog" aria-modal="true" aria-label="Cliente">
-  <div class="recipe-form-header">
-    <button class="recipe-form-back" onclick="closeClForm()" type="button" aria-label="Fechar">←</button>
-    <span class="recipe-form-title" id="clFormTitle">Novo Cliente</span>
-    <button class="recipe-form-save" onclick="onSaveCliente()" type="button">Salvar</button>
-  </div>
-  <div class="recipe-form-body">
+<div class="recipe-form" id="clFormOverlay" role="dialog" aria-modal="true" aria-label="Cliente">
+  <header class="recipe-form__header">
+    <button class="rf-cancel-btn" onclick="closeClForm()" type="button">← Cancelar</button>
+    <span class="rf-form-title" id="clFormTitle">Novo Cliente</span>
+    <button class="rf-save-btn" onclick="onSaveCliente()" type="button">Salvar</button>
+  </header>
+  <div class="recipe-form__body">
     <div class="ob-field">
       <label class="ob-label" for="fClNome">Nome *</label>
       <input class="ob-input" type="text" id="fClNome" placeholder="Nome completo" maxlength="80" />
@@ -1668,6 +1669,25 @@
 </div>
 
 <!-- ══════════════════════════════════
+     MODAL: Lista de Mensagens Prontas
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalMensagensProntas" role="dialog" aria-modal="true" aria-label="Mensagens prontas">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalMensagensProntas')"></div>
+  <div class="modal-sheet" style="max-height:80vh">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">💬 Mensagens prontas</span>
+      <button class="modal-close" onclick="closeModal('modalMensagensProntas')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body" id="mensagensProntasBody" style="overflow-y:auto;max-height:55vh"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalMensagensProntas')" type="button">Fechar</button>
+      <button class="btn-primary" onclick="closeModal('modalMensagensProntas');openAddTemplate()" type="button" style="margin-top:0;flex:1;justify-content:center">+ Nova mensagem</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
      MODAL: Meta (Agenda)
 ══════════════════════════════════ -->
 <div class="modal-backdrop" id="modalMeta" role="dialog" aria-modal="true" aria-label="Meta">
@@ -1775,6 +1795,7 @@
         <select class="ob-input" id="fStockCat">
           <option value="ingrediente">🥚 Ingrediente</option>
           <option value="embalagem">📦 Embalagem</option>
+          <option value="pronto">🍮 Pronto</option>
         </select>
       </div>
       <div class="form-row">
@@ -2003,13 +2024,16 @@
             <td><input class="ob-input yp-input" type="number" id="rfPriceP" min="0" step="0.01" placeholder="0,00" /></td>
           </tr>
         </tbody>
+        <tbody id="rfExtraSizesBody"></tbody>
       </table>
+      <button type="button" class="rf-add-ing-btn" onclick="addExtraSizeRow('','','')" style="margin-top:8px">+ Tamanho</button>
     </div>
 
     <!-- Tabela Nutricional ANVISA -->
     <div class="rf-section">
       <div class="rf-section-title">Tabela Nutricional ANVISA</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Valores por porção de 100g</p>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:6px">Valores por porção de 100g</p>
+      <p style="font-size:11px;color:var(--accent);margin-bottom:14px;line-height:1.4">ℹ️ Preenchimento manual — consulte a tabela TACO ou calcule com base nos ingredientes. Obrigatório apenas para rótulos ANVISA.</p>
       <div class="nut-grid">
         <div class="ob-field">
           <label class="ob-label" for="rfCalories">Valor energético</label>
@@ -2291,6 +2315,22 @@
       Registrar Lote
     </button>
     <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: Notificações
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalNotificacoes" role="dialog" aria-modal="true" aria-label="Notificações">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalNotificacoes')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">🔔 Notificações</span>
+      <button class="modal-close" onclick="closeModal('modalNotificacoes')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body" id="notificacoesBody" style="max-height:60vh;overflow-y:auto">
+    </div>
   </div>
 </div>
 
@@ -2999,6 +3039,14 @@ function buildRecipeCardHTML(r) {
     var m = calcMargin(pr, cost, yd);
     if (m !== null && (bestMargin === null || m.margin > bestMargin)) bestMargin = m.margin;
   }
+  var xSizesC = r.extraSizes || [];
+  for (var xci = 0; xci < xSizesC.length; xci++) {
+    var xcpr = Number(xSizesC[xci].price) || 0;
+    var xcyd = Number(xSizesC[xci].yield) || 0;
+    if (xcpr > 0) prices.push(xcpr);
+    var xcm = calcMargin(xcpr, cost, xcyd);
+    if (xcm !== null && (bestMargin === null || xcm.margin > bestMargin)) bestMargin = xcm.margin;
+  }
   var priceText = prices.length === 0 ? 'Preço não definido' :
     (prices.length === 1
       ? 'R$ ' + prices[0].toFixed(2).replace('.', ',')
@@ -3087,6 +3135,25 @@ function renderRecipeDetail() {
         Math.round(mg.margin) + '%<small>margem</small></div>' : '') +
     '</div>';
   }
+  var xSizes = r.extraSizes || [];
+  for (var xsi = 0; xsi < xSizes.length; xsi++) {
+    var xs = xSizes[xsi];
+    var xpr = Number(xs.price) || 0;
+    var xyd = Number(xs.yield) || 0;
+    if (xpr === 0 && xyd === 0) continue;
+    var xmg = calcMargin(xpr, cost, xyd);
+    var xmgColor = xmg ? (xmg.margin >= 50 ? 'var(--green)' : xmg.margin >= 30 ? 'var(--gold)' : 'var(--red)') : 'var(--muted)';
+    sizesHTML += '<div class="size-row">' +
+      '<span class="size-badge" style="background:var(--border);color:var(--text)">' + escHtml(xs.label) + '</span>' +
+      '<div class="size-row__info">' +
+        '<div class="size-row__name">' + escHtml(xs.label) + (xyd > 0 ? ' · ' + xyd + ' un' : '') + '</div>' +
+        (xpr > 0 ? '<div class="size-row__price">' + formatBRL(xpr) + ' / unidade' +
+          (cost > 0 && xyd > 0 ? ' · Custo/un: ' + formatBRL(cost/xyd) : '') + '</div>' : '') +
+      '</div>' +
+      (xmg ? '<div class="size-row__margin" style="color:' + xmgColor + '">' +
+        Math.round(xmg.margin) + '%<small>margem</small></div>' : '') +
+    '</div>';
+  }
 
   // Nutrition table
   var n = r.nutrition || {};
@@ -3121,6 +3188,13 @@ function renderRecipeDetail() {
     if (epr === 0 && eyd === 0) continue;
     etiqBtns += '<button class="btn-secondary" style="padding:6px 12px;font-size:13px" ' +
       'onclick="generateEtiqueta(\'' + id + '\',\'' + esd.key + '\')" type="button">🏷 ' + escHtml(esd.label) + '</button>';
+  }
+  var xSizes2 = r.extraSizes || [];
+  for (var xei2 = 0; xei2 < xSizes2.length; xei2++) {
+    var xs2 = xSizes2[xei2];
+    if ((Number(xs2.price) || 0) === 0 && (Number(xs2.yield) || 0) === 0) continue;
+    etiqBtns += '<button class="btn-secondary" style="padding:6px 12px;font-size:13px" ' +
+      'onclick="generateEtiqueta(\'' + id + '\',\'x' + xei2 + '\')" type="button">🏷 ' + escHtml(xs2.label) + '</button>';
   }
 
   var html =
@@ -3185,6 +3259,7 @@ function openAddRecipe() {
   document.getElementById('rfFat').value       = '';
   document.getElementById('rfSodium').value    = '';
   document.getElementById('recipeFormError').textContent = '';
+  document.getElementById('rfExtraSizesBody').innerHTML = '';
   document.getElementById('formIngredientList').innerHTML =
     '<p class="form-hint">Clique em "+ Ingrediente" para adicionar.</p>';
   document.getElementById('recipeForm').classList.add('open');
@@ -3219,6 +3294,12 @@ function openEditRecipe(id) {
   document.getElementById('rfFat').value      = nut.fat      !== undefined ? nut.fat      : '';
   document.getElementById('rfSodium').value   = nut.sodium   !== undefined ? nut.sodium   : '';
   document.getElementById('recipeFormError').textContent = '';
+  var exBody = document.getElementById('rfExtraSizesBody');
+  exBody.innerHTML = '';
+  var xSizes = r.extraSizes || [];
+  for (var xei = 0; xei < xSizes.length; xei++) {
+    addExtraSizeRow(xSizes[xei].label, xSizes[xei].yield, xSizes[xei].price);
+  }
   populateIngredients(r.ingredients || []);
   document.getElementById('recipeForm').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -3228,6 +3309,20 @@ function openEditRecipe(id) {
 function closeRecipeForm() {
   document.getElementById('recipeForm').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+function addExtraSizeRow(lbl, yld, prc) {
+  var tbody = document.getElementById('rfExtraSizesBody');
+  if (!tbody) return;
+  var tr = document.createElement('tr');
+  tr.innerHTML =
+    '<td><input class="ob-input yp-size-input rf-extra-size" type="text" placeholder="Ex: 400ml" maxlength="12" value="' + escHtml(lbl || '') + '" /></td>' +
+    '<td><input class="ob-input yp-input rf-extra-yield" type="number" min="0" step="0.1" placeholder="0" value="' + (yld || '') + '" /></td>' +
+    '<td style="display:flex;align-items:center;gap:4px">' +
+      '<input class="ob-input yp-input rf-extra-price" type="number" min="0" step="0.01" placeholder="0,00" value="' + (prc || '') + '" style="flex:1" />' +
+      '<button type="button" onclick="this.closest(\'tr\').remove()" style="background:none;border:none;color:var(--red);font-size:18px;cursor:pointer;padding:0 4px;line-height:1" aria-label="Remover tamanho">×</button>' +
+    '</td>';
+  tbody.appendChild(tr);
 }
 
 function addIngredientRow() {
@@ -3329,6 +3424,19 @@ function onSaveRecipe() {
       m: Number(document.getElementById('rfPriceM').value) || 0,
       p: Number(document.getElementById('rfPriceP').value) || 0
     },
+    extraSizes: (function() {
+      var rows = document.querySelectorAll('#rfExtraSizesBody tr');
+      var res = [];
+      for (var xi = 0; xi < rows.length; xi++) {
+        var lblEl = rows[xi].querySelector('.rf-extra-size');
+        var yldEl = rows[xi].querySelector('.rf-extra-yield');
+        var prcEl = rows[xi].querySelector('.rf-extra-price');
+        var lbl = lblEl ? lblEl.value.trim() : '';
+        if (!lbl) continue;
+        res.push({ label: lbl, yield: Number(yldEl ? yldEl.value : 0) || 0, price: Number(prcEl ? prcEl.value : 0) || 0 });
+      }
+      return res;
+    }()),
     nutrition: {
       calories: nutVal('rfCalories'),
       carbs:    nutVal('rfCarbs'),
@@ -4352,6 +4460,18 @@ function onLoteRecipeChange() {
     opt.textContent = label + ' · rend. ' + yld + ' un/receita' + (pr > 0 ? ' · R$ ' + pr.toFixed(2).replace('.', ',') : '');
     sizeSel.appendChild(opt);
   }
+  var xSizesL = r.extraSizes || [];
+  for (var xli = 0; xli < xSizesL.length; xli++) {
+    var xl = xSizesL[xli];
+    var xyl = Number(xl.yield) || 0;
+    if (xyl === 0) continue;
+    hasAny = true;
+    var xpl = Number(xl.price) || 0;
+    var xopt = document.createElement('option');
+    xopt.value = 'x' + xli;
+    xopt.textContent = xl.label + ' · rend. ' + xyl + ' un/receita' + (xpl > 0 ? ' · R$ ' + xpl.toFixed(2).replace('.', ',') : '');
+    sizeSel.appendChild(xopt);
+  }
   if (!hasAny) {
     document.getElementById('loteFormError').textContent = 'Esta receita não tem tamanhos com rendimento definido.';
     sizeRow.style.display   = 'none';
@@ -4393,7 +4513,13 @@ function updateLoteIngCheck() {
     return;
   }
   var qty     = Math.max(1, Number(document.getElementById('loteQty').value) || 1);
-  var yld     = Number(r.yield && r.yield[loteFormSizeKey]) || 0;
+  var yld;
+  if (loteFormSizeKey && loteFormSizeKey.charAt(0) === 'x') {
+    var xIdx = parseInt(loteFormSizeKey.substring(1), 10);
+    yld = Number((r.extraSizes || [])[xIdx] && (r.extraSizes || [])[xIdx].yield) || 0;
+  } else {
+    yld = Number(r.yield && r.yield[loteFormSizeKey]) || 0;
+  }
   var batches = yld > 0 ? qty / yld : 0;
   var allStock = stockGetAll();
   var rows    = '';
@@ -4444,10 +4570,18 @@ function onRegistrarLote() {
   var r = recipeFindById(loteFormRecipeId);
   if (!r) return;
   var qty     = Math.max(1, Number(document.getElementById('loteQty').value) || 1);
-  var yld     = Number(r.yield && r.yield[loteFormSizeKey]) || 0;
+  var yld, sLabel;
+  if (loteFormSizeKey && loteFormSizeKey.charAt(0) === 'x') {
+    var xIdx2 = parseInt(loteFormSizeKey.substring(1), 10);
+    var xs3 = (r.extraSizes || [])[xIdx2] || {};
+    yld    = Number(xs3.yield) || 0;
+    sLabel = xs3.label || loteFormSizeKey;
+  } else {
+    yld    = Number(r.yield && r.yield[loteFormSizeKey]) || 0;
+    var sz = r.sizes || {};
+    sLabel = sz[loteFormSizeKey] || loteFormSizeKey.toUpperCase();
+  }
   var batches = yld > 0 ? qty / yld : 0;
-  var sz      = r.sizes || {};
-  var sLabel  = sz[loteFormSizeKey] || loteFormSizeKey.toUpperCase();
 
   // Deduct ingredients from stock
   var deducted   = [];
@@ -5044,6 +5178,41 @@ function copyTemplate(tplId, clienteId) {
 
 var tplEditingId = null;
 
+function openMensagensModal() {
+  var tpls = templateGetAll();
+  var body = document.getElementById('mensagensProntasBody');
+  if (!tpls.length) {
+    body.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:12px">Nenhuma mensagem cadastrada.<br>Crie modelos para enviar aos clientes.</p>';
+  } else {
+    var html = '';
+    for (var t = 0; t < tpls.length; t++) {
+      var tpl = tpls[t];
+      html += '<div class="tpl-card" style="margin-bottom:8px">' +
+        '<div class="tpl-card-title">' + escHtml(tpl.titulo) + '</div>' +
+        '<div class="tpl-card-text" style="margin-bottom:8px">' + escHtml(tpl.texto) + '</div>' +
+        '<div class="tpl-actions">' +
+        '<button class="btn-secondary" style="padding:6px 10px;font-size:12px" onclick="copyRawTemplate(\'' + tpl.id + '\')" type="button">📋 Copiar</button>' +
+        '<button class="btn-secondary" style="padding:6px 10px;font-size:12px" onclick="closeModal(\'modalMensagensProntas\');openEditTemplate(\'' + tpl.id + '\')" type="button">✏️ Editar</button>' +
+        '</div></div>';
+    }
+    body.innerHTML = html;
+  }
+  openModal('modalMensagensProntas');
+}
+
+function copyRawTemplate(tplId) {
+  var tpls = templateGetAll();
+  for (var i = 0; i < tpls.length; i++) {
+    if (tpls[i].id === tplId) {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(tpls[i].texto);
+      }
+      showToast('✅ Mensagem copiada!', 1800);
+      return;
+    }
+  }
+}
+
 function openAddTemplate() {
   tplEditingId = null;
   document.getElementById('tplModalTitle').textContent = 'Nova Mensagem';
@@ -5104,8 +5273,9 @@ function openAddCliente() {
   document.getElementById('fClChegou').value      = '';
   document.getElementById('fClObs').value         = '';
   document.getElementById('clFormError').textContent = '';
-  document.getElementById('clFormOverlay').classList.remove('hidden');
-  document.getElementById('fClNome').focus();
+  document.getElementById('clFormOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() { document.getElementById('fClNome').focus(); }, 350);
 }
 
 function openEditCliente(id) {
@@ -5121,12 +5291,14 @@ function openEditCliente(id) {
   document.getElementById('fClChegou').value      = cl.comoChegou  || '';
   document.getElementById('fClObs').value         = cl.obs         || '';
   document.getElementById('clFormError').textContent = '';
-  document.getElementById('clFormOverlay').classList.remove('hidden');
-  document.getElementById('fClNome').focus();
+  document.getElementById('clFormOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() { document.getElementById('fClNome').focus(); }, 350);
 }
 
 function closeClForm() {
-  document.getElementById('clFormOverlay').classList.add('hidden');
+  document.getElementById('clFormOverlay').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function onSaveCliente() {
@@ -5304,9 +5476,18 @@ function generateEtiqueta(recipeId, sizeKey) {
   var r = recipeFindById(recipeId);
   if (!r) return;
   var empresa = getEmpresaNome();
-  var sLabel  = (r.sizes && r.sizes[sizeKey]) || sizeKey.toUpperCase();
-  var yd      = Number(r.yield && r.yield[sizeKey]) || 0;
-  var pr      = Number(r.price && r.price[sizeKey]) || 0;
+  var sLabel, yd, pr;
+  if (sizeKey.charAt(0) === 'x') {
+    var xIdx = parseInt(sizeKey.substring(1), 10);
+    var xs = (r.extraSizes || [])[xIdx] || {};
+    sLabel = xs.label || sizeKey;
+    yd     = Number(xs.yield) || 0;
+    pr     = Number(xs.price) || 0;
+  } else {
+    sLabel = (r.sizes && r.sizes[sizeKey]) || sizeKey.toUpperCase();
+    yd     = Number(r.yield && r.yield[sizeKey]) || 0;
+    pr     = Number(r.price && r.price[sizeKey]) || 0;
+  }
   var cost    = Number(r.cost) || 0;
 
   var ingList = '';
@@ -5665,11 +5846,25 @@ function renderMetas() {
 
 // ── Datas Comemorativas ──
 var DEFAULT_DATAS_COM = [
-  { id: 'dc01', nome: 'Dia das Mães',      data: '05-11' },
-  { id: 'dc02', nome: 'Dia dos Namorados', data: '06-12' },
-  { id: 'dc03', nome: 'Dia dos Pais',      data: '08-10' },
-  { id: 'dc04', nome: 'Natal',             data: '12-25' },
-  { id: 'dc05', nome: 'Ano Novo',          data: '01-01' }
+  { id: 'dc01', nome: 'Ano Novo',                     data: '01-01' },
+  { id: 'dc02', nome: 'Carnaval',                     data: '03-03' },
+  { id: 'dc03', nome: 'Terça de Carnaval',            data: '03-04' },
+  { id: 'dc04', nome: 'Páscoa',                       data: '04-20' },
+  { id: 'dc05', nome: 'Tiradentes',                   data: '04-21' },
+  { id: 'dc06', nome: 'Dia do Trabalho',              data: '05-01' },
+  { id: 'dc07', nome: 'Dia das Mães',                 data: '05-11' },
+  { id: 'dc08', nome: 'Corpus Christi',               data: '06-19' },
+  { id: 'dc09', nome: 'Dia dos Namorados',            data: '06-12' },
+  { id: 'dc10', nome: 'Dia dos Pais',                 data: '08-10' },
+  { id: 'dc11', nome: 'Independência do Brasil',      data: '09-07' },
+  { id: 'dc12', nome: 'Nossa Sra. Aparecida',         data: '10-12' },
+  { id: 'dc13', nome: 'Dia das Crianças',             data: '10-12' },
+  { id: 'dc14', nome: 'Finados',                      data: '11-02' },
+  { id: 'dc15', nome: 'Proclamação da República',     data: '11-15' },
+  { id: 'dc16', nome: 'Black Friday',                 data: '11-28' },
+  { id: 'dc17', nome: 'Natal',                        data: '12-25' },
+  { id: 'dc18', nome: 'Véspera de Natal',             data: '12-24' },
+  { id: 'dc19', nome: 'Réveillon',                    data: '12-31' }
 ];
 var datComEditId = null;
 
@@ -5916,6 +6111,25 @@ function relRenderMargens() {
         (mgPct !== null ? '<span style="font-weight:800;color:' + mgColor + ';flex-shrink:0">' + mgPct + '% margem</span>' : '') +
         '</div>';
     }
+    var xSizesR = r.extraSizes || [];
+    for (var xri = 0; xri < xSizesR.length; xri++) {
+      var xr = xSizesR[xri];
+      var xpr2 = Number(xr.price) || 0;
+      var xyd2 = Number(xr.yield) || 0;
+      if (xpr2 === 0 && xyd2 === 0) continue;
+      hasData = true;
+      var xmg2 = calcMargin(xpr2, cost, xyd2);
+      var xmgPct2 = xmg2 ? Math.round(xmg2.margin) : null;
+      var xmgColor2 = xmgPct2 !== null ? (xmgPct2 >= 50 ? 'var(--green)' : xmgPct2 >= 30 ? 'var(--gold)' : 'var(--red)') : 'var(--muted)';
+      rows += '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;border-top:1px solid var(--border)">' +
+        '<span style="background:var(--border);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0">' + escHtml(xr.label) + '</span>' +
+        '<span style="color:var(--muted);flex:1">' +
+        (cost > 0 && xyd2 > 0 ? 'Custo/un: ' + formatBRL(cost / xyd2) + '  ·  ' : '') +
+        'Preço: ' + formatBRL(xpr2) +
+        '</span>' +
+        (xmgPct2 !== null ? '<span style="font-weight:800;color:' + xmgColor2 + ';flex-shrink:0">' + xmgPct2 + '% margem</span>' : '') +
+        '</div>';
+    }
     if (!hasData) continue;
     html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px">' +
       '<div style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:6px">' +
@@ -5993,6 +6207,68 @@ function onSaveConfigAlertas() {
   settings.alertaMeta        = document.getElementById('cfgAlertaMeta').checked;
   storeSet(STORE.SETTINGS, settings);
   showToast('✅ Preferências salvas!', 2500);
+}
+
+function openNotificacoes() {
+  var body = document.getElementById('notificacoesBody');
+  var alerts = collectAlerts();
+  if (!alerts.length) {
+    body.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:16px">Sem alertas no momento. Tudo certo! ✅</p>';
+  } else {
+    var html = '';
+    for (var i = 0; i < alerts.length; i++) {
+      html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;font-size:14px">' + escHtml(alerts[i]) + '</div>';
+    }
+    body.innerHTML = html;
+  }
+  openModal('modalNotificacoes');
+}
+
+function collectAlerts() {
+  var settings = storeGet(STORE.SETTINGS) || {};
+  var result = [];
+  if (settings.alertaAniversario !== false) {
+    var now = new Date();
+    var todayMMDD = ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
+    var clients = clienteGetAll();
+    for (var ci = 0; ci < clients.length; ci++) {
+      var cl = clients[ci];
+      if (cl.aniversario && cl.aniversario.length >= 7 && cl.aniversario.slice(5) === todayMMDD) {
+        result.push('🎂 Aniversário hoje: ' + cl.nome);
+      }
+    }
+  }
+  if (settings.alertaEstoque !== false) {
+    var stock = stockGetAll();
+    var lowItems = [];
+    for (var si = 0; si < stock.length; si++) {
+      var item = stock[si];
+      if (item.category === 'ingrediente' && Number(item.qty) <= Number(item.minQty || 0)) {
+        lowItems.push(item.name);
+      }
+    }
+    if (lowItems.length > 0) result.push('⚠️ Estoque baixo: ' + lowItems.join(', '));
+  }
+  if (settings.alertaMeta !== false) {
+    var goal = Number(settings.goalRevenue) || 0;
+    if (goal > 0) {
+      var now2 = new Date();
+      if (now2.getDate() >= 15) {
+        var allV = vendaGetAll();
+        var rev = 0;
+        for (var vi = 0; vi < allV.length; vi++) {
+          var vd = allV[vi];
+          if (vd.date) {
+            var dd = new Date(vd.date);
+            if (dd.getFullYear() === now2.getFullYear() && dd.getMonth() === now2.getMonth()) rev += Number(vd.total) || 0;
+          }
+        }
+        var pct = Math.round((rev / goal) * 100);
+        if (pct < 50) result.push('🎯 Meta mensal em risco: ' + pct + '% atingido (R$ ' + formatBRL(rev) + ' de R$ ' + formatBRL(goal) + ')');
+      }
+    }
+  }
+  return result;
 }
 
 function checkAppAlerts() {
