@@ -450,9 +450,10 @@
       border-radius: 12px; padding: 12px 14px;
     }
     .size-badge {
-      width: 34px; height: 34px; border-radius: 50%;
+      min-width: 34px; height: 34px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;
+      font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0;
+      padding: 0 8px; white-space: nowrap;
     }
     .size-badge--g { background: var(--accent); }
     .size-badge--m { background: var(--gold); }
@@ -547,14 +548,10 @@
       color: var(--muted); padding: 0 6px 8px;
     }
     .yp-table td { padding: 4px 6px; vertical-align: middle; }
-    .yp-size-badge {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 30px; height: 30px; border-radius: 50%;
-      font-size: 13px; font-weight: 800; color: #fff;
+    .yp-size-input {
+      width: 72px; text-align: center; font-size: 13px; font-weight: 700;
+      padding: 8px 4px !important; border-radius: 8px;
     }
-    .yp-size-badge--g { background: var(--accent); }
-    .yp-size-badge--m { background: var(--gold); }
-    .yp-size-badge--p { background: var(--muted); }
     .yp-input { padding: 10px 8px !important; font-size: 14px !important; }
     .form-hint { font-size: 13px; color: var(--muted); font-style: italic; padding: 4px 0; }
     .nut-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -1341,18 +1338,18 @@
         </thead>
         <tbody>
           <tr>
-            <td><span class="yp-size-badge yp-size-badge--g">G</span></td>
-            <td><input class="ob-input yp-input" type="number" id="rfYieldG" min="0" step="1" placeholder="0" /></td>
+            <td><input class="ob-input yp-size-input" type="text" id="rfSizeG" placeholder="Ex: 200ml" maxlength="12" /></td>
+            <td><input class="ob-input yp-input" type="number" id="rfYieldG" min="0" step="0.1" placeholder="0" /></td>
             <td><input class="ob-input yp-input" type="number" id="rfPriceG" min="0" step="0.01" placeholder="0,00" /></td>
           </tr>
           <tr>
-            <td><span class="yp-size-badge yp-size-badge--m">M</span></td>
-            <td><input class="ob-input yp-input" type="number" id="rfYieldM" min="0" step="1" placeholder="0" /></td>
+            <td><input class="ob-input yp-size-input" type="text" id="rfSizeM" placeholder="Ex: 300ml" maxlength="12" /></td>
+            <td><input class="ob-input yp-input" type="number" id="rfYieldM" min="0" step="0.1" placeholder="0" /></td>
             <td><input class="ob-input yp-input" type="number" id="rfPriceM" min="0" step="0.01" placeholder="0,00" /></td>
           </tr>
           <tr>
-            <td><span class="yp-size-badge yp-size-badge--p">P</span></td>
-            <td><input class="ob-input yp-input" type="number" id="rfYieldP" min="0" step="1" placeholder="0" /></td>
+            <td><input class="ob-input yp-size-input" type="text" id="rfSizeP" placeholder="Ex: 500ml" maxlength="12" /></td>
+            <td><input class="ob-input yp-input" type="number" id="rfYieldP" min="0" step="0.1" placeholder="0" /></td>
             <td><input class="ob-input yp-input" type="number" id="rfPriceP" min="0" step="0.01" placeholder="0,00" /></td>
           </tr>
         </tbody>
@@ -2153,7 +2150,12 @@ function renderRecipeDetail() {
   }
 
   // Sizes + margins
-  var sizesDef = [{key:'g',label:'Grande'},{key:'m',label:'Médio'},{key:'p',label:'Pequeno'}];
+  var rSizes = r.sizes || {};
+  var sizesDef = [
+    {key:'g', label: rSizes.g || 'G'},
+    {key:'m', label: rSizes.m || 'M'},
+    {key:'p', label: rSizes.p || 'P'}
+  ];
   var sizesHTML = '';
   for (var si = 0; si < sizesDef.length; si++) {
     var sd    = sizesDef[si];
@@ -2163,9 +2165,9 @@ function renderRecipeDetail() {
     var mg    = calcMargin(pr, cost, yd);
     var mgColor = mg ? (mg.margin >= 50 ? 'var(--green)' : mg.margin >= 30 ? 'var(--gold)' : 'var(--red)') : 'var(--muted)';
     sizesHTML += '<div class="size-row">' +
-      '<span class="size-badge size-badge--' + sd.key + '">' + sd.label[0] + '</span>' +
+      '<span class="size-badge size-badge--' + sd.key + '">' + escHtml(sd.label) + '</span>' +
       '<div class="size-row__info">' +
-        '<div class="size-row__name">' + sd.label + (yd > 0 ? ' · ' + yd + ' un' : '') + '</div>' +
+        '<div class="size-row__name">' + escHtml(sd.label) + (yd > 0 ? ' · ' + yd + ' un' : '') + '</div>' +
         (pr > 0 ? '<div class="size-row__price">' + formatBRL(pr) + ' / unidade' +
           (cost > 0 && yd > 0 ? ' · Custo/un: ' + formatBRL(cost/yd) : '') + '</div>' : '') +
       '</div>' +
@@ -2235,10 +2237,13 @@ function openAddRecipe() {
   document.getElementById('rfType').value      = 'pudim';
   document.getElementById('rfPrepTime').value  = '';
   document.getElementById('rfCost').value      = '';
+  document.getElementById('rfSizeG').value     = '';
   document.getElementById('rfYieldG').value    = '';
   document.getElementById('rfPriceG').value    = '';
+  document.getElementById('rfSizeM').value     = '';
   document.getElementById('rfYieldM').value    = '';
   document.getElementById('rfPriceM').value    = '';
+  document.getElementById('rfSizeP').value     = '';
   document.getElementById('rfYieldP').value    = '';
   document.getElementById('rfPriceP').value    = '';
   document.getElementById('rfCalories').value  = '';
@@ -2264,10 +2269,14 @@ function openEditRecipe(id) {
   document.getElementById('rfType').value     = r.type      || 'pudim';
   document.getElementById('rfPrepTime').value = r.prepTime  || '';
   document.getElementById('rfCost').value     = r.cost      || '';
+  var rSz = r.sizes || {};
+  document.getElementById('rfSizeG').value    = rSz.g || '';
   document.getElementById('rfYieldG').value   = (r.yield && r.yield.g) ? r.yield.g : '';
   document.getElementById('rfPriceG').value   = (r.price && r.price.g) ? r.price.g : '';
+  document.getElementById('rfSizeM').value    = rSz.m || '';
   document.getElementById('rfYieldM').value   = (r.yield && r.yield.m) ? r.yield.m : '';
   document.getElementById('rfPriceM').value   = (r.price && r.price.m) ? r.price.m : '';
+  document.getElementById('rfSizeP').value    = rSz.p || '';
   document.getElementById('rfYieldP').value   = (r.yield && r.yield.p) ? r.yield.p : '';
   document.getElementById('rfPriceP').value   = (r.price && r.price.p) ? r.price.p : '';
   var nut = r.nutrition || {};
@@ -2372,6 +2381,11 @@ function onSaveRecipe() {
     prepTime:    Number(document.getElementById('rfPrepTime').value) || 0,
     ingredients: collectIngredients(),
     cost:        Number(document.getElementById('rfCost').value)   || 0,
+    sizes: {
+      g: document.getElementById('rfSizeG').value.trim(),
+      m: document.getElementById('rfSizeM').value.trim(),
+      p: document.getElementById('rfSizeP').value.trim()
+    },
     yield: {
       g: Number(document.getElementById('rfYieldG').value) || 0,
       m: Number(document.getElementById('rfYieldM').value) || 0,
