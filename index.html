@@ -558,6 +558,37 @@
     .nut-input-row { display: flex; align-items: center; gap: 6px; }
     .nut-unit { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
 
+    /* ── Produção (Lotes) ── */
+    .lote-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 14px 10px; margin-bottom: 12px; }
+    .lote-card__header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .lote-num { font-size: 12px; font-weight: 800; color: var(--accent); background: rgba(200,132,58,.12); padding: 3px 10px; border-radius: 20px; flex-shrink: 0; }
+    .lote-date { flex: 1; font-size: 12px; color: var(--muted); }
+    .lote-delete-btn { background: none; border: none; cursor: pointer; font-size: 17px; padding: 4px; opacity: .55; line-height: 1; }
+    .lote-delete-btn:hover { opacity: 1; }
+    .lote-card__body { display: flex; align-items: center; gap: 12px; }
+    .lote-icon { font-size: 30px; flex-shrink: 0; }
+    .lote-info { flex: 1; min-width: 0; }
+    .lote-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .lote-meta { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .lote-deducted { font-size: 11px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); line-height: 1.5; }
+    .lote-stock-added { font-size: 11px; color: var(--green); margin-top: 4px; }
+    /* Ingredient stock check */
+    .ing-check-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-top: 4px; }
+    .ing-check-header { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .ing-check-row { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+    .ing-check-row:last-child { border-bottom: none; }
+    .ing-check-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .ing-check-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--text); }
+    .ing-check-qty { font-size: 12px; color: var(--muted); text-align: right; }
+    .ing-check-qty--warn { color: var(--red); font-weight: 700; }
+    /* Checklist */
+    .lote-checklist-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-top: 4px; }
+    .lote-checklist-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+    .lote-check-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .lote-check-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .lote-check-cb { width: 20px; height: 20px; accent-color: var(--green); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+    .lote-check-label { font-size: 13px; color: var(--text); line-height: 1.4; cursor: pointer; }
+
     /* ── Bottom Nav ── */
     .app-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
@@ -1004,13 +1035,14 @@
       <div class="stock-toolbar">
         <div class="stock-search-wrap">
           <span class="stock-search-icon">🔍</span>
-          <input class="stock-search" id="stockSearch" type="search" placeholder="Buscar ingrediente ou embalagem…" autocomplete="off" />
+          <input class="stock-search" id="stockSearch" type="search" placeholder="Buscar ingrediente, embalagem ou pronto…" autocomplete="off" />
         </div>
       </div>
       <div class="cat-tabs" id="catTabs">
         <button class="cat-tab active" data-cat="todos" type="button">Todos</button>
         <button class="cat-tab" data-cat="ingrediente" type="button">🥚 Ingredientes</button>
         <button class="cat-tab" data-cat="embalagem" type="button">📦 Embalagens</button>
+        <button class="cat-tab" data-cat="pronto" type="button">🍮 Prontos</button>
       </div>
       <div class="low-alert-bar" id="lowAlertBar" style="display:none">
         <span>⚠️</span>
@@ -1024,18 +1056,13 @@
       </div>
     </section>
 
-    <!-- ── VENDAS ── -->
-    <section class="section" id="section-vendas" aria-label="Vendas">
-      <div class="page-hero">
-        <div class="page-hero__icon">💰</div>
-        <div class="page-hero__title">Gestão de Vendas</div>
-        <div class="page-hero__desc">Acompanhe pedidos, faturamento e clientes. Tudo organizado para o seu negócio crescer.</div>
-      </div>
-      <div class="empty-state">
-        <div class="empty-state__icon">🛍️</div>
-        <div class="empty-state__title">Nenhuma venda registrada</div>
-        <div class="empty-state__desc">Registre sua primeira venda e acompanhe seu faturamento.</div>
-        <button class="btn-primary">+ Nova venda</button>
+    <!-- ── PRODUÇÃO ── -->
+    <section class="section" id="section-vendas" aria-label="Produção">
+      <div id="producaoList"></div>
+      <div class="empty-state" id="producaoEmpty">
+        <div class="empty-state__icon">⚗️</div>
+        <div class="empty-state__title">Nenhum lote registrado</div>
+        <div class="empty-state__desc">Toque em + para registrar seu primeiro lote de produção e controlar insumos automaticamente.</div>
       </div>
     </section>
 
@@ -1078,10 +1105,10 @@
       <span class="nav-tab__icon">📦</span>
       <span class="nav-tab__label">Estoque</span>
     </button>
-    <button class="nav-tab" id="tab-vendas" onclick="navigate('vendas')" aria-label="Vendas">
+    <button class="nav-tab" id="tab-vendas" onclick="navigate('vendas')" aria-label="Produção">
       <span class="nav-tab__dot"></span>
-      <span class="nav-tab__icon">💰</span>
-      <span class="nav-tab__label">Vendas</span>
+      <span class="nav-tab__icon">⚗️</span>
+      <span class="nav-tab__label">Produção</span>
     </button>
     <button class="nav-tab" id="tab-mais" onclick="navigate('mais')" aria-label="Lista de Compras">
       <span class="nav-tab__dot"></span>
@@ -1094,6 +1121,7 @@
 <!-- FABs -->
 <button class="fab" id="fabStock"  onclick="openAddStock()"  aria-label="Adicionar item ao estoque" type="button" style="display:none">+</button>
 <button class="fab" id="fabRecipe" onclick="openAddRecipe()" aria-label="Nova receita"               type="button" style="display:none">+</button>
+<button class="fab" id="fabLote"   onclick="openNovoLote()"  aria-label="Novo lote de produção"      type="button" style="display:none">+</button>
 
 <!-- Offline toast -->
 <div class="offline-toast" id="offlineToast" role="status" aria-live="polite"></div>
@@ -1404,6 +1432,79 @@
 </div>
 
 <!-- ══════════════════════════════════
+     LOTE FORM (full-screen overlay)
+══════════════════════════════════ -->
+<div class="recipe-form" id="loteForm" role="dialog" aria-modal="true" aria-label="Novo lote de produção">
+  <div class="rf-header">
+    <button class="rf-close" onclick="closeLoteForm()" type="button" aria-label="Fechar">✕</button>
+    <span class="rf-form-title">Novo Lote</span>
+    <div style="width:32px"></div>
+  </div>
+  <div class="rf-body">
+
+    <!-- Receita e Tamanho -->
+    <div class="rf-section">
+      <div class="rf-section-title">Receita e Tamanho</div>
+      <div class="ob-field">
+        <label class="ob-label" for="loteRecipeSelect">Receita</label>
+        <select class="ob-input" id="loteRecipeSelect" onchange="onLoteRecipeChange()">
+          <option value="">Selecione a receita...</option>
+        </select>
+      </div>
+      <div class="ob-field" id="loteSizeRow" style="display:none">
+        <label class="ob-label" for="loteSizeSelect">Tamanho</label>
+        <select class="ob-input" id="loteSizeSelect" onchange="onLoteSizeChange()">
+          <option value="">Selecionar tamanho...</option>
+        </select>
+      </div>
+      <div class="ob-field" id="loteQtyRow" style="display:none">
+        <label class="ob-label" for="loteQty">Quantidade a produzir (unidades)</label>
+        <input class="ob-input" type="number" id="loteQty" min="1" step="1" value="1" oninput="onLoteQtyChange()" />
+      </div>
+    </div>
+
+    <!-- Verificação de Estoque -->
+    <div class="rf-section" id="loteIngCheck" style="display:none">
+      <div class="rf-section-title">Verificação de Estoque</div>
+      <div class="ing-check-wrap" id="loteIngCheckContent"></div>
+    </div>
+
+    <!-- Checklist de Boas Práticas -->
+    <div class="rf-section" id="loteChecklist" style="display:none">
+      <div class="rf-section-title">Checklist de Boas Práticas <span style="font-size:11px;color:var(--red);font-weight:400">*todos obrigatórios</span></div>
+      <div class="lote-checklist-box">
+        <label class="lote-check-item">
+          <input class="lote-check-cb" type="checkbox" id="lc1" onchange="updateLoteChecklistState()" />
+          <span class="lote-check-label" for="lc1">Mãos lavadas e higienizadas</span>
+        </label>
+        <label class="lote-check-item">
+          <input class="lote-check-cb" type="checkbox" id="lc2" onchange="updateLoteChecklistState()" />
+          <span class="lote-check-label" for="lc2">Superfície de trabalho limpa e desinfetada</span>
+        </label>
+        <label class="lote-check-item">
+          <input class="lote-check-cb" type="checkbox" id="lc3" onchange="updateLoteChecklistState()" />
+          <span class="lote-check-label" for="lc3">Ingredientes com validade verificada</span>
+        </label>
+        <label class="lote-check-item">
+          <input class="lote-check-cb" type="checkbox" id="lc4" onchange="updateLoteChecklistState()" />
+          <span class="lote-check-label" for="lc4">Utensílios limpos e em boas condições</span>
+        </label>
+        <label class="lote-check-item">
+          <input class="lote-check-cb" type="checkbox" id="lc5" onchange="updateLoteChecklistState()" />
+          <span class="lote-check-label" for="lc5">EPI em uso (avental, touca, luva se necessário)</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-error" id="loteFormError" style="padding:0 0 8px"></div>
+    <button class="btn-primary" id="loteRegisterBtn" onclick="onRegistrarLote()" type="button" disabled style="width:100%;padding:16px;font-size:16px">
+      Registrar Lote
+    </button>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
      SCRIPT
 ══════════════════════════════════ -->
 <script>
@@ -1414,7 +1515,8 @@ var STORE = {
   SETTINGS:   'cp_settings_v1',
   STOCK:      'cp_stock_v1',
   SHOP_MANUAL:'cp_shop_manual_v1',
-  RECIPES:    'cp_recipes_v1'
+  RECIPES:    'cp_recipes_v1',
+  PRODUCAO:   'cp_producao_v1'
 };
 
 function storeGet(key) {
@@ -1452,9 +1554,11 @@ function navigate(tab) {
   document.getElementById('appContent').scrollTop = 0;
   document.getElementById('fabStock').style.display  = (tab === 'producao') ? 'flex' : 'none';
   document.getElementById('fabRecipe').style.display = (tab === 'receitas' && recipeView === 'list') ? 'flex' : 'none';
+  document.getElementById('fabLote').style.display   = (tab === 'vendas')   ? 'flex' : 'none';
   if (tab === 'inicio')   renderDashboard();
   if (tab === 'receitas') renderRecipes();
   if (tab === 'producao') renderStock();
+  if (tab === 'vendas')   renderProducao();
   if (tab === 'mais')     shopRender();
 }
 
@@ -1508,7 +1612,7 @@ function stockAdd(data) {
     id:       genId(),
     icon:     String(data.icon || '').trim(),
     name:     String(data.name || '').trim(),
-    category: data.category === 'embalagem' ? 'embalagem' : 'ingrediente',
+    category: data.category === 'embalagem' ? 'embalagem' : data.category === 'pronto' ? 'pronto' : 'ingrediente',
     qty:      Math.max(0, Number(data.qty) || 0),
     unit:     String(data.unit || 'un'),
     minQty:   Math.max(0, Number(data.minQty) || 0)
@@ -1522,7 +1626,7 @@ function stockUpdate(id, data) {
     if (items[i].id === id) {
       items[i].icon     = String(data.icon || '').trim();
       items[i].name     = String(data.name || '').trim();
-      items[i].category = data.category === 'embalagem' ? 'embalagem' : 'ingrediente';
+      items[i].category = data.category === 'embalagem' ? 'embalagem' : data.category === 'pronto' ? 'pronto' : 'ingrediente';
       items[i].qty      = Math.max(0, Number(data.qty) || 0);
       items[i].unit     = String(data.unit || 'un');
       items[i].minQty   = Math.max(0, Number(data.minQty) || 0);
@@ -1605,8 +1709,8 @@ function renderStock() {
 
 function buildStockItemHTML(item) {
   var isLow    = Number(item.minQty) > 0 && Number(item.qty) <= Number(item.minQty);
-  var icon     = item.icon || (item.category === 'ingrediente' ? '🥚' : '📦');
-  var catLabel = item.category === 'ingrediente' ? 'Ingrediente' : 'Embalagem';
+  var icon     = item.icon || (item.category === 'ingrediente' ? '🥚' : item.category === 'pronto' ? '🍮' : '📦');
+  var catLabel = item.category === 'ingrediente' ? 'Ingrediente' : item.category === 'pronto' ? 'Pronto' : 'Embalagem';
   var minInfo  = Number(item.minQty) > 0 ? ' · Mín: ' + item.minQty + ' ' + escHtml(item.unit) : '';
   var id       = escHtml(item.id);
 
@@ -2450,6 +2554,339 @@ document.getElementById('recipeSearch').addEventListener('input', function() {
   recipeSearchQ = this.value.trim();
   renderRecipeList();
 });
+
+// ════════════════════════════════
+// PRODUÇÃO (LOTES)
+// ════════════════════════════════
+
+function producaoGetAll()      { return storeGet(STORE.PRODUCAO) || []; }
+function producaoSave(items)   { storeSet(STORE.PRODUCAO, items); }
+
+function producaoNextNumero() {
+  var items = producaoGetAll();
+  var max = 0;
+  for (var i = 0; i < items.length; i++) {
+    var n = parseInt((items[i].numero || '').replace('LP-', ''), 10);
+    if (!isNaN(n) && n > max) max = n;
+  }
+  var next = max + 1;
+  return 'LP-' + (next < 10 ? '00' + next : next < 100 ? '0' + next : '' + next);
+}
+
+function producaoFindById(id) {
+  var items = producaoGetAll();
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === id) return items[i];
+  }
+  return null;
+}
+
+function producaoRemove(id) {
+  producaoSave(producaoGetAll().filter(function(l) { return l.id !== id; }));
+}
+
+function renderProducao() {
+  var items = producaoGetAll();
+  var list  = document.getElementById('producaoList');
+  var empty = document.getElementById('producaoEmpty');
+  if (items.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    var html = '';
+    for (var i = 0; i < items.length; i++) html += buildLoteCardHTML(items[i]);
+    list.innerHTML = html;
+  }
+}
+
+function buildLoteCardHTML(lote) {
+  var date    = lote.date ? new Date(lote.date) : null;
+  var dateStr = date ? date.toLocaleDateString('pt-BR') : '—';
+  var icon    = escHtml(lote.recipeIcon || '🍮');
+  var sLabel  = escHtml(lote.sizeLabel || lote.sizeKey || '—');
+  var id      = escHtml(lote.id);
+  var dedHTML = '';
+  if (lote.ingredientsDeducted && lote.ingredientsDeducted.length > 0) {
+    var parts = [];
+    for (var i = 0; i < lote.ingredientsDeducted.length; i++) {
+      var d = lote.ingredientsDeducted[i];
+      var qty = Number(d.qty);
+      var qtyStr = qty === Math.round(qty) ? String(Math.round(qty)) : qty.toFixed(2).replace(/\.?0+$/, '');
+      parts.push(qtyStr + ' ' + escHtml(d.unit) + ' ' + escHtml(d.name));
+    }
+    dedHTML = '<div class="lote-deducted">⬇️ Descontado do estoque: ' + parts.join(', ') + '</div>';
+  }
+  var addedHTML = '';
+  if (lote.stockAdded) {
+    addedHTML = '<div class="lote-stock-added">⬆️ Adicionado aos prontos: ' + escHtml(lote.stockAdded.qty + ' un de ' + lote.stockAdded.name) + '</div>';
+  }
+  return '<div class="lote-card">' +
+    '<div class="lote-card__header">' +
+      '<span class="lote-num">' + escHtml(lote.numero) + '</span>' +
+      '<span class="lote-date">' + dateStr + '</span>' +
+      '<button class="lote-delete-btn" onclick="openDeleteLote(\'' + id + '\')" type="button" aria-label="Excluir lote">🗑</button>' +
+    '</div>' +
+    '<div class="lote-card__body">' +
+      '<span class="lote-icon">' + icon + '</span>' +
+      '<div class="lote-info">' +
+        '<div class="lote-name">' + escHtml(lote.recipeName || '—') + '</div>' +
+        '<div class="lote-meta">' + sLabel + ' · ' + escHtml(String(lote.qty)) + ' unidades</div>' +
+      '</div>' +
+    '</div>' +
+    dedHTML + addedHTML +
+  '</div>';
+}
+
+// ── Lote form state ──
+var loteFormRecipeId  = null;
+var loteFormSizeKey   = null;
+var loteChecklistOk   = false;
+
+function openNovoLote() {
+  loteFormRecipeId = null;
+  loteFormSizeKey  = null;
+  loteChecklistOk  = false;
+  var recipes = recipeGetAll();
+  var sel = document.getElementById('loteRecipeSelect');
+  sel.innerHTML = '<option value="">Selecione a receita...</option>';
+  if (recipes.length === 0) {
+    var opt = document.createElement('option');
+    opt.disabled = true;
+    opt.textContent = '(Nenhuma receita cadastrada)';
+    sel.appendChild(opt);
+  } else {
+    for (var i = 0; i < recipes.length; i++) {
+      var r = recipes[i];
+      var opt = document.createElement('option');
+      opt.value = r.id;
+      opt.textContent = (r.icon || '🍮') + ' ' + r.name;
+      sel.appendChild(opt);
+    }
+  }
+  document.getElementById('loteSizeRow').style.display    = 'none';
+  document.getElementById('loteQtyRow').style.display     = 'none';
+  document.getElementById('loteIngCheck').style.display   = 'none';
+  document.getElementById('loteChecklist').style.display  = 'none';
+  document.getElementById('loteRegisterBtn').disabled     = true;
+  document.getElementById('loteFormError').textContent    = '';
+  document.getElementById('loteQty').value = '1';
+  var cbs = document.querySelectorAll('.lote-check-cb');
+  for (var ci = 0; ci < cbs.length; ci++) cbs[ci].checked = false;
+  document.getElementById('loteForm').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLoteForm() {
+  document.getElementById('loteForm').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function onLoteRecipeChange() {
+  var recipeId = document.getElementById('loteRecipeSelect').value;
+  var sizeRow  = document.getElementById('loteSizeRow');
+  var qtyRow   = document.getElementById('loteQtyRow');
+  var ingCheck = document.getElementById('loteIngCheck');
+  var checklist = document.getElementById('loteChecklist');
+  if (!recipeId) {
+    sizeRow.style.display   = 'none';
+    qtyRow.style.display    = 'none';
+    ingCheck.style.display  = 'none';
+    checklist.style.display = 'none';
+    document.getElementById('loteRegisterBtn').disabled = true;
+    loteFormRecipeId = null;
+    loteFormSizeKey  = null;
+    return;
+  }
+  var r = recipeFindById(recipeId);
+  if (!r) return;
+  loteFormRecipeId = recipeId;
+  loteFormSizeKey  = null;
+  var sizeSel = document.getElementById('loteSizeSelect');
+  sizeSel.innerHTML = '<option value="">Selecionar tamanho...</option>';
+  var sz   = r.sizes || {};
+  var keys = ['g', 'm', 'p'];
+  var hasAny = false;
+  for (var ki = 0; ki < keys.length; ki++) {
+    var key = keys[ki];
+    var yld = Number(r.yield && r.yield[key]) || 0;
+    if (yld === 0) continue;
+    hasAny = true;
+    var label = sz[key] || key.toUpperCase();
+    var pr    = Number(r.price && r.price[key]) || 0;
+    var opt   = document.createElement('option');
+    opt.value = key;
+    opt.textContent = label + ' · rend. ' + yld + ' un/receita' + (pr > 0 ? ' · R$ ' + pr.toFixed(2).replace('.', ',') : '');
+    sizeSel.appendChild(opt);
+  }
+  if (!hasAny) {
+    document.getElementById('loteFormError').textContent = 'Esta receita não tem tamanhos com rendimento definido.';
+    sizeRow.style.display   = 'none';
+    qtyRow.style.display    = 'none';
+    ingCheck.style.display  = 'none';
+    checklist.style.display = '';
+    return;
+  }
+  document.getElementById('loteFormError').textContent = '';
+  sizeRow.style.display   = '';
+  qtyRow.style.display    = '';
+  checklist.style.display = '';
+  ingCheck.style.display  = 'none';
+  updateLoteRegisterBtn();
+}
+
+function onLoteSizeChange() {
+  loteFormSizeKey = document.getElementById('loteSizeSelect').value || null;
+  updateLoteIngCheck();
+  updateLoteRegisterBtn();
+}
+
+function onLoteQtyChange() {
+  updateLoteIngCheck();
+}
+
+function updateLoteIngCheck() {
+  var ingCheck = document.getElementById('loteIngCheck');
+  var content  = document.getElementById('loteIngCheckContent');
+  if (!loteFormRecipeId || !loteFormSizeKey) {
+    ingCheck.style.display = 'none';
+    return;
+  }
+  var r = recipeFindById(loteFormRecipeId);
+  if (!r) return;
+  if (!r.ingredients || r.ingredients.length === 0) {
+    content.innerHTML = '<p class="form-hint">Esta receita não tem ingredientes cadastrados.</p>';
+    ingCheck.style.display = '';
+    return;
+  }
+  var qty     = Math.max(1, Number(document.getElementById('loteQty').value) || 1);
+  var yld     = Number(r.yield && r.yield[loteFormSizeKey]) || 0;
+  var batches = yld > 0 ? qty / yld : 0;
+  var allStock = stockGetAll();
+  var rows    = '';
+  var allOk   = true;
+  for (var i = 0; i < r.ingredients.length; i++) {
+    var ing     = r.ingredients[i];
+    var needed  = batches > 0 ? (Number(ing.qty) || 0) * batches : 0;
+    var ingLow  = (ing.name || '').toLowerCase().trim();
+    var found   = null;
+    for (var si = 0; si < allStock.length; si++) {
+      if (allStock[si].name.toLowerCase().trim() === ingLow) { found = allStock[si]; break; }
+    }
+    var have    = found ? (Number(found.qty) || 0) : 0;
+    var ok      = needed <= 0 || have >= needed;
+    if (!ok) allOk = false;
+    var neededStr = needed === Math.round(needed) ? String(Math.round(needed)) : needed.toFixed(2).replace(/\.?0+$/, '');
+    rows += '<div class="ing-check-row">' +
+      '<span class="ing-check-icon">' + (ok ? '✅' : '❌') + '</span>' +
+      '<span class="ing-check-name">' + escHtml(ing.name) + '</span>' +
+      '<span class="ing-check-qty' + (ok ? '' : ' ing-check-qty--warn') + '">' +
+        'Precisa ' + neededStr + ' ' + escHtml(ing.unit) +
+        ' · Tem ' + have + ' ' + (found ? escHtml(found.unit) : '—') +
+      '</span>' +
+    '</div>';
+  }
+  var headerColor = allOk ? 'var(--green)' : 'var(--red)';
+  content.innerHTML = '<div class="ing-check-header" style="color:' + headerColor + '">' +
+    (allOk ? '✅ Estoque suficiente' : '⚠️ Estoque insuficiente para alguns itens') + '</div>' + rows;
+  ingCheck.style.display = '';
+}
+
+function updateLoteChecklistState() {
+  var cbs = document.querySelectorAll('.lote-check-cb');
+  loteChecklistOk = true;
+  for (var i = 0; i < cbs.length; i++) {
+    if (!cbs[i].checked) { loteChecklistOk = false; break; }
+  }
+  updateLoteRegisterBtn();
+}
+
+function updateLoteRegisterBtn() {
+  document.getElementById('loteRegisterBtn').disabled =
+    !(loteFormRecipeId && loteFormSizeKey && loteChecklistOk);
+}
+
+function onRegistrarLote() {
+  if (!loteFormRecipeId || !loteFormSizeKey) return;
+  var r = recipeFindById(loteFormRecipeId);
+  if (!r) return;
+  var qty     = Math.max(1, Number(document.getElementById('loteQty').value) || 1);
+  var yld     = Number(r.yield && r.yield[loteFormSizeKey]) || 0;
+  var batches = yld > 0 ? qty / yld : 0;
+  var sz      = r.sizes || {};
+  var sLabel  = sz[loteFormSizeKey] || loteFormSizeKey.toUpperCase();
+
+  // Deduct ingredients from stock
+  var deducted   = [];
+  var allStock   = stockGetAll();
+  if (r.ingredients && r.ingredients.length > 0 && batches > 0) {
+    for (var i = 0; i < r.ingredients.length; i++) {
+      var ing    = r.ingredients[i];
+      var needed = (Number(ing.qty) || 0) * batches;
+      if (needed <= 0) continue;
+      var ingLow = (ing.name || '').toLowerCase().trim();
+      for (var si = 0; si < allStock.length; si++) {
+        if (allStock[si].name.toLowerCase().trim() === ingLow) {
+          stockAdjust(allStock[si].id, -needed);
+          var nRound = Number(needed.toFixed(4));
+          deducted.push({ name: ing.name, qty: nRound, unit: ing.unit });
+          break;
+        }
+      }
+    }
+  }
+
+  // Add to prontos stock
+  var prontoName    = r.name + ' (' + sLabel + ')';
+  var prontoNameLow = prontoName.toLowerCase();
+  var updatedStock  = stockGetAll();
+  var existingPronto = null;
+  for (var pi = 0; pi < updatedStock.length; pi++) {
+    if (updatedStock[pi].category === 'pronto' && updatedStock[pi].name.toLowerCase() === prontoNameLow) {
+      existingPronto = updatedStock[pi];
+      break;
+    }
+  }
+  if (existingPronto) {
+    stockAdjust(existingPronto.id, qty);
+  } else {
+    stockAdd({ icon: r.icon || '🍮', name: prontoName, category: 'pronto', qty: qty, unit: 'un', minQty: 0 });
+  }
+
+  // Save batch
+  var numero = producaoNextNumero();
+  var lotes  = producaoGetAll();
+  lotes.unshift({
+    id:                  genId(),
+    numero:              numero,
+    recipeId:            r.id,
+    recipeName:          r.name,
+    recipeIcon:          r.icon || '🍮',
+    sizeKey:             loteFormSizeKey,
+    sizeLabel:           sLabel,
+    qty:                 qty,
+    date:                new Date().toISOString(),
+    cost:                (Number(r.cost) || 0) * batches,
+    ingredientsDeducted: deducted,
+    stockAdded:          { name: prontoName, qty: qty, unit: 'un' }
+  });
+  producaoSave(lotes);
+
+  closeLoteForm();
+  renderProducao();
+  renderDashboard();
+  renderStock();
+}
+
+function openDeleteLote(id) {
+  var lote = producaoFindById(id);
+  if (!lote) return;
+  openConfirmDelete(lote.numero + ' – ' + lote.recipeName, function() {
+    producaoRemove(id);
+    renderProducao();
+    renderDashboard();
+  });
+}
 
 // ════════════════════════════════
 // DASHBOARD
