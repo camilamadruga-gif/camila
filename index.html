@@ -911,6 +911,25 @@
       .fab         { right: calc(50% - 220px); }
       .onboarding  { max-width: 480px; left: 50%; transform: translateX(-50%); right: auto; }
     }
+    /* Charts (Relatórios) */
+    .chart-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+    .chart-label { width:110px; flex-shrink:0; font-size:12px; color:var(--text); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .chart-track { flex:1; height:16px; background:var(--border); border-radius:8px; overflow:hidden; min-width:0; }
+    .chart-fill  { height:100%; background:var(--accent); border-radius:8px; }
+    .chart-val   { width:72px; text-align:right; flex-shrink:0; font-size:12px; color:var(--muted); }
+    /* Config toggles */
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); }
+    .cfg-toggle { position:relative; display:inline-block; width:44px; height:24px; flex-shrink:0; }
+    .cfg-toggle input { opacity:0; width:0; height:0; }
+    .cfg-slider { position:absolute; inset:0; background:var(--border); border-radius:12px; cursor:pointer; transition:background .2s; }
+    .cfg-slider:before { content:''; position:absolute; width:18px; height:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.25); }
+    .cfg-toggle input:checked + .cfg-slider { background:var(--accent); }
+    .cfg-toggle input:checked + .cfg-slider:before { transform:translateX(20px); }
+    /* Relatórios period */
+    .rel-period { display:flex; gap:8px; margin-bottom:16px; }
+    /* Agenda tarefa row */
+    .tarefa-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+    .tarefa-row:last-child { border-bottom:none; }
   </style>
 </head>
 <body>
@@ -1182,6 +1201,9 @@
         <button class="mais-seg"        data-seg="financeiro"  onclick="switchMaisSeg('financeiro')"  type="button">📊 Financeiro</button>
         <button class="mais-seg"        data-seg="clientes"    onclick="switchMaisSeg('clientes')"    type="button">👥 Clientes</button>
         <button class="mais-seg"        data-seg="fornecedores" onclick="switchMaisSeg('fornecedores')" type="button">🏭 Fornec.</button>
+        <button class="mais-seg"        data-seg="agenda"      onclick="switchMaisSeg('agenda')"      type="button">📅 Agenda</button>
+        <button class="mais-seg"        data-seg="relatorios"  onclick="switchMaisSeg('relatorios')"  type="button">📈 Relatórios</button>
+        <button class="mais-seg"        data-seg="config"      onclick="switchMaisSeg('config')"      type="button">⚙️ Config</button>
       </div>
 
       <!-- VENDAS segment -->
@@ -1352,6 +1374,122 @@
         </div>
       </div>
 
+      <!-- AGENDA segment -->
+      <div id="segAgenda" style="display:none">
+        <!-- Tarefas da Semana -->
+        <div class="fin-section">
+          <div class="fin-section-title">✅ Tarefas da Semana</div>
+          <div id="agendaTarefasList"></div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <input class="ob-input" type="text" id="agendaTarefaInput" placeholder="Nova tarefa…" maxlength="120" style="flex:1"
+              onkeydown="if(event.key==='Enter')addTarefaFromInput()" />
+            <button class="btn-secondary" onclick="addTarefaFromInput()" type="button" style="padding:8px 16px;flex-shrink:0">+ Add</button>
+          </div>
+        </div>
+        <!-- Metas -->
+        <div class="fin-section">
+          <div class="fin-section-title">🎯 Metas</div>
+          <div id="agendaMetasList"></div>
+          <button class="fin-add-btn" onclick="openAddMeta()" type="button">+ Adicionar meta</button>
+        </div>
+        <!-- Datas Comemorativas -->
+        <div class="fin-section">
+          <div class="fin-section-title">🎉 Datas Comemorativas</div>
+          <div id="agendaDatasList"></div>
+          <button class="fin-add-btn" onclick="openAddDataCom()" type="button">+ Adicionar data</button>
+        </div>
+      </div>
+
+      <!-- RELATÓRIOS segment -->
+      <div id="segRelatorios" style="display:none">
+        <div class="rel-period">
+          <select class="ob-input" id="relMonthSel" onchange="relChangePeriod()" style="flex:1"></select>
+          <select class="ob-input" id="relYearSel"  onchange="relChangePeriod()" style="width:90px"></select>
+        </div>
+        <div class="fin-section">
+          <div class="fin-section-title">📦 Faturamento por Produto</div>
+          <div id="relProdutos"></div>
+        </div>
+        <div class="fin-section">
+          <div class="fin-section-title">📡 Faturamento por Canal</div>
+          <div id="relCanais"></div>
+        </div>
+        <div class="fin-section">
+          <div class="fin-section-title">📊 Margem por Receita</div>
+          <div id="relMargens"></div>
+        </div>
+      </div>
+
+      <!-- CONFIGURAÇÕES segment -->
+      <div id="segConfig" style="display:none">
+        <!-- Empresa -->
+        <div class="fin-section">
+          <div class="fin-section-title">🏢 Empresa</div>
+          <div class="ob-field">
+            <label class="ob-label" for="cfgCompanyName">Nome da empresa</label>
+            <input class="ob-input" type="text" id="cfgCompanyName" maxlength="60" placeholder="Ex: CADIM PUDIM" />
+          </div>
+          <div class="ob-field">
+            <label class="ob-label" for="cfgOwnerName">Responsável</label>
+            <input class="ob-input" type="text" id="cfgOwnerName" maxlength="40" placeholder="Seu nome" />
+          </div>
+          <button class="btn-secondary" onclick="onSaveConfigEmpresa()" type="button" style="width:100%">Salvar dados da empresa</button>
+        </div>
+        <!-- Financeiro -->
+        <div class="fin-section">
+          <div class="fin-section-title">💰 Metas Financeiras</div>
+          <div class="form-row">
+            <div class="ob-field" style="flex:1">
+              <label class="ob-label" for="cfgGoalRevenue">Meta mensal (R$)</label>
+              <input class="ob-input" type="number" id="cfgGoalRevenue" min="0" step="100" placeholder="0,00" />
+            </div>
+            <div class="ob-field" style="flex:1">
+              <label class="ob-label" for="cfgProlabore">Pró-labore (R$)</label>
+              <input class="ob-input" type="number" id="cfgProlabore" min="0" step="100" placeholder="0,00" />
+            </div>
+          </div>
+          <button class="btn-secondary" onclick="onSaveConfigFinanceiro()" type="button" style="width:100%">Salvar metas</button>
+        </div>
+        <!-- Taxas -->
+        <div class="fin-section">
+          <div class="fin-section-title">💳 Taxas de Pagamento</div>
+          <div class="taxa-row">
+            <span class="taxa-label">Pix</span>
+            <div class="taxa-input-wrap"><input class="ob-input taxa-input" type="number" id="cfgTaxaPix"     min="0" max="100" step="0.01" /><span class="taxa-unit">%</span></div>
+          </div>
+          <div class="taxa-row">
+            <span class="taxa-label">Débito</span>
+            <div class="taxa-input-wrap"><input class="ob-input taxa-input" type="number" id="cfgTaxaDebito"  min="0" max="100" step="0.01" /><span class="taxa-unit">%</span></div>
+          </div>
+          <div class="taxa-row">
+            <span class="taxa-label">Crédito</span>
+            <div class="taxa-input-wrap"><input class="ob-input taxa-input" type="number" id="cfgTaxaCredito" min="0" max="100" step="0.01" /><span class="taxa-unit">%</span></div>
+          </div>
+          <div class="taxa-row">
+            <span class="taxa-label">iFood</span>
+            <div class="taxa-input-wrap"><input class="ob-input taxa-input" type="number" id="cfgTaxaIfood"   min="0" max="100" step="0.01" /><span class="taxa-unit">%</span></div>
+          </div>
+          <button class="btn-secondary" onclick="onSaveConfigTaxas()" type="button" style="width:100%;margin-top:10px">Salvar taxas</button>
+        </div>
+        <!-- Alertas -->
+        <div class="fin-section">
+          <div class="fin-section-title">🔔 Alertas</div>
+          <div class="toggle-row">
+            <span style="font-size:14px;color:var(--text)">⚠️ Estoque baixo</span>
+            <label class="cfg-toggle"><input type="checkbox" id="cfgAlertaEstoque" onchange="onSaveConfigAlertas()" /><span class="cfg-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span style="font-size:14px;color:var(--text)">🎂 Aniversário de clientes</span>
+            <label class="cfg-toggle"><input type="checkbox" id="cfgAlertaAniversario" onchange="onSaveConfigAlertas()" /><span class="cfg-slider"></span></label>
+          </div>
+          <div class="toggle-row">
+            <span style="font-size:14px;color:var(--text)">🎯 Meta mensal</span>
+            <label class="cfg-toggle"><input type="checkbox" id="cfgAlertaMeta" onchange="onSaveConfigAlertas()" /><span class="cfg-slider"></span></label>
+          </div>
+        </div>
+        <div style="height:16px"></div>
+      </div>
+
     </section>
 
   </main>
@@ -1518,6 +1656,87 @@
     <div class="modal-footer">
       <button class="btn-secondary" onclick="closeModal('modalTemplate')" type="button">Cancelar</button>
       <button class="btn-primary" onclick="onSaveTemplate()" type="button" style="margin-top:0;flex:1;justify-content:center">💬 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: Meta (Agenda)
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalMeta" role="dialog" aria-modal="true" aria-label="Meta">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalMeta')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="metaModalTitle">Nova Meta</span>
+      <button class="modal-close" onclick="closeModal('modalMeta')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label class="ob-label" for="fMetaTitulo">Título *</label>
+        <input class="ob-input" type="text" id="fMetaTitulo" placeholder="Ex: Faturar R$ 3.000 este mês" maxlength="80" />
+      </div>
+      <div class="form-row">
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="fMetaMeta">Meta *</label>
+          <input class="ob-input" type="number" id="fMetaMeta" min="0.01" step="0.01" placeholder="0" />
+        </div>
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="fMetaAtual">Atual</label>
+          <input class="ob-input" type="number" id="fMetaAtual" min="0" step="0.01" placeholder="0" />
+        </div>
+        <div class="ob-field" style="flex:0 0 80px">
+          <label class="ob-label" for="fMetaUnidade">Unidade</label>
+          <input class="ob-input" type="text" id="fMetaUnidade" placeholder="R$" maxlength="10" />
+        </div>
+      </div>
+      <div class="form-error" id="metaFormError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalMeta')" type="button">Cancelar</button>
+      <button class="btn-primary" onclick="onSaveMeta()" type="button" style="margin-top:0;flex:1;justify-content:center">🎯 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: Data Comemorativa (Agenda)
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalDataCom" role="dialog" aria-modal="true" aria-label="Data Comemorativa">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalDataCom')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="datComModalTitle">Nova Data</span>
+      <button class="modal-close" onclick="closeModal('modalDataCom')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label class="ob-label" for="fDatComNome">Nome *</label>
+        <input class="ob-input" type="text" id="fDatComNome" placeholder="Ex: Dia das Mães" maxlength="60" />
+      </div>
+      <div class="form-row">
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="fDatComMes">Mês *</label>
+          <select class="ob-input" id="fDatComMes">
+            <option value="01">Jan</option><option value="02">Fev</option>
+            <option value="03">Mar</option><option value="04">Abr</option>
+            <option value="05">Mai</option><option value="06">Jun</option>
+            <option value="07">Jul</option><option value="08">Ago</option>
+            <option value="09">Set</option><option value="10">Out</option>
+            <option value="11">Nov</option><option value="12">Dez</option>
+          </select>
+        </div>
+        <div class="ob-field" style="flex:0 0 90px">
+          <label class="ob-label" for="fDatComDia">Dia *</label>
+          <input class="ob-input" type="number" id="fDatComDia" min="1" max="31" placeholder="1" />
+        </div>
+      </div>
+      <div class="form-error" id="datComFormError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalDataCom')" type="button">Cancelar</button>
+      <button class="btn-primary" onclick="onSaveDataCom()" type="button" style="margin-top:0;flex:1;justify-content:center">🎉 Salvar</button>
     </div>
   </div>
 </div>
@@ -2088,7 +2307,10 @@ var STORE = {
   TAXAS:         'cp_taxas_v1',
   CLIENTES:      'cp_clientes_v1',
   FORNECEDORES:  'cp_fornecedores_v1',
-  MSG_TEMPLATES: 'cp_msg_templates_v1'
+  MSG_TEMPLATES: 'cp_msg_templates_v1',
+  TAREFAS:       'cp_tarefas_v1',
+  METAS:         'cp_metas_v1',
+  DATAS_COM:     'cp_datas_com_v1'
 };
 
 function storeGet(key) {
@@ -3141,7 +3363,8 @@ function taxasGet() {
     pix:      Number(t.pix      !== undefined ? t.pix      : 0),
     debito:   Number(t.debito   !== undefined ? t.debito   : 1.5),
     credito:  Number(t.credito  !== undefined ? t.credito  : 2.5),
-    dinheiro: Number(t.dinheiro !== undefined ? t.dinheiro : 0)
+    dinheiro: Number(t.dinheiro !== undefined ? t.dinheiro : 0),
+    ifood:    Number(t.ifood    !== undefined ? t.ifood    : 12)
   };
 }
 function taxasSave(data) { storeSet(STORE.TAXAS, data); }
@@ -3491,7 +3714,7 @@ var encEditingId = null;
 
 function switchMaisSeg(seg) {
   maisSeg = seg;
-  var segs = ['vendas', 'encomendas', 'compras', 'financeiro', 'clientes', 'fornecedores'];
+  var segs = ['vendas', 'encomendas', 'compras', 'financeiro', 'clientes', 'fornecedores', 'agenda', 'relatorios', 'config'];
   for (var si = 0; si < segs.length; si++) {
     var s = segs[si];
     var elId = 'seg' + s.charAt(0).toUpperCase() + s.slice(1);
@@ -3510,6 +3733,9 @@ function switchMaisSeg(seg) {
   if (seg === 'financeiro')   renderFinanceiro();
   if (seg === 'clientes')     renderClientes();
   if (seg === 'fornecedores') renderFornecedores();
+  if (seg === 'agenda')       renderAgenda();
+  if (seg === 'relatorios')   renderRelatorios();
+  if (seg === 'config')       renderConfig();
 }
 
 function renderMaisActive() {
@@ -3519,6 +3745,9 @@ function renderMaisActive() {
   if (maisSeg === 'financeiro')   renderFinanceiro();
   if (maisSeg === 'clientes')     renderClientes();
   if (maisSeg === 'fornecedores') renderFornecedores();
+  if (maisSeg === 'agenda')       renderAgenda();
+  if (maisSeg === 'relatorios')   renderRelatorios();
+  if (maisSeg === 'config')       renderConfig();
 }
 
 // ════════════════════════════════
@@ -5007,6 +5236,561 @@ function onSaveForn() {
   renderFornecedores();
 }
 
+// ════════════════════════════════
+// AGENDA & METAS
+// ════════════════════════════════
+function getWeekKey() {
+  var now = new Date();
+  var day = now.getDay();
+  var diff = (day === 0) ? -6 : 1 - day;
+  var mon = new Date(now.getFullYear(), now.getMonth(), now.getDate() + diff);
+  return mon.getFullYear() + '-' +
+    ('0' + (mon.getMonth() + 1)).slice(-2) + '-' +
+    ('0' + mon.getDate()).slice(-2);
+}
+
+// ── Tarefas ──
+function tarefaGetAll()    { return storeGet(STORE.TAREFAS) || []; }
+function tarefaSave(items) { storeSet(STORE.TAREFAS, items); }
+
+function addTarefaFromInput() {
+  var input = document.getElementById('agendaTarefaInput');
+  var texto = input.value.trim();
+  if (!texto) return;
+  var items = tarefaGetAll();
+  items.push({ id: genId(), texto: texto, semana: getWeekKey(), concluida: false });
+  tarefaSave(items);
+  input.value = '';
+  renderTarefas();
+}
+
+function toggleTarefa(id) {
+  var items = tarefaGetAll();
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === id) { items[i].concluida = !items[i].concluida; break; }
+  }
+  tarefaSave(items);
+  renderTarefas();
+}
+
+function deleteTarefa(id) {
+  var items = tarefaGetAll();
+  var next = [];
+  for (var i = 0; i < items.length; i++) { if (items[i].id !== id) next.push(items[i]); }
+  tarefaSave(next);
+  renderTarefas();
+}
+
+function renderTarefas() {
+  var week = getWeekKey();
+  var all = tarefaGetAll();
+  var current = [];
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].semana === week) current.push(all[i]);
+  }
+  var el = document.getElementById('agendaTarefasList');
+  if (!current.length) {
+    el.innerHTML = '<p class="form-hint" style="margin-bottom:8px">Nenhuma tarefa para esta semana. Adicione abaixo!</p>';
+    return;
+  }
+  var html = '';
+  for (var j = 0; j < current.length; j++) {
+    var t = current[j];
+    var doneStyle = t.concluida ? 'text-decoration:line-through;color:var(--muted)' : 'color:var(--text)';
+    html += '<div class="tarefa-row">' +
+      '<input type="checkbox" ' + (t.concluida ? 'checked' : '') +
+      ' onchange="toggleTarefa(\'' + t.id + '\')" style="width:18px;height:18px;accent-color:var(--accent);flex-shrink:0;cursor:pointer" />' +
+      '<span style="flex:1;font-size:14px;' + doneStyle + '">' + escHtml(t.texto) + '</span>' +
+      '<button onclick="deleteTarefa(\'' + t.id + '\')" type="button" ' +
+      'style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:4px;line-height:1" aria-label="Excluir">×</button>' +
+      '</div>';
+  }
+  el.innerHTML = html;
+}
+
+// ── Metas ──
+var metaEditingId = null;
+
+function metaGetAll()    { return storeGet(STORE.METAS) || []; }
+function metaSave(items) { storeSet(STORE.METAS, items); }
+
+function metaDelete(id) {
+  var items = metaGetAll();
+  var next = [];
+  for (var i = 0; i < items.length; i++) { if (items[i].id !== id) next.push(items[i]); }
+  metaSave(next);
+  renderMetas();
+}
+
+function openAddMeta() {
+  metaEditingId = null;
+  document.getElementById('metaModalTitle').textContent = 'Nova Meta';
+  document.getElementById('fMetaTitulo').value  = '';
+  document.getElementById('fMetaMeta').value    = '';
+  document.getElementById('fMetaAtual').value   = '';
+  document.getElementById('fMetaUnidade').value = '';
+  document.getElementById('metaFormError').textContent = '';
+  openModal('modalMeta');
+}
+
+function openEditMeta(id) {
+  var items = metaGetAll();
+  var m = null;
+  for (var i = 0; i < items.length; i++) { if (items[i].id === id) { m = items[i]; break; } }
+  if (!m) return;
+  metaEditingId = id;
+  document.getElementById('metaModalTitle').textContent = 'Editar Meta';
+  document.getElementById('fMetaTitulo').value  = m.titulo   || '';
+  document.getElementById('fMetaMeta').value    = m.meta     || '';
+  document.getElementById('fMetaAtual').value   = m.atual    || '';
+  document.getElementById('fMetaUnidade').value = m.unidade  || '';
+  document.getElementById('metaFormError').textContent = '';
+  openModal('modalMeta');
+}
+
+function onSaveMeta() {
+  var titulo  = document.getElementById('fMetaTitulo').value.trim();
+  var meta    = Number(document.getElementById('fMetaMeta').value)  || 0;
+  var atual   = Number(document.getElementById('fMetaAtual').value) || 0;
+  var unidade = document.getElementById('fMetaUnidade').value.trim();
+  if (!titulo) { document.getElementById('metaFormError').textContent = 'Título obrigatório.'; return; }
+  if (meta <= 0) { document.getElementById('metaFormError').textContent = 'Meta deve ser maior que zero.'; return; }
+  var items = metaGetAll();
+  if (metaEditingId) {
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].id === metaEditingId) {
+        items[i].titulo = titulo; items[i].meta = meta; items[i].atual = atual; items[i].unidade = unidade; break;
+      }
+    }
+  } else {
+    items.push({ id: genId(), titulo: titulo, meta: meta, atual: atual, unidade: unidade });
+  }
+  metaSave(items);
+  closeModal('modalMeta');
+  renderMetas();
+}
+
+function renderMetas() {
+  var items = metaGetAll();
+  var el = document.getElementById('agendaMetasList');
+  if (!items.length) {
+    el.innerHTML = '<p class="form-hint" style="margin-bottom:8px">Nenhuma meta cadastrada ainda.</p>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var m = items[i];
+    var pct = m.meta > 0 ? Math.min(100, Math.round((Number(m.atual) / Number(m.meta)) * 100)) : 0;
+    var barColor = pct >= 100 ? 'var(--green)' : pct >= 50 ? 'var(--accent)' : 'var(--gold)';
+    var unit = m.unidade ? ' ' + escHtml(m.unidade) : '';
+    html += '<div style="background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+      '<span style="font-weight:700;font-size:14px;color:var(--text)">' + escHtml(m.titulo) + '</span>' +
+      '<span style="font-size:12px;color:var(--muted)">' + m.atual + unit + ' / ' + m.meta + unit + '</span>' +
+      '</div>' +
+      '<div style="background:var(--border);border-radius:10px;height:14px;overflow:hidden;margin-bottom:8px">' +
+      '<div style="height:100%;background:' + barColor + ';border-radius:10px;width:' + pct + '%"></div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between">' +
+      '<span style="font-size:12px;font-weight:800;color:' + barColor + '">' + pct + '% concluído</span>' +
+      '<div style="display:flex;gap:6px">' +
+      '<button class="btn-secondary" style="padding:5px 10px;font-size:12px" onclick="openEditMeta(\'' + m.id + '\')" type="button">✏️ Editar</button>' +
+      '<button class="btn-secondary" style="padding:5px 10px;font-size:12px;color:var(--red)" ' +
+      'onclick="openConfirmDelete(\'' + escHtml(m.titulo) + '\',function(){metaDelete(\'' + m.id + '\');})" type="button">🗑</button>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
+  }
+  el.innerHTML = html;
+}
+
+// ── Datas Comemorativas ──
+var DEFAULT_DATAS_COM = [
+  { id: 'dc01', nome: 'Dia das Mães',      data: '05-11' },
+  { id: 'dc02', nome: 'Dia dos Namorados', data: '06-12' },
+  { id: 'dc03', nome: 'Dia dos Pais',      data: '08-10' },
+  { id: 'dc04', nome: 'Natal',             data: '12-25' },
+  { id: 'dc05', nome: 'Ano Novo',          data: '01-01' }
+];
+var datComEditId = null;
+
+function dataComGetAll() {
+  var saved = storeGet(STORE.DATAS_COM);
+  if (saved && saved.length) return saved;
+  return DEFAULT_DATAS_COM.slice();
+}
+function dataComSave(items) { storeSet(STORE.DATAS_COM, items); }
+
+function openAddDataCom() {
+  datComEditId = null;
+  document.getElementById('datComModalTitle').textContent = 'Nova Data';
+  document.getElementById('fDatComNome').value = '';
+  document.getElementById('fDatComMes').value  = '01';
+  document.getElementById('fDatComDia').value  = '';
+  document.getElementById('datComFormError').textContent = '';
+  openModal('modalDataCom');
+}
+
+function openEditDataCom(id) {
+  var items = dataComGetAll();
+  var d = null;
+  for (var i = 0; i < items.length; i++) { if (items[i].id === id) { d = items[i]; break; } }
+  if (!d) return;
+  datComEditId = id;
+  var parts = (d.data || '01-01').split('-');
+  document.getElementById('datComModalTitle').textContent = 'Editar Data';
+  document.getElementById('fDatComNome').value = d.nome || '';
+  document.getElementById('fDatComMes').value  = parts[0] || '01';
+  document.getElementById('fDatComDia').value  = parseInt(parts[1] || '1', 10);
+  document.getElementById('datComFormError').textContent = '';
+  openModal('modalDataCom');
+}
+
+function onSaveDataCom() {
+  var nome = document.getElementById('fDatComNome').value.trim();
+  var mes  = document.getElementById('fDatComMes').value;
+  var dia  = parseInt(document.getElementById('fDatComDia').value, 10);
+  if (!nome) { document.getElementById('datComFormError').textContent = 'Nome obrigatório.'; return; }
+  if (!dia || dia < 1 || dia > 31) { document.getElementById('datComFormError').textContent = 'Dia inválido (1–31).'; return; }
+  var dataStr = mes + '-' + ('0' + dia).slice(-2);
+  var items = dataComGetAll();
+  if (datComEditId) {
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].id === datComEditId) { items[i].nome = nome; items[i].data = dataStr; break; }
+    }
+  } else {
+    items.push({ id: genId(), nome: nome, data: dataStr });
+  }
+  dataComSave(items);
+  closeModal('modalDataCom');
+  renderDatasCom();
+}
+
+function deleteDataCom(id) {
+  var items = dataComGetAll();
+  var next = [];
+  for (var i = 0; i < items.length; i++) { if (items[i].id !== id) next.push(items[i]); }
+  dataComSave(next);
+  renderDatasCom();
+}
+
+var MONTHS_ABBR = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+var MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function renderDatasCom() {
+  var items = dataComGetAll().slice();
+  items.sort(function(a, b) { return a.data > b.data ? 1 : -1; });
+  var el = document.getElementById('agendaDatasList');
+  var now = new Date();
+  var todayMMDD = ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var d = items[i];
+    var parts = (d.data || '').split('-');
+    var display = parts.length >= 2 ? parts[1] + '/' + parts[0] : d.data;
+    var isToday = d.data === todayMMDD;
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border)">' +
+      '<span style="flex:1;font-size:14px;color:var(--text);font-weight:' + (isToday ? '800' : '500') + '">' +
+      (isToday ? '🎉 ' : '') + escHtml(d.nome) + '</span>' +
+      '<span style="font-size:13px;color:var(--muted);min-width:42px;text-align:right">' + escHtml(display) + '</span>' +
+      '<button class="btn-secondary" style="padding:5px 8px;font-size:12px" onclick="openEditDataCom(\'' + d.id + '\')" type="button">✏️</button>' +
+      '<button class="btn-secondary" style="padding:5px 8px;font-size:12px;color:var(--red)" ' +
+      'onclick="openConfirmDelete(\'' + escHtml(d.nome) + '\',function(){deleteDataCom(\'' + d.id + '\');})" type="button">🗑</button>' +
+      '</div>';
+  }
+  el.innerHTML = html || '<p class="form-hint">Nenhuma data cadastrada.</p>';
+}
+
+function renderAgenda() {
+  renderTarefas();
+  renderMetas();
+  renderDatasCom();
+}
+
+// ════════════════════════════════
+// RELATÓRIOS
+// ════════════════════════════════
+var relMonthNum = new Date().getMonth();
+var relYearNum  = new Date().getFullYear();
+
+function relBuildSelects() {
+  var mSel = document.getElementById('relMonthSel');
+  var ySel = document.getElementById('relYearSel');
+  if (!mSel || !ySel) return;
+  if (!mSel.options.length) {
+    for (var mi = 0; mi < 12; mi++) {
+      var mo = document.createElement('option');
+      mo.value = mi;
+      mo.textContent = MONTHS_FULL[mi];
+      if (mi === relMonthNum) mo.selected = true;
+      mSel.appendChild(mo);
+    }
+  }
+  if (!ySel.options.length) {
+    var curY = new Date().getFullYear();
+    for (var yi = curY - 2; yi <= curY; yi++) {
+      var yo = document.createElement('option');
+      yo.value = yi;
+      yo.textContent = yi;
+      if (yi === relYearNum) yo.selected = true;
+      ySel.appendChild(yo);
+    }
+  }
+}
+
+function relChangePeriod() {
+  var mSel = document.getElementById('relMonthSel');
+  var ySel = document.getElementById('relYearSel');
+  if (mSel) relMonthNum = parseInt(mSel.value, 10);
+  if (ySel) relYearNum  = parseInt(ySel.value, 10);
+  relRenderAll();
+}
+
+function relGetFilteredVendas() {
+  var all = vendaGetAll();
+  var result = [];
+  for (var i = 0; i < all.length; i++) {
+    var v = all[i];
+    if (v.date) {
+      var d = new Date(v.date);
+      if (d.getFullYear() === relYearNum && d.getMonth() === relMonthNum) result.push(v);
+    }
+  }
+  return result;
+}
+
+function relRenderProdutos() {
+  var vendas = relGetFilteredVendas();
+  var map = {};
+  for (var i = 0; i < vendas.length; i++) {
+    var v = vendas[i];
+    var key = (v.product || 'Outros').substring(0, 30);
+    if (!map[key]) map[key] = 0;
+    map[key] += Number(v.total) || 0;
+  }
+  var entries = [];
+  for (var k in map) {
+    if (Object.prototype.hasOwnProperty.call(map, k)) entries.push({ name: k, val: map[k] });
+  }
+  entries.sort(function(a, b) { return b.val - a.val; });
+  var el = document.getElementById('relProdutos');
+  if (!entries.length) { el.innerHTML = '<p class="form-hint">Sem vendas no período selecionado.</p>'; return; }
+  var max = entries[0].val || 1;
+  var html = '';
+  var limit = entries.length > 10 ? 10 : entries.length;
+  for (var j = 0; j < limit; j++) {
+    var e = entries[j];
+    var pct = Math.round((e.val / max) * 100);
+    html += '<div class="chart-row">' +
+      '<div class="chart-label" title="' + escHtml(e.name) + '">' + escHtml(e.name) + '</div>' +
+      '<div class="chart-track"><div class="chart-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="chart-val">' + formatBRL(e.val) + '</div>' +
+      '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function relRenderCanais() {
+  var vendas = relGetFilteredVendas();
+  var map = {};
+  for (var i = 0; i < vendas.length; i++) {
+    var v = vendas[i];
+    var key = v.channel || 'outro';
+    if (!map[key]) map[key] = 0;
+    map[key] += Number(v.total) || 0;
+  }
+  var entries = [];
+  for (var k in map) {
+    if (Object.prototype.hasOwnProperty.call(map, k)) {
+      entries.push({ name: CANAL_LABEL[k] || k, val: map[k] });
+    }
+  }
+  entries.sort(function(a, b) { return b.val - a.val; });
+  var el = document.getElementById('relCanais');
+  if (!entries.length) { el.innerHTML = '<p class="form-hint">Sem vendas no período selecionado.</p>'; return; }
+  var max = entries[0].val || 1;
+  var html = '';
+  for (var j = 0; j < entries.length; j++) {
+    var e = entries[j];
+    var pct = Math.round((e.val / max) * 100);
+    html += '<div class="chart-row">' +
+      '<div class="chart-label">' + escHtml(e.name) + '</div>' +
+      '<div class="chart-track"><div class="chart-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="chart-val">' + formatBRL(e.val) + '</div>' +
+      '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function relRenderMargens() {
+  var recipes = recipeGetAll();
+  var el = document.getElementById('relMargens');
+  if (!recipes.length) { el.innerHTML = '<p class="form-hint">Nenhuma receita cadastrada.</p>'; return; }
+  var sizesDef = [
+    { key: 'g', fallback: 'G' },
+    { key: 'm', fallback: 'M' },
+    { key: 'p', fallback: 'P' }
+  ];
+  var html = '';
+  for (var i = 0; i < recipes.length; i++) {
+    var r = recipes[i];
+    var cost = Number(r.cost) || 0;
+    var rows = '';
+    var hasData = false;
+    for (var si = 0; si < sizesDef.length; si++) {
+      var sd  = sizesDef[si];
+      var lbl = (r.sizes && r.sizes[sd.key]) || sd.fallback;
+      var pr  = Number(r.price && r.price[sd.key]) || 0;
+      var yd  = Number(r.yield && r.yield[sd.key]) || 0;
+      if (pr === 0 && yd === 0) continue;
+      hasData = true;
+      var mg = calcMargin(pr, cost, yd);
+      var mgPct = mg ? Math.round(mg.margin) : null;
+      var mgColor = mgPct !== null ? (mgPct >= 50 ? 'var(--green)' : mgPct >= 30 ? 'var(--gold)' : 'var(--red)') : 'var(--muted)';
+      rows += '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;border-top:1px solid var(--border)">' +
+        '<span style="background:var(--border);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0">' + escHtml(lbl) + '</span>' +
+        '<span style="color:var(--muted);flex:1">' +
+        (cost > 0 && yd > 0 ? 'Custo/un: ' + formatBRL(cost / yd) + '  ·  ' : '') +
+        'Preço: ' + formatBRL(pr) +
+        '</span>' +
+        (mgPct !== null ? '<span style="font-weight:800;color:' + mgColor + ';flex-shrink:0">' + mgPct + '% margem</span>' : '') +
+        '</div>';
+    }
+    if (!hasData) continue;
+    html += '<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px">' +
+      '<div style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:6px">' +
+      escHtml(r.icon || '🍮') + ' ' + escHtml(r.name) +
+      '</div>' + rows + '</div>';
+  }
+  el.innerHTML = html || '<p class="form-hint">Nenhuma receita com preços configurados.</p>';
+}
+
+function relRenderAll() {
+  relRenderProdutos();
+  relRenderCanais();
+  relRenderMargens();
+}
+
+function renderRelatorios() {
+  relBuildSelects();
+  relRenderAll();
+}
+
+// ════════════════════════════════
+// CONFIGURAÇÕES
+// ════════════════════════════════
+function renderConfig() {
+  var profile  = storeGet(STORE.PROFILE)  || {};
+  var settings = storeGet(STORE.SETTINGS) || {};
+  var taxas    = taxasGet();
+  document.getElementById('cfgCompanyName').value    = profile.companyName  || '';
+  document.getElementById('cfgOwnerName').value      = profile.ownerName    || '';
+  document.getElementById('cfgGoalRevenue').value    = settings.goalRevenue || '';
+  document.getElementById('cfgProlabore').value      = settings.prolabore   || '';
+  document.getElementById('cfgTaxaPix').value        = taxas.pix;
+  document.getElementById('cfgTaxaDebito').value     = taxas.debito;
+  document.getElementById('cfgTaxaCredito').value    = taxas.credito;
+  document.getElementById('cfgTaxaIfood').value      = taxas.ifood;
+  document.getElementById('cfgAlertaEstoque').checked     = settings.alertaEstoque     !== false;
+  document.getElementById('cfgAlertaAniversario').checked = settings.alertaAniversario !== false;
+  document.getElementById('cfgAlertaMeta').checked        = settings.alertaMeta        !== false;
+}
+
+function onSaveConfigEmpresa() {
+  var profile = storeGet(STORE.PROFILE) || {};
+  profile.companyName = document.getElementById('cfgCompanyName').value.trim();
+  profile.ownerName   = document.getElementById('cfgOwnerName').value.trim();
+  storeSet(STORE.PROFILE, profile);
+  renderDashboard();
+  showToast('✅ Dados da empresa salvos!', 2500);
+}
+
+function onSaveConfigFinanceiro() {
+  var settings = storeGet(STORE.SETTINGS) || {};
+  settings.goalRevenue = Number(document.getElementById('cfgGoalRevenue').value) || 0;
+  settings.prolabore   = Number(document.getElementById('cfgProlabore').value)   || 0;
+  storeSet(STORE.SETTINGS, settings);
+  renderDashboard();
+  showToast('✅ Metas financeiras salvas!', 2500);
+}
+
+function onSaveConfigTaxas() {
+  var existing = taxasGet();
+  taxasSave({
+    pix:      Number(document.getElementById('cfgTaxaPix').value)     || 0,
+    debito:   Number(document.getElementById('cfgTaxaDebito').value)  || 0,
+    credito:  Number(document.getElementById('cfgTaxaCredito').value) || 0,
+    dinheiro: existing.dinheiro,
+    ifood:    Number(document.getElementById('cfgTaxaIfood').value)   || 0
+  });
+  showToast('✅ Taxas salvas!', 2500);
+}
+
+function onSaveConfigAlertas() {
+  var settings = storeGet(STORE.SETTINGS) || {};
+  settings.alertaEstoque     = document.getElementById('cfgAlertaEstoque').checked;
+  settings.alertaAniversario = document.getElementById('cfgAlertaAniversario').checked;
+  settings.alertaMeta        = document.getElementById('cfgAlertaMeta').checked;
+  storeSet(STORE.SETTINGS, settings);
+  showToast('✅ Preferências salvas!', 2500);
+}
+
+function checkAppAlerts() {
+  var settings = storeGet(STORE.SETTINGS) || {};
+  var alerts = [];
+
+  if (settings.alertaAniversario !== false) {
+    var now = new Date();
+    var todayMMDD = ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
+    var clients = clienteGetAll();
+    for (var ci = 0; ci < clients.length; ci++) {
+      var cl = clients[ci];
+      if (cl.aniversario && cl.aniversario.length >= 7 && cl.aniversario.slice(5) === todayMMDD) {
+        alerts.push({ msg: '🎂 Aniversário hoje: ' + cl.nome, dur: 5000 });
+        break;
+      }
+    }
+  }
+
+  if (settings.alertaEstoque !== false) {
+    var stock = stockGetAll();
+    var lowCount = 0;
+    for (var si = 0; si < stock.length; si++) {
+      var item = stock[si];
+      if (item.type === 'ingrediente' && Number(item.qty) <= Number(item.minQty || 0)) lowCount++;
+    }
+    if (lowCount > 0) alerts.push({ msg: '⚠️ ' + lowCount + ' ingrediente(s) com estoque baixo!', dur: 4000 });
+  }
+
+  if (settings.alertaMeta !== false) {
+    var goal = Number(settings.goalRevenue) || 0;
+    if (goal > 0) {
+      var now2 = new Date();
+      if (now2.getDate() >= 15) {
+        var allV = vendaGetAll();
+        var rev = 0;
+        for (var vi = 0; vi < allV.length; vi++) {
+          var vd = allV[vi];
+          if (vd.date) {
+            var dd = new Date(vd.date);
+            if (dd.getFullYear() === now2.getFullYear() && dd.getMonth() === now2.getMonth()) {
+              rev += Number(vd.total) || 0;
+            }
+          }
+        }
+        var pct = Math.round((rev / goal) * 100);
+        if (pct < 50) alerts.push({ msg: '🎯 Meta em risco: ' + pct + '% atingido no mês', dur: 4000 });
+      }
+    }
+  }
+
+  for (var ai = 0; ai < alerts.length; ai++) {
+    (function(delay, a) {
+      setTimeout(function() { showToast(a.msg, a.dur); }, delay * 2200 + 800);
+    })(ai, alerts[ai]);
+  }
+}
+
 // ── Offline toast ──
 var toastEl = document.getElementById('offlineToast');
 var toastTimer = null;
@@ -5021,6 +5805,7 @@ function showToast(msg, duration) {
 window.addEventListener('offline', function() { showToast('📵 Sem conexão — modo offline ativo', 0); });
 window.addEventListener('online',  function() { showToast('✅ Conexão restaurada', 3000); });
 if (!navigator.onLine) showToast('📵 Sem conexão — modo offline ativo', 0);
+try { checkAppAlerts(); } catch(e) {}
 </script>
 
 </body>
