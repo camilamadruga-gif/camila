@@ -391,6 +391,176 @@
     }
     .shop-add-btn:hover { background: rgba(200,132,58,0.07); }
 
+    /* ── RECIPE MODULE ── */
+    .recipe-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 80px; }
+    .recipe-card {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px; cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .recipe-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .recipe-card:active { transform: translateY(0); }
+    .recipe-card__icon { font-size: 28px; flex-shrink: 0; width: 36px; text-align: center; }
+    .recipe-card__info { flex: 1; min-width: 0; }
+    .recipe-card__name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .recipe-card__meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .recipe-card__price { font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 4px; }
+    .recipe-margin { font-size: 13px; font-weight: 700; flex-shrink: 0; text-align: right; }
+    .recipe-margin small { display: block; font-size: 10px; font-weight: 600; opacity: 0.7; }
+    .recipe-type-badge {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      background: rgba(200,132,58,0.1); color: var(--accent);
+      padding: 2px 8px; border-radius: 10px;
+    }
+    .detail-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; padding-top: 4px;
+    }
+    .detail-back-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 700; color: var(--accent);
+      padding: 8px 0; display: flex; align-items: center; gap: 6px;
+    }
+    .detail-header-actions { display: flex; gap: 4px; }
+    .detail-hero {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--gold) 100%);
+      border-radius: 20px; padding: 24px 20px; color: #fff;
+      margin-bottom: 24px; display: flex; align-items: flex-start; gap: 16px;
+    }
+    .detail-hero__icon { font-size: 52px; flex-shrink: 0; }
+    .detail-hero__info { flex: 1; min-width: 0; }
+    .detail-hero__name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; font-weight: 700; margin-bottom: 8px;
+    }
+    .detail-hero__meta { font-size: 13px; opacity: 0.9; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .ing-detail-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+    .ing-detail-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 14px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .ing-detail-name { font-size: 14px; font-weight: 600; color: var(--text); }
+    .ing-detail-qty { font-size: 13px; color: var(--muted); font-weight: 600; }
+    .sizes-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .size-row {
+      display: flex; align-items: center; gap: 12px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 14px;
+    }
+    .size-badge {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+    .size-badge--g { background: var(--accent); }
+    .size-badge--m { background: var(--gold); }
+    .size-badge--p { background: var(--muted); }
+    .size-row__info { flex: 1; min-width: 0; }
+    .size-row__name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .size-row__price { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .size-row__margin {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 700; flex-shrink: 0;
+    }
+    .size-row__margin small { display: block; font-size: 10px; font-family: 'Nunito', sans-serif; font-weight: 600; opacity: 0.75; }
+    .nut-table {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden; margin-bottom: 24px;
+    }
+    .nut-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 11px 16px; border-bottom: 1px solid var(--border); font-size: 14px;
+    }
+    .nut-row:last-child { border-bottom: none; }
+    .nut-label { font-weight: 600; color: var(--text); }
+    .nut-value { font-weight: 700; color: var(--accent); }
+    .recipe-form {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 450;
+      background: var(--cream); display: flex; flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .recipe-form.open { transform: translateY(0); }
+    .recipe-form__header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 56px; flex-shrink: 0;
+      background: var(--cream); border-bottom: 1px solid var(--border);
+    }
+    .rf-cancel-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 700; color: var(--muted);
+      padding: 8px 0; transition: color 0.15s;
+    }
+    .rf-cancel-btn:hover { color: var(--text); }
+    .rf-form-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 700; color: var(--text);
+    }
+    .rf-save-btn {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 10px; padding: 8px 18px;
+      font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: opacity 0.15s;
+    }
+    .rf-save-btn:hover { opacity: 0.88; }
+    .recipe-form__body {
+      flex: 1; overflow-y: auto;
+      padding: 16px 20px calc(var(--safe-bottom) + 40px);
+      max-width: 480px; width: 100%; margin: 0 auto;
+    }
+    .rf-section {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px; margin-bottom: 14px;
+    }
+    .rf-section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 14px;
+    }
+    .rf-section-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    }
+    .rf-add-ing-btn {
+      background: none; border: 1.5px dashed var(--accent); border-radius: 10px;
+      color: var(--accent); font-family: 'Nunito', sans-serif;
+      font-size: 12px; font-weight: 700; padding: 6px 12px; cursor: pointer;
+      transition: background 0.15s; white-space: nowrap;
+    }
+    .rf-add-ing-btn:hover { background: rgba(200,132,58,0.07); }
+    .ing-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .ing-row .ing-name { flex: 1; min-width: 0; }
+    .ing-qty-group { display: flex; gap: 4px; flex-shrink: 0; }
+    .ing-qty-group .ing-qty { width: 58px; }
+    .ing-qty-group .ing-unit { width: 60px; font-size: 13px; padding-left: 6px; padding-right: 4px; }
+    .ing-remove-btn {
+      flex-shrink: 0; width: 28px; height: 28px;
+      background: rgba(192,57,43,0.08); border: none; border-radius: 50%;
+      color: var(--red); font-size: 16px; line-height: 1; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: background 0.15s;
+    }
+    .ing-remove-btn:hover { background: rgba(192,57,43,0.2); }
+    .yp-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .yp-table th {
+      text-align: left; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--muted); padding: 0 6px 8px;
+    }
+    .yp-table td { padding: 4px 6px; vertical-align: middle; }
+    .yp-size-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 50%;
+      font-size: 13px; font-weight: 800; color: #fff;
+    }
+    .yp-size-badge--g { background: var(--accent); }
+    .yp-size-badge--m { background: var(--gold); }
+    .yp-size-badge--p { background: var(--muted); }
+    .yp-input { padding: 10px 8px !important; font-size: 14px !important; }
+    .form-hint { font-size: 13px; color: var(--muted); font-style: italic; padding: 4px 0; }
+    .nut-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .nut-input-row { display: flex; align-items: center; gap: 6px; }
+    .nut-unit { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+
     /* ── Bottom Nav ── */
     .app-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
@@ -808,17 +978,28 @@
 
     <!-- ── RECEITAS ── -->
     <section class="section" id="section-receitas" aria-label="Receitas">
-      <div class="page-hero">
-        <div class="page-hero__icon">📖</div>
-        <div class="page-hero__title">Minhas Receitas</div>
-        <div class="page-hero__desc">Guarde e organize todas as suas receitas artesanais com ingredientes, modo de preparo e rendimento.</div>
+      <!-- LIST VIEW -->
+      <div id="rcListView">
+        <div class="stock-toolbar">
+          <div class="stock-search-wrap">
+            <span class="stock-search-icon">🔍</span>
+            <input class="stock-search" id="recipeSearch" type="search" placeholder="Buscar receita…" autocomplete="off" />
+          </div>
+        </div>
+        <div class="cat-tabs" id="recipeCatTabs">
+          <button class="cat-tab active" data-cat="todos" type="button">Todas</button>
+          <button class="cat-tab" data-cat="pudim" type="button">🍮 Pudins</button>
+          <button class="cat-tab" data-cat="picole" type="button">🍦 Picolés</button>
+        </div>
+        <div class="recipe-list" id="recipeList"></div>
+        <div class="empty-state" id="recipeEmpty">
+          <div class="empty-state__icon">📖</div>
+          <div class="empty-state__title">Nenhuma receita ainda</div>
+          <div class="empty-state__desc">Crie sua primeira receita para calcular custos, margens e informações nutricionais.</div>
+        </div>
       </div>
-      <div class="empty-state">
-        <div class="empty-state__icon">🍮</div>
-        <div class="empty-state__title">Nenhuma receita ainda</div>
-        <div class="empty-state__desc">Suas receitas ficarão salvas aqui, disponíveis mesmo offline.</div>
-        <button class="btn-primary">+ Nova receita</button>
-      </div>
+      <!-- DETAIL VIEW -->
+      <div id="rcDetailView" style="display:none"></div>
     </section>
 
     <!-- ── ESTOQUE ── -->
@@ -913,8 +1094,9 @@
   </nav>
 </div>
 
-<!-- FAB -->
-<button class="fab" id="fabStock" onclick="openAddStock()" aria-label="Adicionar item ao estoque" type="button">+</button>
+<!-- FABs -->
+<button class="fab" id="fabStock"  onclick="openAddStock()"  aria-label="Adicionar item ao estoque" type="button" style="display:none">+</button>
+<button class="fab" id="fabRecipe" onclick="openAddRecipe()" aria-label="Nova receita"               type="button" style="display:none">+</button>
 
 <!-- Offline toast -->
 <div class="offline-toast" id="offlineToast" role="status" aria-live="polite"></div>
@@ -1093,6 +1275,138 @@
 </div>
 
 <!-- ══════════════════════════════════
+     RECIPE FORM (full-screen overlay)
+══════════════════════════════════ -->
+<div class="recipe-form" id="recipeForm" role="dialog" aria-modal="true" aria-label="Formulário de receita">
+  <header class="recipe-form__header">
+    <button class="rf-cancel-btn" onclick="closeRecipeForm()" type="button">← Cancelar</button>
+    <span class="rf-form-title" id="rfFormTitle">Nova Receita</span>
+    <button class="rf-save-btn" onclick="onSaveRecipe()" type="button">Salvar</button>
+  </header>
+  <div class="recipe-form__body">
+
+    <!-- Identificação -->
+    <div class="rf-section">
+      <div class="rf-section-title">Identificação</div>
+      <div class="form-row">
+        <div class="ob-field" style="flex:0 0 72px">
+          <label class="ob-label" for="rfIcon">Ícone</label>
+          <input class="ob-input" type="text" id="rfIcon" placeholder="🍮" maxlength="4" style="text-align:center;font-size:22px;padding:10px" />
+        </div>
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="rfName">Nome *</label>
+          <input class="ob-input" type="text" id="rfName" placeholder="Ex: Pudim de leite condensado" maxlength="80" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="rfType">Tipo</label>
+          <select class="ob-input" id="rfType">
+            <option value="pudim">🍮 Pudim</option>
+            <option value="picole">🍦 Picolé</option>
+          </select>
+        </div>
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="rfPrepTime">Preparo (min)</label>
+          <input class="ob-input" type="number" id="rfPrepTime" min="0" placeholder="0" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingredientes -->
+    <div class="rf-section">
+      <div class="rf-section-header">
+        <div class="rf-section-title" style="margin-bottom:0">Ingredientes</div>
+        <button class="rf-add-ing-btn" onclick="addIngredientRow()" type="button">+ Ingrediente</button>
+      </div>
+      <div id="formIngredientList">
+        <p class="form-hint">Clique em "+ Ingrediente" para adicionar.</p>
+      </div>
+    </div>
+
+    <!-- Rendimento, Preços e Custo -->
+    <div class="rf-section">
+      <div class="rf-section-title">Rendimento e Preços</div>
+      <div class="ob-field">
+        <label class="ob-label" for="rfCost">Custo total da receita (R$)</label>
+        <input class="ob-input" type="number" id="rfCost" min="0" step="0.01" placeholder="0,00" />
+      </div>
+      <table class="yp-table">
+        <thead>
+          <tr>
+            <th>Tam.</th>
+            <th>Rendimento (un)</th>
+            <th>Preço unitário (R$)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="yp-size-badge yp-size-badge--g">G</span></td>
+            <td><input class="ob-input yp-input" type="number" id="rfYieldG" min="0" step="1" placeholder="0" /></td>
+            <td><input class="ob-input yp-input" type="number" id="rfPriceG" min="0" step="0.01" placeholder="0,00" /></td>
+          </tr>
+          <tr>
+            <td><span class="yp-size-badge yp-size-badge--m">M</span></td>
+            <td><input class="ob-input yp-input" type="number" id="rfYieldM" min="0" step="1" placeholder="0" /></td>
+            <td><input class="ob-input yp-input" type="number" id="rfPriceM" min="0" step="0.01" placeholder="0,00" /></td>
+          </tr>
+          <tr>
+            <td><span class="yp-size-badge yp-size-badge--p">P</span></td>
+            <td><input class="ob-input yp-input" type="number" id="rfYieldP" min="0" step="1" placeholder="0" /></td>
+            <td><input class="ob-input yp-input" type="number" id="rfPriceP" min="0" step="0.01" placeholder="0,00" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Tabela Nutricional ANVISA -->
+    <div class="rf-section">
+      <div class="rf-section-title">Tabela Nutricional ANVISA</div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:14px">Valores por porção de 100g</p>
+      <div class="nut-grid">
+        <div class="ob-field">
+          <label class="ob-label" for="rfCalories">Valor energético</label>
+          <div class="nut-input-row">
+            <input class="ob-input" type="number" id="rfCalories" min="0" placeholder="0" style="flex:1" />
+            <span class="nut-unit">kcal</span>
+          </div>
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfCarbs">Carboidratos</label>
+          <div class="nut-input-row">
+            <input class="ob-input" type="number" id="rfCarbs" min="0" step="0.1" placeholder="0" style="flex:1" />
+            <span class="nut-unit">g</span>
+          </div>
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfProtein">Proteínas</label>
+          <div class="nut-input-row">
+            <input class="ob-input" type="number" id="rfProtein" min="0" step="0.1" placeholder="0" style="flex:1" />
+            <span class="nut-unit">g</span>
+          </div>
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfFat">Gorduras totais</label>
+          <div class="nut-input-row">
+            <input class="ob-input" type="number" id="rfFat" min="0" step="0.1" placeholder="0" style="flex:1" />
+            <span class="nut-unit">g</span>
+          </div>
+        </div>
+      </div>
+      <div class="ob-field" style="margin-top:10px">
+        <label class="ob-label" for="rfSodium">Sódio</label>
+        <div class="nut-input-row">
+          <input class="ob-input" type="number" id="rfSodium" min="0" placeholder="0" style="max-width:160px" />
+          <span class="nut-unit">mg</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-error" id="recipeFormError" style="padding:0 0 24px"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
      SCRIPT
 ══════════════════════════════════ -->
 <script>
@@ -1102,7 +1416,8 @@ var STORE = {
   PROFILE:    'cp_profile_v1',
   SETTINGS:   'cp_settings_v1',
   STOCK:      'cp_stock_v1',
-  SHOP_MANUAL:'cp_shop_manual_v1'
+  SHOP_MANUAL:'cp_shop_manual_v1',
+  RECIPES:    'cp_recipes_v1'
 };
 
 function storeGet(key) {
@@ -1131,14 +1446,17 @@ var currentTab = 'inicio';
 
 function navigate(tab) {
   if (TABS.indexOf(tab) === -1) return;
+  if (currentTab === 'receitas' && tab !== 'receitas') recipeView = 'list';
   document.getElementById('section-' + currentTab).classList.remove('active');
   document.getElementById('tab-' + currentTab).classList.remove('active');
   currentTab = tab;
   document.getElementById('section-' + tab).classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
   document.getElementById('appContent').scrollTop = 0;
-  document.getElementById('fabStock').style.display = (tab === 'producao') ? 'flex' : 'none';
+  document.getElementById('fabStock').style.display  = (tab === 'producao') ? 'flex' : 'none';
+  document.getElementById('fabRecipe').style.display = (tab === 'receitas' && recipeView === 'list') ? 'flex' : 'none';
   if (tab === 'inicio')   renderDashboard();
+  if (tab === 'receitas') renderRecipes();
   if (tab === 'producao') renderStock();
   if (tab === 'mais')     shopRender();
 }
@@ -1182,6 +1500,7 @@ var stockFilter  = 'todos';
 var stockSearchQ = '';
 var stockEditingId = null;
 var stockDeleteId  = null;
+var confirmDeleteCb = null;
 
 function stockGetAll()       { return storeGet(STORE.STOCK) || []; }
 function stockSave(items)    { storeSet(STORE.STOCK, items); }
@@ -1386,22 +1705,26 @@ function onSaveStock() {
   shopRender();
 }
 
-function openDeleteStock(id) {
-  var item = stockFindById(id);
-  if (!item) return;
-  stockDeleteId = id;
-  document.getElementById('confirmItemName').textContent = '“' + item.name + '”';
+function openConfirmDelete(itemName, callback) {
+  confirmDeleteCb = callback;
+  document.getElementById('confirmItemName').textContent = '”' + itemName + '”';
   openModal('modalConfirm');
 }
 
 function onConfirmDelete() {
-  if (!stockDeleteId) return;
-  stockRemove(stockDeleteId);
-  stockDeleteId = null;
   closeModal('modalConfirm');
-  renderStock();
-  renderDashboard();
-  shopRender();
+  if (confirmDeleteCb) { confirmDeleteCb(); confirmDeleteCb = null; }
+}
+
+function openDeleteStock(id) {
+  var item = stockFindById(id);
+  if (!item) return;
+  openConfirmDelete(item.name, function() {
+    stockRemove(id);
+    renderStock();
+    renderDashboard();
+    shopRender();
+  });
 }
 
 // Category tabs
@@ -1649,6 +1972,472 @@ function onSaveManualItem() {
 }
 
 // ════════════════════════════════
+// RECIPE MODULE
+// ════════════════════════════════
+var recipeView      = 'list';
+var recipeDetailId  = null;
+var recipeEditingId = null;
+var recipeFilter    = 'todos';
+var recipeSearchQ   = '';
+
+var UNIT_OPTS_HTML =
+  '<option value="un">un</option><option value="kg">kg</option>' +
+  '<option value="g">g</option><option value="L">L</option>' +
+  '<option value="ml">ml</option><option value="lata">lata</option>' +
+  '<option value="pct">pct</option><option value="cx">cx</option>' +
+  '<option value="colher">colher</option><option value="xícara">xícara</option>' +
+  '<option value="dz">dz</option>';
+
+function recipeGetAll()     { return storeGet(STORE.RECIPES) || []; }
+function recipeSave(items)  { storeSet(STORE.RECIPES, items); }
+
+function recipeAdd(data) {
+  var items = recipeGetAll();
+  var id = genId();
+  var r = { id: id };
+  var k; for (k in data) { if (Object.prototype.hasOwnProperty.call(data,k)) r[k] = data[k]; }
+  items.push(r);
+  recipeSave(items);
+  return id;
+}
+
+function recipeUpdate(id, data) {
+  var items = recipeGetAll();
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === id) {
+      var k; for (k in data) { if (Object.prototype.hasOwnProperty.call(data,k)) items[i][k] = data[k]; }
+      break;
+    }
+  }
+  recipeSave(items);
+}
+
+function recipeRemove(id) {
+  recipeSave(recipeGetAll().filter(function(r) { return r.id !== id; }));
+}
+
+function recipeFindById(id) {
+  var items = recipeGetAll();
+  for (var i = 0; i < items.length; i++) { if (items[i].id === id) return items[i]; }
+  return null;
+}
+
+function recipeGetFiltered() {
+  var items = recipeGetAll();
+  if (recipeFilter !== 'todos') {
+    items = items.filter(function(r) { return r.type === recipeFilter; });
+  }
+  if (recipeSearchQ) {
+    var q = recipeSearchQ.toLowerCase();
+    items = items.filter(function(r) { return r.name.toLowerCase().indexOf(q) !== -1; });
+  }
+  return items;
+}
+
+function calcMargin(price, cost, yieldQty) {
+  price    = Number(price)    || 0;
+  cost     = Number(cost)     || 0;
+  yieldQty = Number(yieldQty) || 0;
+  if (price <= 0 || yieldQty <= 0 || cost <= 0) return null;
+  var costPerUnit = cost / yieldQty;
+  var profit      = price - costPerUnit;
+  var margin      = (profit / price) * 100;
+  return { profit: profit, margin: margin };
+}
+
+// ── List rendering ──
+function renderRecipes() {
+  if (recipeView === 'detail') {
+    document.getElementById('rcListView').style.display    = 'none';
+    document.getElementById('rcDetailView').style.display  = '';
+    document.getElementById('fabRecipe').style.display     = 'none';
+    renderRecipeDetail();
+  } else {
+    document.getElementById('rcListView').style.display    = '';
+    document.getElementById('rcDetailView').style.display  = 'none';
+    document.getElementById('fabRecipe').style.display     = (currentTab === 'receitas') ? 'flex' : 'none';
+    renderRecipeList();
+  }
+}
+
+function renderRecipeList() {
+  var items = recipeGetFiltered();
+  var list  = document.getElementById('recipeList');
+  var empty = document.getElementById('recipeEmpty');
+  if (items.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    var html = '';
+    for (var i = 0; i < items.length; i++) html += buildRecipeCardHTML(items[i]);
+    list.innerHTML = html;
+  }
+}
+
+function buildRecipeCardHTML(r) {
+  var icon      = r.icon || (r.type === 'picole' ? '🍦' : '🍮');
+  var typeLabel = r.type === 'picole' ? 'Picolé' : 'Pudim';
+  var cost      = Number(r.cost) || 0;
+  var sizes     = ['g','m','p'];
+  var bestMargin = null;
+  var prices     = [];
+  for (var i = 0; i < sizes.length; i++) {
+    var s = sizes[i];
+    var pr = Number(r.price && r.price[s]) || 0;
+    var yd = Number(r.yield && r.yield[s]) || 0;
+    if (pr > 0) prices.push(pr);
+    var m = calcMargin(pr, cost, yd);
+    if (m !== null && (bestMargin === null || m.margin > bestMargin)) bestMargin = m.margin;
+  }
+  var priceText = prices.length === 0 ? 'Preço não definido' :
+    (prices.length === 1
+      ? 'R$ ' + prices[0].toFixed(2).replace('.', ',')
+      : 'R$ ' + Math.min.apply(null,prices).toFixed(2).replace('.',',') +
+        ' – R$ ' + Math.max.apply(null,prices).toFixed(2).replace('.',','));
+  var marginColor = bestMargin === null ? '' :
+    (bestMargin >= 50 ? 'var(--green)' : bestMargin >= 30 ? 'var(--gold)' : 'var(--red)');
+  var marginHTML = bestMargin === null ? '' :
+    '<span class="recipe-margin" style="color:' + marginColor + '">' +
+      Math.round(bestMargin) + '%<small>margem</small>' +
+    '</span>';
+  return '<div class="recipe-card" onclick="openRecipeDetail(\'' + escHtml(r.id) + '\')">' +
+    '<span class="recipe-card__icon">' + escHtml(icon) + '</span>' +
+    '<div class="recipe-card__info">' +
+      '<div class="recipe-card__name">' + escHtml(r.name) + '</div>' +
+      '<div class="recipe-card__meta">' +
+        '<span class="recipe-type-badge">' + typeLabel + '</span>' +
+        (r.prepTime ? ' · ⏱ ' + r.prepTime + 'min' : '') +
+      '</div>' +
+      '<div class="recipe-card__price">' + priceText + '</div>' +
+    '</div>' +
+    marginHTML +
+  '</div>';
+}
+
+// ── Detail view ──
+function openRecipeDetail(id) {
+  recipeDetailId = id;
+  recipeView = 'detail';
+  renderRecipes();
+  document.getElementById('appContent').scrollTop = 0;
+}
+
+function closeRecipeDetail() {
+  recipeDetailId = null;
+  recipeView = 'list';
+  renderRecipes();
+  document.getElementById('appContent').scrollTop = 0;
+}
+
+function renderRecipeDetail() {
+  var r = recipeFindById(recipeDetailId);
+  if (!r) { closeRecipeDetail(); return; }
+  var icon      = r.icon || (r.type === 'picole' ? '🍦' : '🍮');
+  var typeLabel = r.type === 'picole' ? 'Picolé' : 'Pudim';
+  var cost      = Number(r.cost) || 0;
+  var id        = escHtml(r.id);
+
+  // Ingredients
+  var ingsHTML = '';
+  if (r.ingredients && r.ingredients.length > 0) {
+    for (var i = 0; i < r.ingredients.length; i++) {
+      var ing = r.ingredients[i];
+      ingsHTML += '<div class="ing-detail-row">' +
+        '<span class="ing-detail-name">' + escHtml(ing.name) + '</span>' +
+        '<span class="ing-detail-qty">' + escHtml(String(ing.qty||'')) + ' ' + escHtml(ing.unit||'') + '</span>' +
+      '</div>';
+    }
+  } else {
+    ingsHTML = '<p class="form-hint">Nenhum ingrediente cadastrado.</p>';
+  }
+
+  // Sizes + margins
+  var sizesDef = [{key:'g',label:'Grande'},{key:'m',label:'Médio'},{key:'p',label:'Pequeno'}];
+  var sizesHTML = '';
+  for (var si = 0; si < sizesDef.length; si++) {
+    var sd    = sizesDef[si];
+    var pr    = Number(r.price && r.price[sd.key]) || 0;
+    var yd    = Number(r.yield && r.yield[sd.key]) || 0;
+    if (pr === 0 && yd === 0) continue;
+    var mg    = calcMargin(pr, cost, yd);
+    var mgColor = mg ? (mg.margin >= 50 ? 'var(--green)' : mg.margin >= 30 ? 'var(--gold)' : 'var(--red)') : 'var(--muted)';
+    sizesHTML += '<div class="size-row">' +
+      '<span class="size-badge size-badge--' + sd.key + '">' + sd.label[0] + '</span>' +
+      '<div class="size-row__info">' +
+        '<div class="size-row__name">' + sd.label + (yd > 0 ? ' · ' + yd + ' un' : '') + '</div>' +
+        (pr > 0 ? '<div class="size-row__price">' + formatBRL(pr) + ' / unidade' +
+          (cost > 0 && yd > 0 ? ' · Custo/un: ' + formatBRL(cost/yd) : '') + '</div>' : '') +
+      '</div>' +
+      (mg ? '<div class="size-row__margin" style="color:' + mgColor + '">' +
+        Math.round(mg.margin) + '%<small>margem</small></div>' : '') +
+    '</div>';
+  }
+
+  // Nutrition table
+  var n = r.nutrition || {};
+  var nutRows = [
+    { label:'Valor energético', val:n.calories, unit:'kcal' },
+    { label:'Carboidratos',     val:n.carbs,    unit:'g' },
+    { label:'Proteínas',        val:n.protein,  unit:'g' },
+    { label:'Gorduras totais',  val:n.fat,      unit:'g' },
+    { label:'Sódio',            val:n.sodium,   unit:'mg' }
+  ];
+  var nutHTML = '';
+  for (var ni = 0; ni < nutRows.length; ni++) {
+    var nr = nutRows[ni];
+    if (nr.val === null || nr.val === undefined || nr.val === '') continue;
+    nutHTML += '<div class="nut-row">' +
+      '<span class="nut-label">' + nr.label + '</span>' +
+      '<span class="nut-value">' + nr.val + ' ' + nr.unit + '</span>' +
+    '</div>';
+  }
+
+  var html =
+    '<div class="detail-header">' +
+      '<button class="detail-back-btn" onclick="closeRecipeDetail()" type="button">← Voltar</button>' +
+      '<div class="detail-header-actions">' +
+        '<button class="act-btn" onclick="openEditRecipe(\'' + id + '\')" type="button" aria-label="Editar">✏️</button>' +
+        '<button class="act-btn" onclick="openDeleteRecipe(\'' + id + '\')" type="button" aria-label="Excluir">🗑️</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="detail-hero">' +
+      '<span class="detail-hero__icon">' + escHtml(icon) + '</span>' +
+      '<div class="detail-hero__info">' +
+        '<div class="detail-hero__name">' + escHtml(r.name) + '</div>' +
+        '<div class="detail-hero__meta">' +
+          '<span class="recipe-type-badge" style="background:rgba(255,255,255,0.25);color:#fff">' + typeLabel + '</span>' +
+          (r.prepTime ? '<span>⏱ ' + r.prepTime + ' min</span>' : '') +
+          (cost > 0   ? '<span>Custo: ' + formatBRL(cost) + '</span>' : '') +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<h3 class="section-title">🧺 Ingredientes</h3>' +
+    '<div class="ing-detail-list">' + ingsHTML + '</div>' +
+    (sizesHTML ?
+      '<h3 class="section-title" style="margin-top:4px">💰 Rendimento e Margem</h3>' +
+      '<div class="sizes-list">' + sizesHTML + '</div>' : '') +
+    (nutHTML ?
+      '<h3 class="section-title" style="margin-top:4px">🥗 Tabela Nutricional</h3>' +
+      '<p style="font-size:11px;color:var(--muted);margin-bottom:10px">Por 100g</p>' +
+      '<div class="nut-table">' + nutHTML + '</div>' : '') +
+    '<div style="height:20px"></div>';
+
+  document.getElementById('rcDetailView').innerHTML = html;
+}
+
+// ── Recipe form ──
+function openAddRecipe() {
+  recipeEditingId = null;
+  document.getElementById('rfFormTitle').textContent  = 'Nova Receita';
+  document.getElementById('rfIcon').value      = '';
+  document.getElementById('rfName').value      = '';
+  document.getElementById('rfType').value      = 'pudim';
+  document.getElementById('rfPrepTime').value  = '';
+  document.getElementById('rfCost').value      = '';
+  document.getElementById('rfYieldG').value    = '';
+  document.getElementById('rfPriceG').value    = '';
+  document.getElementById('rfYieldM').value    = '';
+  document.getElementById('rfPriceM').value    = '';
+  document.getElementById('rfYieldP').value    = '';
+  document.getElementById('rfPriceP').value    = '';
+  document.getElementById('rfCalories').value  = '';
+  document.getElementById('rfCarbs').value     = '';
+  document.getElementById('rfProtein').value   = '';
+  document.getElementById('rfFat').value       = '';
+  document.getElementById('rfSodium').value    = '';
+  document.getElementById('recipeFormError').textContent = '';
+  document.getElementById('formIngredientList').innerHTML =
+    '<p class="form-hint">Clique em "+ Ingrediente" para adicionar.</p>';
+  document.getElementById('recipeForm').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() { document.getElementById('rfName').focus(); }, 350);
+}
+
+function openEditRecipe(id) {
+  var r = recipeFindById(id);
+  if (!r) return;
+  recipeEditingId = id;
+  document.getElementById('rfFormTitle').textContent  = 'Editar Receita';
+  document.getElementById('rfIcon').value     = r.icon      || '';
+  document.getElementById('rfName').value     = r.name      || '';
+  document.getElementById('rfType').value     = r.type      || 'pudim';
+  document.getElementById('rfPrepTime').value = r.prepTime  || '';
+  document.getElementById('rfCost').value     = r.cost      || '';
+  document.getElementById('rfYieldG').value   = (r.yield && r.yield.g) ? r.yield.g : '';
+  document.getElementById('rfPriceG').value   = (r.price && r.price.g) ? r.price.g : '';
+  document.getElementById('rfYieldM').value   = (r.yield && r.yield.m) ? r.yield.m : '';
+  document.getElementById('rfPriceM').value   = (r.price && r.price.m) ? r.price.m : '';
+  document.getElementById('rfYieldP').value   = (r.yield && r.yield.p) ? r.yield.p : '';
+  document.getElementById('rfPriceP').value   = (r.price && r.price.p) ? r.price.p : '';
+  var nut = r.nutrition || {};
+  document.getElementById('rfCalories').value = nut.calories !== undefined ? nut.calories : '';
+  document.getElementById('rfCarbs').value    = nut.carbs    !== undefined ? nut.carbs    : '';
+  document.getElementById('rfProtein').value  = nut.protein  !== undefined ? nut.protein  : '';
+  document.getElementById('rfFat').value      = nut.fat      !== undefined ? nut.fat      : '';
+  document.getElementById('rfSodium').value   = nut.sodium   !== undefined ? nut.sodium   : '';
+  document.getElementById('recipeFormError').textContent = '';
+  populateIngredients(r.ingredients || []);
+  document.getElementById('recipeForm').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() { document.getElementById('rfName').focus(); }, 350);
+}
+
+function closeRecipeForm() {
+  document.getElementById('recipeForm').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function addIngredientRow() {
+  var container = document.getElementById('formIngredientList');
+  var hint = container.querySelector('.form-hint');
+  if (hint) hint.remove();
+  var row = document.createElement('div');
+  row.className = 'ing-row';
+  row.innerHTML =
+    '<input class="ob-input ing-name" type="text" placeholder="Ingrediente" autocomplete="off" />' +
+    '<div class="ing-qty-group">' +
+      '<input class="ob-input ing-qty" type="number" min="0" step="0.01" placeholder="Qty" />' +
+      '<select class="ob-input ing-unit">' + UNIT_OPTS_HTML + '</select>' +
+    '</div>' +
+    '<button class="ing-remove-btn" onclick="removeIngredientRow(this)" type="button" aria-label="Remover">×</button>';
+  container.appendChild(row);
+  row.querySelector('.ing-name').focus();
+}
+
+function removeIngredientRow(btn) {
+  var row = btn.parentNode;
+  row.parentNode.removeChild(row);
+  var container = document.getElementById('formIngredientList');
+  if (!container.querySelector('.ing-row')) {
+    container.innerHTML = '<p class="form-hint">Clique em "+ Ingrediente" para adicionar.</p>';
+  }
+}
+
+function populateIngredients(ingredients) {
+  var container = document.getElementById('formIngredientList');
+  container.innerHTML = '';
+  if (!ingredients || ingredients.length === 0) {
+    container.innerHTML = '<p class="form-hint">Clique em "+ Ingrediente" para adicionar.</p>';
+    return;
+  }
+  for (var i = 0; i < ingredients.length; i++) {
+    var ing = ingredients[i];
+    var row = document.createElement('div');
+    row.className = 'ing-row';
+    row.innerHTML =
+      '<input class="ob-input ing-name" type="text" placeholder="Ingrediente" autocomplete="off" />' +
+      '<div class="ing-qty-group">' +
+        '<input class="ob-input ing-qty" type="number" min="0" step="0.01" placeholder="Qty" />' +
+        '<select class="ob-input ing-unit">' + UNIT_OPTS_HTML + '</select>' +
+      '</div>' +
+      '<button class="ing-remove-btn" onclick="removeIngredientRow(this)" type="button" aria-label="Remover">×</button>';
+    row.querySelector('.ing-name').value = ing.name || '';
+    row.querySelector('.ing-qty').value  = ing.qty  || '';
+    if (ing.unit) row.querySelector('.ing-unit').value = ing.unit;
+    container.appendChild(row);
+  }
+}
+
+function collectIngredients() {
+  var rows = document.querySelectorAll('#formIngredientList .ing-row');
+  var result = [];
+  for (var i = 0; i < rows.length; i++) {
+    var nameEl = rows[i].querySelector('.ing-name');
+    var qtyEl  = rows[i].querySelector('.ing-qty');
+    var unitEl = rows[i].querySelector('.ing-unit');
+    var name = nameEl ? nameEl.value.trim() : '';
+    if (!name) continue;
+    result.push({ name: name, qty: qtyEl ? qtyEl.value.trim() : '', unit: unitEl ? unitEl.value : 'un' });
+  }
+  return result;
+}
+
+function nutVal(id) {
+  var v = document.getElementById(id).value;
+  return v !== '' ? Number(v) : null;
+}
+
+function onSaveRecipe() {
+  var name = document.getElementById('rfName').value.trim();
+  if (!name) {
+    document.getElementById('recipeFormError').textContent = 'Por favor, informe o nome da receita.';
+    document.getElementById('rfName').focus();
+    return;
+  }
+  var data = {
+    icon:        document.getElementById('rfIcon').value.trim(),
+    name:        name,
+    type:        document.getElementById('rfType').value,
+    prepTime:    Number(document.getElementById('rfPrepTime').value) || 0,
+    ingredients: collectIngredients(),
+    cost:        Number(document.getElementById('rfCost').value)   || 0,
+    yield: {
+      g: Number(document.getElementById('rfYieldG').value) || 0,
+      m: Number(document.getElementById('rfYieldM').value) || 0,
+      p: Number(document.getElementById('rfYieldP').value) || 0
+    },
+    price: {
+      g: Number(document.getElementById('rfPriceG').value) || 0,
+      m: Number(document.getElementById('rfPriceM').value) || 0,
+      p: Number(document.getElementById('rfPriceP').value) || 0
+    },
+    nutrition: {
+      calories: nutVal('rfCalories'),
+      carbs:    nutVal('rfCarbs'),
+      protein:  nutVal('rfProtein'),
+      fat:      nutVal('rfFat'),
+      sodium:   nutVal('rfSodium')
+    }
+  };
+  if (recipeEditingId) {
+    recipeUpdate(recipeEditingId, data);
+    closeRecipeForm();
+    if (recipeDetailId === recipeEditingId) {
+      recipeView = 'detail';
+    }
+  } else {
+    var newId = recipeAdd(data);
+    closeRecipeForm();
+    recipeDetailId = newId;
+    recipeView     = 'detail';
+  }
+  renderRecipes();
+}
+
+function openDeleteRecipe(id) {
+  var r = recipeFindById(id);
+  if (!r) return;
+  openConfirmDelete(r.name, function() {
+    recipeRemove(id);
+    if (recipeDetailId === id) {
+      recipeDetailId = null;
+      recipeView     = 'list';
+    }
+    renderRecipes();
+  });
+}
+
+// Recipe category tabs
+var rcTabEls = document.querySelectorAll('#recipeCatTabs .cat-tab');
+for (var _ri = 0; _ri < rcTabEls.length; _ri++) {
+  (function(tab) {
+    tab.addEventListener('click', function() {
+      for (var j = 0; j < rcTabEls.length; j++) rcTabEls[j].classList.remove('active');
+      tab.classList.add('active');
+      recipeFilter = tab.dataset.cat;
+      renderRecipeList();
+    });
+  })(rcTabEls[_ri]);
+}
+
+// Recipe search
+document.getElementById('recipeSearch').addEventListener('input', function() {
+  recipeSearchQ = this.value.trim();
+  renderRecipeList();
+});
+
+// ════════════════════════════════
 // DASHBOARD
 // ════════════════════════════════
 function renderDashboard() {
@@ -1847,6 +2636,7 @@ function renderDashboard() {
     renderDashboard();
     renderStock();
     shopRender();
+    renderRecipes();
   }
 
   var chips = document.querySelectorAll('#obChannels .ob-chip');
@@ -1881,6 +2671,7 @@ function renderDashboard() {
     renderDashboard();
     renderStock();
     shopRender();
+    renderRecipes();
   });
 
   if (!isDone()) {
@@ -1891,6 +2682,7 @@ function renderDashboard() {
     renderDashboard();
     renderStock();
     shopRender();
+    renderRecipes();
   }
 })();
 
