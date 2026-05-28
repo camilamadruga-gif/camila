@@ -2754,7 +2754,7 @@ function openDeleteStock(id) {
 }
 
 // Category tabs
-var catTabEls = document.querySelectorAll('.cat-tab');
+var catTabEls = document.querySelectorAll('#catTabs .cat-tab');
 for (var _ci = 0; _ci < catTabEls.length; _ci++) {
   (function(tab) {
     tab.addEventListener('click', function() {
@@ -3065,37 +3065,91 @@ function recipeGetFiltered() {
 // Nutritional database (TACO/IBGE values per 100g of each ingredient)
 // Fields: kcal, carbs, sugars, addedSugars, fat, satFat, transFat, fiber, protein, sodium
 var NUTRI_DB = [
-  { keys: ['leite condensado'],            n: { kcal:321, carbs:54.3, sugars:54.3, addedSugars:30,   fat:8.6,  satFat:5.4,  transFat:0,   fiber:0,   protein:7.3,  sodium:101 } },
-  { keys: ['creme de leite','nata'],       n: { kcal:248, carbs:3.2,  sugars:3.2,  addedSugars:0,    fat:24.9, satFat:15.5, transFat:0.3, fiber:0,   protein:2.7,  sodium:54  } },
-  { keys: ['leite integral','leite','leite longa vida'], n: { kcal:61, carbs:4.7, sugars:4.7, addedSugars:0, fat:3.5, satFat:2.0, transFat:0.1, fiber:0, protein:3.2, sodium:50 } },
-  { keys: ['leite desnatado'],             n: { kcal:35,  carbs:5.0,  sugars:5.0,  addedSugars:0,    fat:0.1,  satFat:0.1,  transFat:0,   fiber:0,   protein:3.4,  sodium:52  } },
-  { keys: ['ovo','ovos','gema','clara'],   n: { kcal:146, carbs:1.1,  sugars:1.1,  addedSugars:0,    fat:9.9,  satFat:3.1,  transFat:0,   fiber:0,   protein:12.4, sodium:145 } },
-  { keys: ['açúcar','açucar','açúcar refinado','açúcar cristal'], n: { kcal:387, carbs:99.5, sugars:99.5, addedSugars:99.5, fat:0, satFat:0, transFat:0, fiber:0, protein:0, sodium:1 } },
-  { keys: ['manteiga'],                    n: { kcal:726, carbs:0,    sugars:0,    addedSugars:0,    fat:82.5, satFat:51.4, transFat:2.1, fiber:0,   protein:0.5,  sodium:695 } },
-  { keys: ['farinha de trigo','farinha'],  n: { kcal:360, carbs:74.4, sugars:2.0,  addedSugars:0,    fat:1.4,  satFat:0.2,  transFat:0,   fiber:2.3, protein:10.5, sodium:2   } },
-  { keys: ['chocolate em pó','cacau em pó'], n: { kcal:361, carbs:53.5, sugars:47.1, addedSugars:47.1, fat:15.5, satFat:9.0, transFat:0, fiber:12.0, protein:11.3, sodium:57 } },
-  { keys: ['amido de milho','maisena','amido'],   n: { kcal:350, carbs:87.6, sugars:0.6, addedSugars:0, fat:0.1, satFat:0, transFat:0, fiber:0.9, protein:0.3, sodium:3 } },
-  { keys: ['coco ralado','coco'],          n: { kcal:604, carbs:7.2,  sugars:6.8,  addedSugars:0,    fat:60.4, satFat:52.1, transFat:0,   fiber:13.7,protein:5.6,  sodium:21  } },
-  { keys: ['doce de leite'],               n: { kcal:316, carbs:58.7, sugars:55.4, addedSugars:40,   fat:7.8,  satFat:4.9,  transFat:0,   fiber:0,   protein:5.9,  sodium:79  } },
-  { keys: ['leite em pó'],                 n: { kcal:497, carbs:38.5, sugars:38.5, addedSugars:0,    fat:26.8, satFat:16.7, transFat:0.3, fiber:0,   protein:25.6, sodium:370 } },
-  { keys: ['cream cheese'],               n: { kcal:350, carbs:4.1,  sugars:3.8,  addedSugars:0,    fat:34.1, satFat:19.1, transFat:0,   fiber:0,   protein:5.9,  sodium:298 } },
-  { keys: ['requeijão','requeijao'],       n: { kcal:282, carbs:2.7,  sugars:2.7,  addedSugars:0,    fat:23.3, satFat:14.5, transFat:0,   fiber:0,   protein:15.7, sodium:442 } },
-  { keys: ['maracujá','maracuja'],         n: { kcal:68,  carbs:13.8, sugars:8.4,  addedSugars:0,    fat:0.7,  satFat:0.1,  transFat:0,   fiber:10.4,protein:2.4,  sodium:28  } },
-  { keys: ['limão','limao'],               n: { kcal:30,  carbs:6.9,  sugars:2.7,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:2.8, protein:0.9,  sodium:3   } },
-  { keys: ['morango'],                     n: { kcal:34,  carbs:7.7,  sugars:4.7,  addedSugars:0,    fat:0.4,  satFat:0,    transFat:0,   fiber:2.0, protein:0.7,  sodium:1   } },
+  // ── Laticínios ──────────────────────────────────────────────────────────────
+  { keys: ['leite condensado'],                          n: { kcal:321, carbs:54.3, sugars:54.3, addedSugars:30,   fat:8.6,  satFat:5.4,  transFat:0,   fiber:0,    protein:7.3,  sodium:101  } },
+  { keys: ['creme de leite','nata'],                     n: { kcal:248, carbs:3.2,  sugars:3.2,  addedSugars:0,    fat:24.9, satFat:15.5, transFat:0.3, fiber:0,    protein:2.7,  sodium:54   } },
+  { keys: ['chantilly','creme chantilly'],               n: { kcal:336, carbs:2.8,  sugars:2.8,  addedSugars:0,    fat:35.5, satFat:22.1, transFat:0.8, fiber:0,    protein:2.2,  sodium:32   } },
+  { keys: ['leite integral','leite','leite longa vida'], n: { kcal:61,  carbs:4.7,  sugars:4.7,  addedSugars:0,    fat:3.5,  satFat:2.0,  transFat:0.1, fiber:0,    protein:3.2,  sodium:50   } },
+  { keys: ['leite desnatado'],                           n: { kcal:35,  carbs:5.0,  sugars:5.0,  addedSugars:0,    fat:0.1,  satFat:0.1,  transFat:0,   fiber:0,    protein:3.4,  sodium:52   } },
+  { keys: ['leite em pó'],                               n: { kcal:497, carbs:38.5, sugars:38.5, addedSugars:0,    fat:26.8, satFat:16.7, transFat:0.3, fiber:0,    protein:25.6, sodium:370  } },
+  { keys: ['leite de coco'],                             n: { kcal:197, carbs:4.5,  sugars:4.5,  addedSugars:0,    fat:20.4, satFat:18.1, transFat:0,   fiber:2.2,  protein:1.9,  sodium:13   } },
+  { keys: ['doce de leite'],                             n: { kcal:316, carbs:58.7, sugars:55.4, addedSugars:40,   fat:7.8,  satFat:4.9,  transFat:0,   fiber:0,    protein:5.9,  sodium:79   } },
+  { keys: ['cream cheese'],                              n: { kcal:350, carbs:4.1,  sugars:3.8,  addedSugars:0,    fat:34.1, satFat:19.1, transFat:0,   fiber:0,    protein:5.9,  sodium:298  } },
+  { keys: ['mascarpone'],                                n: { kcal:429, carbs:2.6,  sugars:2.6,  addedSugars:0,    fat:43.7, satFat:27.5, transFat:0.8, fiber:0,    protein:6.0,  sodium:100  } },
+  { keys: ['requeijão','requeijao'],                     n: { kcal:282, carbs:2.7,  sugars:2.7,  addedSugars:0,    fat:23.3, satFat:14.5, transFat:0,   fiber:0,    protein:15.7, sodium:442  } },
+  { keys: ['ricota'],                                    n: { kcal:174, carbs:3.0,  sugars:0.3,  addedSugars:0,    fat:12.7, satFat:8.0,  transFat:0.3, fiber:0,    protein:11.3, sodium:84   } },
+  { keys: ['queijo minas'],                              n: { kcal:264, carbs:3.2,  sugars:0.5,  addedSugars:0,    fat:19.9, satFat:12.6, transFat:0.5, fiber:0,    protein:18.4, sodium:469  } },
+  { keys: ['queijo'],                                    n: { kcal:354, carbs:1.3,  sugars:0.5,  addedSugars:0,    fat:28.4, satFat:17.8, transFat:0.4, fiber:0,    protein:23.5, sodium:572  } },
+  { keys: ['iogurte','iogurte natural'],                 n: { kcal:58,  carbs:5.9,  sugars:5.9,  addedSugars:0,    fat:2.6,  satFat:1.6,  transFat:0,   fiber:0,    protein:3.4,  sodium:53   } },
+  // ── Ovos ────────────────────────────────────────────────────────────────────
+  { keys: ['ovo','ovos','gema','clara'],                 n: { kcal:146, carbs:1.1,  sugars:1.1,  addedSugars:0,    fat:9.9,  satFat:3.1,  transFat:0,   fiber:0,    protein:12.4, sodium:145  } },
+  // ── Açúcares e adoçantes ─────────────────────────────────────────────────────
+  { keys: ['açúcar refinado','açúcar cristal','açúcar','açucar'], n: { kcal:387, carbs:99.5, sugars:99.5, addedSugars:99.5, fat:0, satFat:0, transFat:0, fiber:0, protein:0, sodium:1 } },
+  { keys: ['açúcar mascavo','açucar mascavo','mascavo'], n: { kcal:373, carbs:96.2, sugars:96.2, addedSugars:96.2, fat:0,    satFat:0,    transFat:0,   fiber:0,    protein:0,    sodium:30   } },
+  { keys: ['açúcar de confeiteiro','glaçúcar','glacucar'],n:{ kcal:387, carbs:99.5, sugars:99.5, addedSugars:99.5, fat:0,    satFat:0,    transFat:0,   fiber:0,    protein:0,    sodium:1    } },
+  { keys: ['rapadura'],                                  n: { kcal:368, carbs:91.7, sugars:91.7, addedSugars:91.7, fat:0.1,  satFat:0,    transFat:0,   fiber:0,    protein:0.3,  sodium:20   } },
+  { keys: ['mel'],                                       n: { kcal:304, carbs:82.4, sugars:82.4, addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0.2,  protein:0.3,  sodium:4    } },
+  { keys: ['glucose de milho','glucose','glicose'],      n: { kcal:283, carbs:70.8, sugars:40.0, addedSugars:40.0, fat:0,    satFat:0,    transFat:0,   fiber:0,    protein:0,    sodium:25   } },
+  // ── Gorduras ─────────────────────────────────────────────────────────────────
+  { keys: ['manteiga'],                                  n: { kcal:726, carbs:0,    sugars:0,    addedSugars:0,    fat:82.5, satFat:51.4, transFat:2.1, fiber:0,    protein:0.5,  sodium:695  } },
+  { keys: ['margarina'],                                 n: { kcal:533, carbs:1.0,  sugars:0.5,  addedSugars:0,    fat:57.5, satFat:17.5, transFat:7.2, fiber:0,    protein:0.5,  sodium:480  } },
+  { keys: ['óleo de coco'],                              n: { kcal:892, carbs:0,    sugars:0,    addedSugars:0,    fat:99.1, satFat:87.0, transFat:0,   fiber:0,    protein:0,    sodium:0    } },
+  { keys: ['óleo','oleo','óleo de soja'],                n: { kcal:884, carbs:0,    sugars:0,    addedSugars:0,    fat:100,  satFat:13.6, transFat:0,   fiber:0,    protein:0,    sodium:0    } },
+  // ── Farinhas e amidos ────────────────────────────────────────────────────────
+  { keys: ['farinha de trigo','farinha'],                n: { kcal:360, carbs:74.4, sugars:2.0,  addedSugars:0,    fat:1.4,  satFat:0.2,  transFat:0,   fiber:2.3,  protein:10.5, sodium:2    } },
+  { keys: ['amido de milho','maisena','amido'],          n: { kcal:350, carbs:87.6, sugars:0.6,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:0.9,  protein:0.3,  sodium:3    } },
+  { keys: ['polvilho','tapioca','goma de tapioca'],      n: { kcal:348, carbs:86.4, sugars:0,    addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:1.3,  protein:0.3,  sodium:2    } },
+  { keys: ['fubá','farinha de milho'],                   n: { kcal:356, carbs:76.9, sugars:0.6,  addedSugars:0,    fat:1.4,  satFat:0.2,  transFat:0,   fiber:2.4,  protein:7.3,  sodium:1    } },
+  { keys: ['aveia','flocos de aveia'],                   n: { kcal:367, carbs:58.7, sugars:0.9,  addedSugars:0,    fat:7.0,  satFat:1.3,  transFat:0,   fiber:9.4,  protein:13.3, sodium:6    } },
+  { keys: ['farinha de rosca','farinha de pão'],         n: { kcal:350, carbs:70.2, sugars:2.5,  addedSugars:0,    fat:3.5,  satFat:0.6,  transFat:0,   fiber:3.0,  protein:11.5, sodium:630  } },
+  { keys: ['biscoito maisena','biscoito de maizena'],    n: { kcal:454, carbs:75.1, sugars:19.5, addedSugars:19.5, fat:14.5, satFat:5.8,  transFat:0,   fiber:1.5,  protein:6.2,  sodium:370  } },
+  { keys: ['biscoito','bolacha'],                        n: { kcal:458, carbs:67.4, sugars:20.2, addedSugars:20.2, fat:18.4, satFat:7.0,  transFat:0.5, fiber:1.5,  protein:5.9,  sodium:380  } },
+  { keys: ['pão de forma','pao de forma'],               n: { kcal:264, carbs:50.5, sugars:5.0,  addedSugars:5.0,  fat:3.2,  satFat:0.7,  transFat:0,   fiber:2.3,  protein:8.0,  sodium:485  } },
+  // ── Chocolates e cacau ───────────────────────────────────────────────────────
+  { keys: ['cacau em pó','chocolate em pó','cacao'],     n: { kcal:361, carbs:53.5, sugars:47.1, addedSugars:47.1, fat:15.5, satFat:9.0,  transFat:0,   fiber:12.0, protein:11.3, sodium:57   } },
+  { keys: ['chocolate branco'],                          n: { kcal:539, carbs:59.7, sugars:58.7, addedSugars:58.7, fat:30.4, satFat:18.1, transFat:0,   fiber:0,    protein:5.9,  sodium:90   } },
+  { keys: ['chocolate meio amargo','chocolate amargo','chocolate 70%'], n: { kcal:530, carbs:52.3, sugars:45.5, addedSugars:45.5, fat:32.4, satFat:18.5, transFat:0, fiber:7.0, protein:6.3, sodium:11 } },
+  { keys: ['chocolate ao leite','chocolate','barra de chocolate'], n: { kcal:530, carbs:57.8, sugars:50.2, addedSugars:50.2, fat:30.7, satFat:17.8, transFat:0, fiber:5.5, protein:6.8, sodium:16 } },
+  { keys: ['creme de avelã','nutella','pasta de avelã'],  n: { kcal:541, carbs:57.9, sugars:56.3, addedSugars:56.3, fat:30.9, satFat:10.8, transFat:0.2, fiber:3.4, protein:6.3,  sodium:41   } },
+  // ── Frutas ───────────────────────────────────────────────────────────────────
+  { keys: ['maracujá','maracuja','suco de maracujá'],    n: { kcal:68,  carbs:13.8, sugars:8.4,  addedSugars:0,    fat:0.7,  satFat:0.1,  transFat:0,   fiber:10.4, protein:2.4,  sodium:28   } },
+  { keys: ['limão siciliano','limao siciliano'],         n: { kcal:22,  carbs:6.9,  sugars:1.7,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:2.8,  protein:0.3,  sodium:1    } },
+  { keys: ['limão','limao'],                             n: { kcal:30,  carbs:6.9,  sugars:2.7,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:2.8,  protein:0.9,  sodium:3    } },
+  { keys: ['laranja','suco de laranja'],                 n: { kcal:47,  carbs:11.7, sugars:9.4,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:2.4,  protein:0.9,  sodium:1    } },
+  { keys: ['morango'],                                   n: { kcal:34,  carbs:7.7,  sugars:4.7,  addedSugars:0,    fat:0.4,  satFat:0,    transFat:0,   fiber:2.0,  protein:0.7,  sodium:1    } },
+  { keys: ['banana'],                                    n: { kcal:92,  carbs:23.8, sugars:12.2, addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:1.9,  protein:1.0,  sodium:1    } },
+  { keys: ['abacaxi'],                                   n: { kcal:48,  carbs:12.3, sugars:9.8,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:1.0,  protein:0.5,  sodium:1    } },
+  { keys: ['manga'],                                     n: { kcal:64,  carbs:15.5, sugars:13.7, addedSugars:0,    fat:0.3,  satFat:0.1,  transFat:0,   fiber:1.6,  protein:0.9,  sodium:2    } },
+  { keys: ['uva'],                                       n: { kcal:67,  carbs:17.2, sugars:16.3, addedSugars:0,    fat:0.4,  satFat:0.1,  transFat:0,   fiber:0.9,  protein:0.6,  sodium:2    } },
+  { keys: ['goiaba','goiabada'],                         n: { kcal:68,  carbs:14.0, sugars:8.9,  addedSugars:0,    fat:1.0,  satFat:0.3,  transFat:0,   fiber:5.4,  protein:2.5,  sodium:3    } },
+  { keys: ['caju'],                                      n: { kcal:43,  carbs:9.2,  sugars:5.9,  addedSugars:0,    fat:0.2,  satFat:0,    transFat:0,   fiber:1.7,  protein:0.9,  sodium:0    } },
+  { keys: ['melancia'],                                  n: { kcal:30,  carbs:7.6,  sugars:6.2,  addedSugars:0,    fat:0.2,  satFat:0,    transFat:0,   fiber:0.4,  protein:0.6,  sodium:1    } },
+  { keys: ['passas','uva passa'],                        n: { kcal:299, carbs:79.5, sugars:59.2, addedSugars:0,    fat:0.5,  satFat:0.1,  transFat:0,   fiber:3.7,  protein:2.5,  sodium:26   } },
+  { keys: ['polpa de fruta','polpa'],                    n: { kcal:55,  carbs:13.5, sugars:12.0, addedSugars:0,    fat:0.2,  satFat:0,    transFat:0,   fiber:1.5,  protein:0.5,  sodium:3    } },
+  { keys: ['geleia','geléia'],                           n: { kcal:234, carbs:58.5, sugars:54.7, addedSugars:54.7, fat:0,    satFat:0,    transFat:0,   fiber:0.6,  protein:0.4,  sodium:20   } },
+  // ── Oleaginosas ──────────────────────────────────────────────────────────────
+  { keys: ['amendoim'],                                  n: { kcal:567, carbs:16.1, sugars:4.0,  addedSugars:0,    fat:49.2, satFat:6.8,  transFat:0,   fiber:8.5,  protein:25.8, sodium:18   } },
+  { keys: ['pasta de amendoim'],                         n: { kcal:593, carbs:20.0, sugars:9.0,  addedSugars:9.0,  fat:51.4, satFat:10.5, transFat:0,   fiber:6.0,  protein:22.2, sodium:417  } },
+  { keys: ['paçoca','pacoca'],                           n: { kcal:490, carbs:59.3, sugars:25.0, addedSugars:25.0, fat:24.2, satFat:4.9,  transFat:0,   fiber:3.8,  protein:12.9, sodium:230  } },
+  { keys: ['castanha de caju'],                          n: { kcal:570, carbs:29.2, sugars:5.4,  addedSugars:0,    fat:46.3, satFat:9.2,  transFat:0,   fiber:3.0,  protein:18.5, sodium:12   } },
+  { keys: ['castanha do pará','castanha do brasil'],     n: { kcal:656, carbs:12.3, sugars:2.3,  addedSugars:0,    fat:66.4, satFat:16.1, transFat:0,   fiber:7.5,  protein:14.3, sodium:3    } },
+  { keys: ['nozes'],                                     n: { kcal:651, carbs:14.1, sugars:2.6,  addedSugars:0,    fat:65.2, satFat:5.1,  transFat:0,   fiber:6.7,  protein:14.3, sodium:2    } },
+  { keys: ['amêndoas','amêndoa','amendoa'],              n: { kcal:597, carbs:18.7, sugars:4.4,  addedSugars:0,    fat:52.2, satFat:3.9,  transFat:0,   fiber:12.5, protein:21.3, sodium:1    } },
+  { keys: ['pistache'],                                  n: { kcal:562, carbs:27.5, sugars:7.7,  addedSugars:0,    fat:45.4, satFat:5.6,  transFat:0,   fiber:10.3, protein:20.2, sodium:6    } },
+  { keys: ['coco ralado','coco'],                        n: { kcal:604, carbs:7.2,  sugars:6.8,  addedSugars:0,    fat:60.4, satFat:52.1, transFat:0,   fiber:13.7, protein:5.6,  sodium:21   } },
+  // ── Tubérculos e raízes ──────────────────────────────────────────────────────
+  { keys: ['batata-doce','batata doce','batata'],        n: { kcal:86,  carbs:20.4, sugars:4.2,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:3.0,  protein:1.6,  sodium:55   } },
+  { keys: ['mandioca','aipim','macaxeira'],              n: { kcal:149, carbs:36.4, sugars:0.5,  addedSugars:0,    fat:0.3,  satFat:0.1,  transFat:0,   fiber:1.9,  protein:0.7,  sodium:7    } },
+  // ── Aromatizantes ────────────────────────────────────────────────────────────
   { keys: ['baunilha','essência de baunilha','extrato de baunilha'], n: { kcal:288, carbs:12.7, sugars:12.7, addedSugars:0, fat:0.1, satFat:0, transFat:0, fiber:0, protein:0.1, sodium:9 } },
-  { keys: ['chocolate','chocolate ao leite','barra de chocolate'], n: { kcal:530, carbs:57.8, sugars:50.2, addedSugars:50.2, fat:30.7, satFat:17.8, transFat:0, fiber:5.5, protein:6.8, sodium:16 } },
-  { keys: ['gelatina','gelatina sem sabor'],n: { kcal:335, carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,   protein:83.5, sodium:261 } },
-  { keys: ['abacaxi'],                     n: { kcal:48,  carbs:12.3, sugars:9.8,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:1.0, protein:0.5,  sodium:1   } },
-  { keys: ['banana'],                      n: { kcal:92,  carbs:23.8, sugars:12.2, addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:1.9, protein:1.0,  sodium:1   } },
-  { keys: ['manga'],                       n: { kcal:64,  carbs:15.5, sugars:13.7, addedSugars:0,    fat:0.3,  satFat:0.1,  transFat:0,   fiber:1.6, protein:0.9,  sodium:2   } },
-  { keys: ['iogurte','iogurte natural'],   n: { kcal:58,  carbs:5.9,  sugars:5.9,  addedSugars:0,    fat:2.6,  satFat:1.6,  transFat:0,   fiber:0,   protein:3.4,  sodium:53  } },
-  { keys: ['sal','cloreto de sódio'],      n: { kcal:0,   carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,   protein:0,    sodium:38758 } },
-  { keys: ['fermento em pó','fermento'],   n: { kcal:53,  carbs:27.7, sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,   protein:0,    sodium:10600 } },
-  { keys: ['bicarbonato'],                 n: { kcal:0,   carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,   protein:0,    sodium:27360 } },
-  { keys: ['margarina'],                   n: { kcal:533, carbs:1.0,  sugars:0.5,  addedSugars:0,    fat:57.5, satFat:17.5, transFat:7.2, fiber:0,   protein:0.5,  sodium:480 } },
-  { keys: ['óleo','oleo','óleo de soja'],  n: { kcal:884, carbs:0,    sugars:0,    addedSugars:0,    fat:100,  satFat:13.6, transFat:0,   fiber:0,   protein:0,    sodium:0   } },
-  { keys: ['queijo'],                      n: { kcal:354, carbs:1.3,  sugars:0.5,  addedSugars:0,    fat:28.4, satFat:17.8, transFat:0.4, fiber:0,   protein:23.5, sodium:572 } }
+  { keys: ['canela','canela em pó'],                     n: { kcal:261, carbs:55.5, sugars:2.2,  addedSugars:0,    fat:3.2,  satFat:0.3,  transFat:0,   fiber:53.1, protein:3.9,  sodium:10   } },
+  { keys: ['noz-moscada','noz moscada'],                 n: { kcal:525, carbs:49.3, sugars:2.9,  addedSugars:0,    fat:36.3, satFat:25.9, transFat:0,   fiber:20.8, protein:5.8,  sodium:16   } },
+  { keys: ['cravo','cravo-da-índia'],                    n: { kcal:274, carbs:65.5, sugars:2.4,  addedSugars:0,    fat:13.0, satFat:3.4,  transFat:0,   fiber:33.9, protein:6.0,  sodium:277  } },
+  // ── Outros ───────────────────────────────────────────────────────────────────
+  { keys: ['gelatina sem sabor','gelatina'],             n: { kcal:335, carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,    protein:83.5, sodium:261  } },
+  { keys: ['sal','cloreto de sódio'],                    n: { kcal:0,   carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,    protein:0,    sodium:38758 } },
+  { keys: ['fermento em pó','fermento biológico','fermento'], n: { kcal:53, carbs:27.7, sugars:0, addedSugars:0, fat:0, satFat:0, transFat:0, fiber:0, protein:0, sodium:10600 } },
+  { keys: ['bicarbonato de sódio','bicarbonato'],        n: { kcal:0,   carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,    protein:0,    sodium:27360 } },
 ];
 
 // Convert ingredient qty to grams based on unit and name
@@ -3118,19 +3172,39 @@ function ingredientToGrams(qty, unit, name) {
     case 'cx':   return q * 500;
     case 'dz':   return q * 12 * 55;
     case 'rolo': return q * 200;
+    case 'colher': return q * 15;   // colher de sopa ≈ 15g/15ml
+    case 'xícara':
+    case 'xicara':
+      if (low.indexOf('farinha') !== -1 || low.indexOf('aveia') !== -1 || low.indexOf('amido') !== -1 || low.indexOf('maisena') !== -1 || low.indexOf('fubá') !== -1 || low.indexOf('fuba') !== -1) return q * 120;
+      if (low.indexOf('açúcar') !== -1 || low.indexOf('acucar') !== -1 || low.indexOf('rapadura') !== -1) return q * 180;
+      return q * 240; // 240ml para líquidos e demais
     default:     return q;
   }
 }
 
-// Look up ingredient in NUTRI_DB (fuzzy partial match)
+// Look up ingredient in NUTRI_DB — 3-pass: exact → input-contains-key → key-contains-input
 function lookupNutriDB(name) {
   var low = (name || '').toLowerCase().trim();
-  for (var i = 0; i < NUTRI_DB.length; i++) {
-    var entry = NUTRI_DB[i];
-    for (var j = 0; j < entry.keys.length; j++) {
-      if (low.indexOf(entry.keys[j]) !== -1 || entry.keys[j].indexOf(low) !== -1) {
-        return entry.n;
-      }
+  var i, j, entry;
+  // 1st pass: exact match
+  for (i = 0; i < NUTRI_DB.length; i++) {
+    entry = NUTRI_DB[i];
+    for (j = 0; j < entry.keys.length; j++) {
+      if (low === entry.keys[j]) return entry.n;
+    }
+  }
+  // 2nd pass: user input contains the key (e.g. "leite condensado caseiro" matches "leite condensado")
+  for (i = 0; i < NUTRI_DB.length; i++) {
+    entry = NUTRI_DB[i];
+    for (j = 0; j < entry.keys.length; j++) {
+      if (low.indexOf(entry.keys[j]) !== -1) return entry.n;
+    }
+  }
+  // 3rd pass: key contains user input (broader fallback)
+  for (i = 0; i < NUTRI_DB.length; i++) {
+    entry = NUTRI_DB[i];
+    for (j = 0; j < entry.keys.length; j++) {
+      if (entry.keys[j].indexOf(low) !== -1) return entry.n;
     }
   }
   return null;
