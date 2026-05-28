@@ -947,6 +947,26 @@
       body > *:not(#printArea) { display:none !important; }
       #printArea { display:block !important; font-family:Arial,sans-serif; font-size:12px; color:#000; }
     }
+    /* Banco de Ingredientes */
+    .bi-tabs { display:flex; border-bottom:1px solid var(--border); background:var(--cream); }
+    .bi-tab { flex:1; padding:11px 6px; border:none; border-bottom:2.5px solid transparent; background:none;
+              font-family:'Nunito',sans-serif; font-size:12px; font-weight:700; color:var(--muted); cursor:pointer; }
+    .bi-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .bi-seg { padding:14px 16px; }
+    .bi-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+    .bi-card-name { font-size:13px; font-weight:700; color:var(--text); }
+    .bi-card-source { font-size:11px; color:var(--accent); margin-top:1px; font-weight:600; }
+    .bi-card-meta { font-size:11px; color:var(--muted); margin-top:3px; line-height:1.6; }
+    .bi-card-row { display:flex; align-items:flex-start; gap:8px; }
+    .bi-card-info { flex:1; min-width:0; }
+    .bi-card-actions { display:flex; flex-direction:column; gap:4px; flex-shrink:0; }
+    .off-result { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:8px; }
+    .off-result-name { font-size:13px; font-weight:700; color:var(--text); margin-bottom:2px; }
+    .off-result-brand { font-size:11px; color:var(--muted); margin-bottom:6px; }
+    .off-result-nutri { font-size:11px; color:var(--muted); line-height:1.7; margin-bottom:8px; }
+    .bi-search-bar { display:flex; gap:8px; margin-bottom:12px; }
+    .bi-search-bar .ob-input { flex:1; }
+    .bi-empty { text-align:center; color:var(--muted); font-size:13px; padding:24px 0; }
   </style>
 </head>
 <body>
@@ -1517,6 +1537,12 @@
             <span style="font-size:14px;color:var(--text)">🌙 Modo escuro</span>
             <label class="cfg-toggle"><input type="checkbox" id="cfgDarkMode" onchange="onToggleDarkMode()" /><span class="cfg-slider"></span></label>
           </div>
+        </div>
+        <!-- Banco de Ingredientes -->
+        <div class="fin-section">
+          <div class="fin-section-title">📚 Banco de Ingredientes</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Consulte os 74 ingredientes da base TACO, busque online no Open Food Facts ou adicione ingredientes personalizados ao seu banco.</p>
+          <button class="btn-secondary" onclick="openBancoIng()" type="button" style="width:100%">📚 Gerenciar banco de ingredientes</button>
         </div>
         <!-- Backup -->
         <div class="fin-section">
@@ -2414,6 +2440,115 @@
 </div>
 
 <!-- ══════════════════════════════════
+     BANCO DE INGREDIENTES
+══════════════════════════════════ -->
+<div class="recipe-form" id="bancoIngForm" role="dialog" aria-modal="true" aria-label="Banco de Ingredientes">
+  <header class="recipe-form__header">
+    <button class="rf-cancel-btn" onclick="closeBancoIng()" type="button">← Fechar</button>
+    <span class="rf-form-title">📚 Ingredientes</span>
+    <span style="width:80px"></span>
+  </header>
+  <!-- Tabs -->
+  <div class="bi-tabs">
+    <button class="bi-tab active" id="biTab-custom" onclick="switchBancoTab('custom')" type="button">⭐ Meu banco</button>
+    <button class="bi-tab"        id="biTab-taco"   onclick="switchBancoTab('taco')"   type="button">🇧🇷 TACO (74)</button>
+    <button class="bi-tab"        id="biTab-buscar" onclick="switchBancoTab('buscar')" type="button">🔍 Buscar online</button>
+  </div>
+  <!-- Seg: meu banco (custom) -->
+  <div id="biSeg-custom" class="bi-seg" style="overflow-y:auto;flex:1">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Seus ingredientes personalizados ficam aqui e têm prioridade no cálculo nutricional.</p>
+    <div id="biCustomList"></div>
+    <button class="btn-primary" onclick="openCustomIngForm(null)" type="button" style="width:100%;margin-top:4px">+ Adicionar ingrediente manual</button>
+  </div>
+  <!-- Seg: TACO -->
+  <div id="biSeg-taco" class="bi-seg" style="display:none;overflow-y:auto;flex:1">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Base TACO/IBGE — valores por 100g. Consulte e copie para o seu banco se precisar ajustar.</p>
+    <div class="bi-search-bar">
+      <input type="search" class="ob-input" id="tacoFilter" placeholder="Filtrar ingrediente…" oninput="renderTacoList()" autocomplete="off" />
+    </div>
+    <div id="biTacoList"></div>
+  </div>
+  <!-- Seg: buscar online -->
+  <div id="biSeg-buscar" class="bi-seg" style="display:none;overflow-y:auto;flex:1">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Consulta ao <strong>Open Food Facts</strong> — banco colaborativo com milhões de produtos. Os dados retornam em valores por 100g.</p>
+    <div class="bi-search-bar">
+      <input type="text" class="ob-input" id="offSearchInput" placeholder="Ex: leite condensado moça" autocomplete="off"
+             onkeydown="if(event.key==='Enter')doOFFSearch()" />
+      <button class="btn-primary" onclick="doOFFSearch()" type="button" style="white-space:nowrap">Buscar</button>
+    </div>
+    <div id="offResultsArea"></div>
+  </div>
+</div>
+
+<!-- Custom ingredient form (add/edit) -->
+<div class="recipe-form" id="customIngForm" role="dialog" aria-modal="true" aria-label="Ingrediente personalizado">
+  <header class="recipe-form__header">
+    <button class="rf-cancel-btn" onclick="closeCustomIngForm()" type="button">← Cancelar</button>
+    <span class="rf-form-title" id="customIngTitle">Novo ingrediente</span>
+    <button class="rf-save-btn" onclick="saveCustomIng()" type="button">Salvar</button>
+  </header>
+  <div class="recipe-form__body">
+    <input type="hidden" id="customIngId" value="" />
+    <div class="rf-section">
+      <label class="ob-label">Nome do ingrediente *</label>
+      <input type="text" class="ob-input" id="customIngName" placeholder="Ex: creme de tâmaras" autocomplete="off" />
+      <p class="form-hint">Use nomes simples — o sistema usa esses termos para encontrar o ingrediente nas receitas.</p>
+    </div>
+    <div class="rf-section">
+      <label class="ob-label">Termos alternativos (separados por vírgula)</label>
+      <input type="text" class="ob-input" id="customIngAliases" placeholder="Ex: pasta de tâmara, tâmara" autocomplete="off" />
+    </div>
+    <div class="rf-section">
+      <div class="fin-section-title" style="margin-bottom:12px">Informação Nutricional — por 100g</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label class="ob-label">Calorias (kcal)</label>
+          <input type="number" class="ob-input" id="ciKcal" min="0" step="1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Carboidratos (g)</label>
+          <input type="number" class="ob-input" id="ciCarbs" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Açúcares totais (g)</label>
+          <input type="number" class="ob-input" id="ciSugars" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Açúcares adicionados (g)</label>
+          <input type="number" class="ob-input" id="ciAddedSugars" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Gorduras totais (g)</label>
+          <input type="number" class="ob-input" id="ciFat" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Gorduras saturadas (g)</label>
+          <input type="number" class="ob-input" id="ciSatFat" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Gorduras trans (g)</label>
+          <input type="number" class="ob-input" id="ciTransFat" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Fibra alimentar (g)</label>
+          <input type="number" class="ob-input" id="ciFiber" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Proteínas (g)</label>
+          <input type="number" class="ob-input" id="ciProtein" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div>
+          <label class="ob-label">Sódio (mg)</label>
+          <input type="number" class="ob-input" id="ciSodium" min="0" step="1" placeholder="0" />
+        </div>
+      </div>
+    </div>
+    <p id="customIngError" style="color:var(--red);font-size:13px;margin-top:4px"></p>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
      SCRIPT
 ══════════════════════════════════ -->
 <script>
@@ -2436,7 +2571,8 @@ var STORE = {
   MSG_TEMPLATES: 'cp_msg_templates_v1',
   TAREFAS:       'cp_tarefas_v1',
   METAS:         'cp_metas_v1',
-  DATAS_COM:     'cp_datas_com_v1'
+  DATAS_COM:     'cp_datas_com_v1',
+  NUTRI_CUSTOM:  'cp_nutri_custom_v1'
 };
 
 function storeGet(key) {
@@ -3182,25 +3318,46 @@ function ingredientToGrams(qty, unit, name) {
   }
 }
 
-// Look up ingredient in NUTRI_DB — 3-pass: exact → input-contains-key → key-contains-input
+// Look up ingredient — checks custom DB first, then NUTRI_DB
+// 3-pass per source: exact → input-contains-key → key-contains-input
 function lookupNutriDB(name) {
   var low = (name || '').toLowerCase().trim();
   var i, j, entry;
-  // 1st pass: exact match
+  var customs = nutriCustomGetAll();
+
+  // Custom DB — 3 passes (custom overrides built-in)
+  for (i = 0; i < customs.length; i++) {
+    entry = customs[i];
+    for (j = 0; j < entry.keys.length; j++) {
+      if (low === entry.keys[j]) return entry.n;
+    }
+  }
+  for (i = 0; i < customs.length; i++) {
+    entry = customs[i];
+    for (j = 0; j < entry.keys.length; j++) {
+      if (low.indexOf(entry.keys[j]) !== -1) return entry.n;
+    }
+  }
+  for (i = 0; i < customs.length; i++) {
+    entry = customs[i];
+    for (j = 0; j < entry.keys.length; j++) {
+      if (entry.keys[j].indexOf(low) !== -1) return entry.n;
+    }
+  }
+
+  // Built-in NUTRI_DB — 3 passes
   for (i = 0; i < NUTRI_DB.length; i++) {
     entry = NUTRI_DB[i];
     for (j = 0; j < entry.keys.length; j++) {
       if (low === entry.keys[j]) return entry.n;
     }
   }
-  // 2nd pass: user input contains the key (e.g. "leite condensado caseiro" matches "leite condensado")
   for (i = 0; i < NUTRI_DB.length; i++) {
     entry = NUTRI_DB[i];
     for (j = 0; j < entry.keys.length; j++) {
       if (low.indexOf(entry.keys[j]) !== -1) return entry.n;
     }
   }
-  // 3rd pass: key contains user input (broader fallback)
   for (i = 0; i < NUTRI_DB.length; i++) {
     entry = NUTRI_DB[i];
     for (j = 0; j < entry.keys.length; j++) {
@@ -6994,6 +7151,341 @@ function checkAppAlerts() {
       setTimeout(function() { showToast(a.msg, a.dur); }, delay * 2200 + 800);
     })(ai, alerts[ai]);
   }
+}
+
+// ════════════════════════════════
+// BANCO DE INGREDIENTES
+// ════════════════════════════════
+
+// ── Storage ──
+function nutriCustomGetAll() { return storeGet(STORE.NUTRI_CUSTOM) || []; }
+function nutriCustomSave(arr) { storeSet(STORE.NUTRI_CUSTOM, arr); }
+
+function nutriCustomAdd(entry) {
+  var all = nutriCustomGetAll();
+  all.unshift(entry);
+  nutriCustomSave(all);
+}
+function nutriCustomUpdate(id, entry) {
+  var all = nutriCustomGetAll();
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].id === id) { all[i] = entry; break; }
+  }
+  nutriCustomSave(all);
+}
+function nutriCustomDelete(id) {
+  nutriCustomSave(nutriCustomGetAll().filter(function(e) { return e.id !== id; }));
+}
+
+// ── Open / Close panel ──
+var _bancoTab = 'custom';
+function openBancoIng() {
+  document.getElementById('bancoIngForm').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  switchBancoTab(_bancoTab);
+}
+function closeBancoIng() {
+  document.getElementById('bancoIngForm').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ── Tab switching ──
+function switchBancoTab(tab) {
+  _bancoTab = tab;
+  var tabs = ['custom','taco','buscar'];
+  for (var ti = 0; ti < tabs.length; ti++) {
+    var el = document.getElementById('biTab-' + tabs[ti]);
+    var seg = document.getElementById('biSeg-' + tabs[ti]);
+    if (el)  el.classList[tabs[ti] === tab ? 'add' : 'remove']('active');
+    if (seg) seg.style.display = tabs[ti] === tab ? '' : 'none';
+  }
+  if (tab === 'custom') renderBancoCustom();
+  if (tab === 'taco')   renderTacoList();
+}
+
+// ── My bank tab ──
+function renderBancoCustom() {
+  var all = nutriCustomGetAll();
+  var el = document.getElementById('biCustomList');
+  if (!all.length) {
+    el.innerHTML = '<div class="bi-empty">Nenhum ingrediente personalizado ainda.<br>Adicione manualmente ou salve um resultado da busca online.</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < all.length; i++) {
+    var e = all[i];
+    var n = e.n || {};
+    html += '<div class="bi-card">' +
+      '<div class="bi-card-row">' +
+        '<div class="bi-card-info">' +
+          '<div class="bi-card-name">' + escHtml(e.keys[0]) + '</div>' +
+          '<div class="bi-card-source">' + escHtml(e.source || 'Manual') + '</div>' +
+          '<div class="bi-card-meta">' +
+            (n.kcal !== undefined ? n.kcal + ' kcal' : '') +
+            (n.carbs !== undefined ? ' · Carb ' + n.carbs + 'g' : '') +
+            (n.fat   !== undefined ? ' · Gord ' + n.fat   + 'g' : '') +
+            (n.protein !== undefined ? ' · Prot ' + n.protein + 'g' : '') +
+            (n.sodium !== undefined ? ' · Sódio ' + n.sodium + 'mg' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="bi-card-actions">' +
+          '<button class="btn-secondary" style="padding:5px 10px;font-size:12px" onclick="openCustomIngForm(\'' + escHtml(e.id) + '\')" type="button">✏️</button>' +
+          '<button class="btn-secondary" style="padding:5px 10px;font-size:12px;color:var(--red)" onclick="deleteCustomIng(\'' + escHtml(e.id) + '\')" type="button">🗑</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function deleteCustomIng(id) {
+  nutriCustomDelete(id);
+  renderBancoCustom();
+  showToast('🗑 Ingrediente removido', 2000);
+}
+
+// ── TACO tab ──
+function renderTacoList() {
+  var q = (document.getElementById('tacoFilter').value || '').toLowerCase().trim();
+  var el = document.getElementById('biTacoList');
+  var html = '';
+  var count = 0;
+  for (var i = 0; i < NUTRI_DB.length; i++) {
+    var entry = NUTRI_DB[i];
+    var label = entry.keys[0];
+    if (q && label.indexOf(q) === -1) {
+      var found = false;
+      for (var k = 1; k < entry.keys.length; k++) {
+        if (entry.keys[k].indexOf(q) !== -1) { found = true; break; }
+      }
+      if (!found) continue;
+    }
+    count++;
+    var n = entry.n;
+    var aliases = entry.keys.slice(1).join(', ');
+    html += '<div class="bi-card">' +
+      '<div class="bi-card-row">' +
+        '<div class="bi-card-info">' +
+          '<div class="bi-card-name">' + escHtml(label) + '</div>' +
+          (aliases ? '<div class="bi-card-source" style="color:var(--muted)">também: ' + escHtml(aliases) + '</div>' : '') +
+          '<div class="bi-card-meta">' +
+            n.kcal + ' kcal · Carb ' + n.carbs + 'g · Gord ' + n.fat + 'g' +
+            ' · Prot ' + n.protein + 'g · Sódio ' + n.sodium + 'mg' +
+          '</div>' +
+        '</div>' +
+        '<div class="bi-card-actions">' +
+          '<button class="btn-secondary" style="padding:5px 10px;font-size:12px" ' +
+            'onclick="copyTacoToCustom(' + i + ')" type="button" title="Copiar para meu banco">📋</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  if (!count) html = '<div class="bi-empty">Nenhum ingrediente encontrado.</div>';
+  el.innerHTML = html;
+}
+
+function copyTacoToCustom(idx) {
+  var entry = NUTRI_DB[idx];
+  var existing = nutriCustomGetAll();
+  for (var i = 0; i < existing.length; i++) {
+    if (existing[i].keys[0] === entry.keys[0]) {
+      showToast('ℹ️ Já está no seu banco.', 2000);
+      return;
+    }
+  }
+  var newEntry = { id: genId(), keys: entry.keys.slice(), n: entry.n, source: 'TACO/IBGE' };
+  nutriCustomAdd(newEntry);
+  showToast('✅ "' + entry.keys[0] + '" copiado para Meu banco!', 2500);
+}
+
+// ── Online search (Open Food Facts) ──
+function doOFFSearch() {
+  var q = (document.getElementById('offSearchInput').value || '').trim();
+  if (!q) { showToast('⚠️ Digite um ingrediente para buscar.', 2000); return; }
+  var area = document.getElementById('offResultsArea');
+  area.innerHTML = '<div class="bi-empty">🔄 Buscando no Open Food Facts…</div>';
+  var url = 'https://world.openfoodfacts.org/cgi/search.pl' +
+    '?search_terms=' + encodeURIComponent(q) +
+    '&json=1&page_size=8&action=process' +
+    '&fields=product_name,brands,product_name_pt,nutriments' +
+    '&lc=pt&cc=br';
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) { renderOFFResults(data.products || [], q); })
+    .catch(function() {
+      area.innerHTML = '<div class="bi-empty">❌ Erro ao consultar Open Food Facts.<br>Verifique sua conexão e tente novamente.</div>';
+    });
+}
+
+function renderOFFResults(products, query) {
+  var area = document.getElementById('offResultsArea');
+  var valid = [];
+  for (var i = 0; i < products.length; i++) {
+    var p = products[i];
+    var nm = p.nutriments;
+    if (!nm) continue;
+    var kcal = nm['energy-kcal_100g'] || nm['energy_100g'] ? Math.round((nm['energy-kcal_100g'] || nm['energy_100g'] / 4.184)) : null;
+    if (kcal === null) continue;
+    valid.push({ p: p, kcal: kcal });
+  }
+  if (!valid.length) {
+    area.innerHTML = '<div class="bi-empty">Nenhum resultado com dados nutricionais encontrado.<br>Tente com um nome diferente ou mais específico.</div>';
+    return;
+  }
+  var html = '<p style="font-size:11px;color:var(--muted);margin-bottom:10px">' + valid.length + ' resultados para "' + escHtml(query) + '"</p>';
+  for (var vi = 0; vi < valid.length; vi++) {
+    var item  = valid[vi];
+    var prod  = item.p;
+    var nm2   = prod.nutriments;
+    var name  = prod.product_name_pt || prod.product_name || 'Sem nome';
+    var brand = prod.brands || '';
+    var nutrData = {
+      kcal:       Math.round(nm2['energy-kcal_100g'] || nm2['energy_100g'] / 4.184 || 0),
+      carbs:      Math.round((nm2['carbohydrates_100g'] || 0) * 10) / 10,
+      sugars:     Math.round((nm2['sugars_100g'] || 0) * 10) / 10,
+      addedSugars:Math.round((nm2['added-sugars_100g'] || 0) * 10) / 10,
+      fat:        Math.round((nm2['fat_100g'] || 0) * 10) / 10,
+      satFat:     Math.round((nm2['saturated-fat_100g'] || 0) * 10) / 10,
+      transFat:   Math.round((nm2['trans-fat_100g'] || 0) * 10) / 10,
+      fiber:      Math.round((nm2['fiber_100g'] || 0) * 10) / 10,
+      protein:    Math.round((nm2['proteins_100g'] || 0) * 10) / 10,
+      sodium:     Math.round((nm2['sodium_100g'] || 0) * 10000) / 10
+    };
+    var dataStr = encodeURIComponent(JSON.stringify({ name: name, n: nutrData, brand: brand }));
+    html += '<div class="off-result">' +
+      '<div class="off-result-name">' + escHtml(name) + '</div>' +
+      (brand ? '<div class="off-result-brand">' + escHtml(brand) + '</div>' : '') +
+      '<div class="off-result-nutri">' +
+        'Kcal: ' + nutrData.kcal + ' · Carb: ' + nutrData.carbs + 'g · Gord: ' + nutrData.fat + 'g' +
+        ' · Prot: ' + nutrData.protein + 'g · Sódio: ' + nutrData.sodium + 'mg' +
+        (nutrData.fiber ? ' · Fibra: ' + nutrData.fiber + 'g' : '') +
+      '</div>' +
+      '<div style="display:flex;gap:6px">' +
+        '<button class="btn-secondary" style="padding:6px 10px;font-size:12px;flex:1" ' +
+          'onclick="saveOFFIngredient(\'' + dataStr + '\')" type="button">💾 Salvar no meu banco</button>' +
+        '<button class="btn-secondary" style="padding:6px 10px;font-size:12px;flex:1" ' +
+          'onclick="editOFFIngredient(\'' + dataStr + '\')" type="button">✏️ Ajustar e salvar</button>' +
+      '</div>' +
+    '</div>';
+  }
+  area.innerHTML = html;
+}
+
+function saveOFFIngredient(dataStr) {
+  try {
+    var data = JSON.parse(decodeURIComponent(dataStr));
+    var keyName = data.name.toLowerCase().trim();
+    var entry = {
+      id: genId(),
+      keys: [keyName],
+      n: data.n,
+      source: 'Open Food Facts' + (data.brand ? ' · ' + data.brand : '')
+    };
+    nutriCustomAdd(entry);
+    showToast('✅ "' + data.name + '" salvo no Meu banco!', 2500);
+  } catch(e) { showToast('❌ Erro ao salvar.', 2000); }
+}
+
+function editOFFIngredient(dataStr) {
+  try {
+    var data = JSON.parse(decodeURIComponent(dataStr));
+    closeBancoIng();
+    openCustomIngForm(null, data);
+  } catch(e) { showToast('❌ Erro.', 2000); }
+}
+
+// ── Custom ingredient form ──
+var _customIngEditId = null;
+function openCustomIngForm(editId, prefill) {
+  _customIngEditId = editId || null;
+  var isEdit = !!editId;
+  document.getElementById('customIngTitle').textContent = isEdit ? 'Editar ingrediente' : 'Novo ingrediente';
+  document.getElementById('customIngId').value    = editId || '';
+  document.getElementById('customIngError').textContent = '';
+  if (isEdit) {
+    var all = nutriCustomGetAll();
+    var found = null;
+    for (var i = 0; i < all.length; i++) { if (all[i].id === editId) { found = all[i]; break; } }
+    if (!found) return;
+    var kk = found.keys;
+    document.getElementById('customIngName').value    = kk[0] || '';
+    document.getElementById('customIngAliases').value = kk.slice(1).join(', ');
+    var n = found.n || {};
+    document.getElementById('ciKcal').value       = n.kcal       !== undefined ? n.kcal       : '';
+    document.getElementById('ciCarbs').value      = n.carbs      !== undefined ? n.carbs      : '';
+    document.getElementById('ciSugars').value     = n.sugars     !== undefined ? n.sugars     : '';
+    document.getElementById('ciAddedSugars').value= n.addedSugars!== undefined ? n.addedSugars: '';
+    document.getElementById('ciFat').value        = n.fat        !== undefined ? n.fat        : '';
+    document.getElementById('ciSatFat').value     = n.satFat     !== undefined ? n.satFat     : '';
+    document.getElementById('ciTransFat').value   = n.transFat   !== undefined ? n.transFat   : '';
+    document.getElementById('ciFiber').value      = n.fiber      !== undefined ? n.fiber      : '';
+    document.getElementById('ciProtein').value    = n.protein    !== undefined ? n.protein    : '';
+    document.getElementById('ciSodium').value     = n.sodium     !== undefined ? n.sodium     : '';
+  } else {
+    var pf = prefill || {};
+    var pn = pf.n || {};
+    document.getElementById('customIngName').value    = pf.name ? pf.name.toLowerCase().trim() : '';
+    document.getElementById('customIngAliases').value = '';
+    document.getElementById('ciKcal').value        = pn.kcal       || '';
+    document.getElementById('ciCarbs').value       = pn.carbs      || '';
+    document.getElementById('ciSugars').value      = pn.sugars     || '';
+    document.getElementById('ciAddedSugars').value = pn.addedSugars|| '';
+    document.getElementById('ciFat').value         = pn.fat        || '';
+    document.getElementById('ciSatFat').value      = pn.satFat     || '';
+    document.getElementById('ciTransFat').value    = pn.transFat   || '';
+    document.getElementById('ciFiber').value       = pn.fiber      || '';
+    document.getElementById('ciProtein').value     = pn.protein    || '';
+    document.getElementById('ciSodium').value      = pn.sodium     || '';
+  }
+  document.getElementById('customIngForm').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function() { document.getElementById('customIngName').focus(); }, 350);
+}
+
+function closeCustomIngForm() {
+  document.getElementById('customIngForm').classList.remove('open');
+  document.body.style.overflow = '';
+  openBancoIng();
+}
+
+function saveCustomIng() {
+  var name = document.getElementById('customIngName').value.trim().toLowerCase();
+  if (!name) {
+    document.getElementById('customIngError').textContent = 'Informe o nome do ingrediente.';
+    return;
+  }
+  var aliasRaw = document.getElementById('customIngAliases').value;
+  var aliases = [];
+  if (aliasRaw.trim()) {
+    var parts = aliasRaw.split(',');
+    for (var pi = 0; pi < parts.length; pi++) {
+      var a = parts[pi].trim().toLowerCase();
+      if (a) aliases.push(a);
+    }
+  }
+  var keys = [name].concat(aliases);
+  var nuV = function(id) { return Number(document.getElementById(id).value) || 0; };
+  var n = {
+    kcal:       nuV('ciKcal'),
+    carbs:      nuV('ciCarbs'),
+    sugars:     nuV('ciSugars'),
+    addedSugars:nuV('ciAddedSugars'),
+    fat:        nuV('ciFat'),
+    satFat:     nuV('ciSatFat'),
+    transFat:   nuV('ciTransFat'),
+    fiber:      nuV('ciFiber'),
+    protein:    nuV('ciProtein'),
+    sodium:     nuV('ciSodium')
+  };
+  var entry = { id: _customIngEditId || genId(), keys: keys, n: n, source: 'Manual' };
+  if (_customIngEditId) {
+    nutriCustomUpdate(_customIngEditId, entry);
+    showToast('✅ Ingrediente atualizado!', 2000);
+  } else {
+    nutriCustomAdd(entry);
+    showToast('✅ Ingrediente salvo no Meu banco!', 2000);
+  }
+  closeCustomIngForm();
 }
 
 // ── Offline toast ──
