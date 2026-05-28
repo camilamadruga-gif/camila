@@ -967,6 +967,47 @@
     .bi-search-bar { display:flex; gap:8px; margin-bottom:12px; }
     .bi-search-bar .ob-input { flex:1; }
     .bi-empty { text-align:center; color:var(--muted); font-size:13px; padding:24px 0; }
+    /* ── Font Size Overrides ── */
+    .fs-btn { flex:1; padding:10px 4px; border:1.5px solid var(--border); border-radius:10px; background:var(--surface); color:var(--muted); cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; transition:all .15s; }
+    .fs-btn.active { border-color:var(--accent); background:rgba(200,132,58,.1); color:var(--accent); }
+    html[data-fs="g"] body { font-size:18px; }
+    html[data-fs="g"] .ob-input { font-size:17px; }
+    html[data-fs="g"] .ob-label { font-size:13px; }
+    html[data-fs="g"] .stock-item__name,
+    html[data-fs="g"] .shop-item__name,
+    html[data-fs="g"] .recipe-card__name,
+    html[data-fs="g"] .cl-name,
+    html[data-fs="g"] .alert-item__name,
+    html[data-fs="g"] .product-item__name,
+    html[data-fs="g"] .lote-name,
+    html[data-fs="g"] .btn-primary,
+    html[data-fs="g"] .btn-secondary { font-size:17px; }
+    html[data-fs="g"] .stock-item__meta,
+    html[data-fs="g"] .shop-item__meta,
+    html[data-fs="g"] .recipe-card__meta,
+    html[data-fs="g"] .recipe-card__price,
+    html[data-fs="g"] .lote-meta,
+    html[data-fs="g"] .cl-sub { font-size:14px; }
+    html[data-fs="g"] .nav-tab__label { font-size:11px; }
+    html[data-fs="x"] body { font-size:20px; }
+    html[data-fs="x"] .ob-input { font-size:19px; }
+    html[data-fs="x"] .ob-label { font-size:14px; }
+    html[data-fs="x"] .stock-item__name,
+    html[data-fs="x"] .shop-item__name,
+    html[data-fs="x"] .recipe-card__name,
+    html[data-fs="x"] .cl-name,
+    html[data-fs="x"] .alert-item__name,
+    html[data-fs="x"] .product-item__name,
+    html[data-fs="x"] .lote-name,
+    html[data-fs="x"] .btn-primary,
+    html[data-fs="x"] .btn-secondary { font-size:19px; }
+    html[data-fs="x"] .stock-item__meta,
+    html[data-fs="x"] .shop-item__meta,
+    html[data-fs="x"] .recipe-card__meta,
+    html[data-fs="x"] .recipe-card__price,
+    html[data-fs="x"] .lote-meta,
+    html[data-fs="x"] .cl-sub { font-size:16px; }
+    html[data-fs="x"] .nav-tab__label { font-size:12px; }
     /* Beta Gate */
     #betaGate { display:none; position:fixed; inset:0; z-index:9999; background:var(--cream);
                 flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; }
@@ -1573,6 +1614,23 @@
           <div class="toggle-row">
             <span style="font-size:14px;color:var(--text)">🌙 Modo escuro</span>
             <label class="cfg-toggle"><input type="checkbox" id="cfgDarkMode" onchange="onToggleDarkMode()" /><span class="cfg-slider"></span></label>
+          </div>
+          <div style="margin-top:14px">
+            <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Tamanho da fonte</p>
+            <div style="display:flex;gap:8px">
+              <button class="fs-btn" id="fsBtnN" onclick="setFontSize('n')" type="button">
+                <div style="font-size:15px">A</div>
+                <div style="font-size:11px;margin-top:2px">Normal</div>
+              </button>
+              <button class="fs-btn" id="fsBtnG" onclick="setFontSize('g')" type="button">
+                <div style="font-size:18px">A</div>
+                <div style="font-size:11px;margin-top:2px">Grande</div>
+              </button>
+              <button class="fs-btn" id="fsBtnX" onclick="setFontSize('x')" type="button">
+                <div style="font-size:21px">A</div>
+                <div style="font-size:11px;margin-top:2px">Extra</div>
+              </button>
+            </div>
           </div>
         </div>
         <!-- Categorias de Produtos -->
@@ -7027,6 +7085,28 @@ function calcRecipeCostFromStock() {
 // CONFIGURAÇÕES
 // ════════════════════════════════
 // ════════════════════════════════
+// FONT SIZE
+// ════════════════════════════════
+function applyFontSize() {
+  var s  = storeGet(STORE.SETTINGS) || {};
+  var fs = s.fontSize || 'n';
+  document.documentElement.setAttribute('data-fs', fs);
+}
+function setFontSize(size) {
+  var s = storeGet(STORE.SETTINGS) || {};
+  s.fontSize = size;
+  storeSet(STORE.SETTINGS, s);
+  applyFontSize();
+  var ids = { n: 'fsBtnN', g: 'fsBtnG', x: 'fsBtnX' };
+  var keys = Object.keys(ids);
+  for (var i = 0; i < keys.length; i++) {
+    var el = document.getElementById(ids[keys[i]]);
+    if (el) { if (keys[i] === size) el.classList.add('active'); else el.classList.remove('active'); }
+  }
+  showToast('Tamanho de fonte atualizado.', 1800);
+}
+
+// ════════════════════════════════
 // DARK MODE
 // ════════════════════════════════
 function applyTheme() {
@@ -7318,6 +7398,13 @@ function renderConfig() {
   document.getElementById('cfgAlertaAniversario').checked = settings.alertaAniversario !== false;
   document.getElementById('cfgAlertaMeta').checked        = settings.alertaMeta        !== false;
   document.getElementById('cfgDarkMode').checked          = !!settings.darkMode;
+  var fs = settings.fontSize || 'n';
+  var fsBtns = { n: 'fsBtnN', g: 'fsBtnG', x: 'fsBtnX' };
+  var fsBtnKeys = Object.keys(fsBtns);
+  for (var fbi = 0; fbi < fsBtnKeys.length; fbi++) {
+    var el = document.getElementById(fsBtns[fsBtnKeys[fbi]]);
+    if (el) { if (fsBtnKeys[fbi] === fs) el.classList.add('active'); else el.classList.remove('active'); }
+  }
   renderCategoriasConfig();
 }
 
@@ -7897,6 +7984,7 @@ window.addEventListener('offline', function() { showToast('📵 Sem conexão —
 window.addEventListener('online',  function() { showToast('✅ Conexão restaurada', 3000); });
 if (!navigator.onLine) showToast('📵 Sem conexão — modo offline ativo', 0);
 try { applyTheme(); } catch(e) {}
+try { applyFontSize(); } catch(e) {}
 try { checkAppAlerts(); } catch(e) {}
 </script>
 
