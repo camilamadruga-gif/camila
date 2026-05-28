@@ -930,6 +930,12 @@
     /* Agenda tarefa row */
     .tarefa-row { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
     .tarefa-row:last-child { border-bottom:none; }
+    /* Print */
+    #printArea { display:none; }
+    @media print {
+      body > *:not(#printArea) { display:none !important; }
+      #printArea { display:block !important; font-family:Arial,sans-serif; font-size:12px; color:#000; }
+    }
   </style>
 </head>
 <body>
@@ -1405,6 +1411,7 @@
         <div class="rel-period">
           <select class="ob-input" id="relMonthSel" onchange="relChangePeriod()" style="flex:1"></select>
           <select class="ob-input" id="relYearSel"  onchange="relChangePeriod()" style="width:90px"></select>
+          <button class="btn-secondary" onclick="generateRelatorioMensal()" type="button" style="padding:8px 10px;flex-shrink:0" title="Exportar PDF">📄</button>
         </div>
         <div class="fin-section">
           <div class="fin-section-title">📦 Faturamento por Produto</div>
@@ -2602,6 +2609,7 @@ function onSaveStock() {
   renderStock();
   renderDashboard();
   shopRender();
+  showToast('✅ Item salvo!', 2000);
 }
 
 function openConfirmDelete(itemName, callback) {
@@ -2843,6 +2851,7 @@ function onSavePurchase() {
   closeModal('modalPurchase');
   renderDashboard();
   shopRender();
+  showToast('✅ Compra registrada!', 2000);
 }
 
 function openAddManualItem() {
@@ -2868,6 +2877,7 @@ function onSaveManualItem() {
   });
   closeModal('modalManualItem');
   renderShopManual();
+  showToast('✅ Item adicionado!', 2000);
 }
 
 // ════════════════════════════════
@@ -3097,6 +3107,22 @@ function renderRecipeDetail() {
     '</div>';
   }
 
+  // Build etiqueta buttons per size
+  var etiqBtns = '';
+  var sizesDef2 = [
+    { key: 'g', label: (rSizes.g || 'G') },
+    { key: 'm', label: (rSizes.m || 'M') },
+    { key: 'p', label: (rSizes.p || 'P') }
+  ];
+  for (var ei = 0; ei < sizesDef2.length; ei++) {
+    var esd = sizesDef2[ei];
+    var epr = Number(r.price && r.price[esd.key]) || 0;
+    var eyd = Number(r.yield && r.yield[esd.key]) || 0;
+    if (epr === 0 && eyd === 0) continue;
+    etiqBtns += '<button class="btn-secondary" style="padding:6px 12px;font-size:13px" ' +
+      'onclick="generateEtiqueta(\'' + id + '\',\'' + esd.key + '\')" type="button">🏷 ' + escHtml(esd.label) + '</button>';
+  }
+
   var html =
     '<div class="detail-header">' +
       '<button class="detail-back-btn" onclick="closeRecipeDetail()" type="button">← Voltar</button>' +
@@ -3125,6 +3151,11 @@ function renderRecipeDetail() {
       '<h3 class="section-title" style="margin-top:4px">🥗 Tabela Nutricional</h3>' +
       '<p style="font-size:11px;color:var(--muted);margin-bottom:10px">Por 100g</p>' +
       '<div class="nut-table">' + nutHTML + '</div>' : '') +
+    (etiqBtns ?
+      '<div style="margin-top:16px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px">' +
+      '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">🏷 Imprimir Etiqueta</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:8px">' + etiqBtns + '</div>' +
+      '</div>' : '') +
     '<div style="height:20px"></div>';
 
   document.getElementById('rcDetailView').innerHTML = html;
@@ -3319,6 +3350,7 @@ function onSaveRecipe() {
     recipeView     = 'detail';
   }
   renderRecipes();
+  showToast('✅ Receita salva!', 2000);
 }
 
 function openDeleteRecipe(id) {
@@ -3482,6 +3514,7 @@ function onSaveTaxas() {
     dinheiro: Number(document.getElementById('taxaDinheiro').value) || 0
   });
   renderFinanceiro();
+  showToast('✅ Taxas salvas!', 2000);
 }
 
 function renderFinResumo() {
@@ -3646,6 +3679,7 @@ function onSaveCustoFixo() {
   }
   closeModal('modalCustoFixo');
   renderFinanceiro();
+  showToast('✅ Custo fixo salvo!', 2000);
 }
 
 function openDeleteCustoFixo(id) {
@@ -3693,6 +3727,7 @@ function onSaveCustoVar() {
   }
   closeModal('modalCustoVar');
   renderFinanceiro();
+  showToast('✅ Custo variável salvo!', 2000);
 }
 
 function openDeleteCustoVar(id) {
@@ -3858,6 +3893,7 @@ function buildVendaCardHTML(v) {
         '<span class="pay-badge">' + escHtml(PAY_LABEL[v.payment] || v.payment) + '</span>' +
         '<span style="font-size:11px;color:var(--muted)">' + date + '</span>' +
       '</div>' +
+      '<button class="venda-delete-btn" onclick="generateNotaVenda(\'' + id + '\')" type="button" aria-label="Imprimir nota" style="margin-right:4px">🧾</button>' +
       '<button class="venda-delete-btn" onclick="openDeleteVenda(\'' + id + '\')" type="button" aria-label="Excluir venda">🗑</button>' +
     '</div>' +
   '</div>';
@@ -3934,6 +3970,7 @@ function onSaveVenda() {
   closeModal('modalVenda');
   renderVendas();
   renderDashboard();
+  showToast('✅ Venda registrada!', 2000);
 }
 
 function openDeleteVenda(id) {
@@ -4063,6 +4100,7 @@ function buildEncCardHTML(e) {
     (e.obs ? '<div class="enc-card__obs">' + escHtml(e.obs) + '</div>' : '') +
     '<div class="enc-card__actions">' +
       nextBtn +
+      '<button class="enc-action-btn" onclick="generateNotaEncomenda(\'' + id + '\')" type="button">🧾 Nota</button>' +
       '<button class="enc-action-btn" onclick="openEditEncomenda(\'' + id + '\')" type="button">✏️ Editar</button>' +
       '<button class="enc-action-btn enc-action-btn--del" onclick="openDeleteEncomenda(\'' + id + '\')" type="button">🗑 Excluir</button>' +
     '</div>' +
@@ -4137,6 +4175,7 @@ function onSaveEncomenda() {
   closeModal('modalEncomenda');
   renderEncomendas();
   renderDashboard();
+  showToast('✅ Encomenda salva!', 2000);
 }
 
 function openDeleteEncomenda(id) {
@@ -4470,6 +4509,7 @@ function onRegistrarLote() {
   renderProducao();
   renderDashboard();
   renderStock();
+  showToast('✅ Lote registrado!', 2000);
 }
 
 function openDeleteLote(id) {
@@ -5042,6 +5082,7 @@ function onSaveTemplate() {
   templateSave(tpls);
   closeModal('modalTemplate');
   if (clView === 'detail' && clSelectedId) renderClDetail(clSelectedId);
+  showToast('✅ Mensagem salva!', 2000);
 }
 
 function deleteTemplate(id) {
@@ -5107,6 +5148,7 @@ function onSaveCliente() {
   }
   closeClForm();
   renderClientes();
+  showToast('✅ Cliente salvo!', 2000);
 }
 
 // ════════════════════════════════
@@ -5234,6 +5276,222 @@ function onSaveForn() {
   }
   closeModal('modalFornecedor');
   renderFornecedores();
+  showToast('✅ Fornecedor salvo!', 2000);
+}
+
+// ════════════════════════════════
+// PDF / IMPRESSÃO
+// ════════════════════════════════
+function printDocument(html) {
+  var area = document.getElementById('printArea');
+  area.innerHTML = html;
+  setTimeout(function() {
+    window.print();
+    setTimeout(function() { area.innerHTML = ''; }, 3000);
+  }, 80);
+}
+
+function getEmpresaNome() {
+  var p = storeGet(STORE.PROFILE) || {};
+  return p.companyName || 'CADIM PUDIM';
+}
+
+function pdfStyles() {
+  return 'font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#111;line-height:1.5;';
+}
+
+function generateEtiqueta(recipeId, sizeKey) {
+  var r = recipeFindById(recipeId);
+  if (!r) return;
+  var empresa = getEmpresaNome();
+  var sLabel  = (r.sizes && r.sizes[sizeKey]) || sizeKey.toUpperCase();
+  var yd      = Number(r.yield && r.yield[sizeKey]) || 0;
+  var pr      = Number(r.price && r.price[sizeKey]) || 0;
+  var cost    = Number(r.cost) || 0;
+
+  var ingList = '';
+  if (r.ingredients && r.ingredients.length) {
+    var names = [];
+    for (var i = 0; i < r.ingredients.length; i++) names.push(r.ingredients[i].name);
+    ingList = names.join(', ');
+  }
+
+  var n = r.nutrition || {};
+  var nutRows = [
+    { label: 'Valor energético', val: n.calories, unit: 'kcal' },
+    { label: 'Carboidratos',     val: n.carbs,    unit: 'g' },
+    { label: 'Proteínas',        val: n.protein,  unit: 'g' },
+    { label: 'Gorduras totais',  val: n.fat,      unit: 'g' },
+    { label: 'Sódio',            val: n.sodium,   unit: 'mg' }
+  ];
+  var nutHTML = '';
+  for (var ni = 0; ni < nutRows.length; ni++) {
+    var nr = nutRows[ni];
+    if (nr.val === null || nr.val === undefined || nr.val === '') continue;
+    nutHTML += '<tr><td style="padding:3px 6px">' + nr.label + '</td>' +
+      '<td style="padding:3px 6px;text-align:right;font-weight:700">' + nr.val + '&nbsp;' + nr.unit + '</td></tr>';
+  }
+
+  var today  = new Date();
+  var expiry = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+  var fmt = function(d) { return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); };
+
+  var html = '<div style="' + pdfStyles() + 'max-width:320px;margin:0 auto;border:2px solid #222;padding:14px">' +
+    '<div style="text-align:center;border-bottom:2px solid #222;padding-bottom:8px;margin-bottom:8px">' +
+    '<div style="font-size:20px;font-weight:900;letter-spacing:1px">' + escHtml(empresa) + '</div>' +
+    '<div style="font-size:15px;font-weight:700;margin-top:4px">' + escHtml(r.name) + '</div>' +
+    '<div style="font-size:13px;margin-top:2px">' + escHtml(sLabel) + (yd > 0 ? ' &nbsp;·&nbsp; ' + yd + ' unidades' : '') + '</div>' +
+    (pr > 0 ? '<div style="font-size:13px;font-weight:700;margin-top:2px">R$ ' + pr.toFixed(2).replace('.',',') + '</div>' : '') +
+    '</div>' +
+    (ingList ? '<div style="margin-bottom:8px"><strong>Ingredientes:</strong><br>' + escHtml(ingList) + '</div>' : '') +
+    '<div style="margin-bottom:8px">' +
+    '<strong>Fabricação:</strong> ' + fmt(today) + '&nbsp;&nbsp;' +
+    '<strong>Validade:</strong> ' + fmt(expiry) + ' (7 dias)' +
+    '</div>' +
+    (nutHTML ?
+      '<div style="border-top:1px solid #888;padding-top:8px">' +
+      '<div style="font-weight:900;font-size:13px;margin-bottom:4px;text-transform:uppercase">Informação Nutricional</div>' +
+      '<div style="font-size:11px;color:#555;margin-bottom:4px">Porção: 100 g</div>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:12px;border-top:2px solid #222;border-bottom:2px solid #222">' +
+      nutHTML + '</table></div>' : '') +
+    '<div style="text-align:center;margin-top:10px;font-size:11px;color:#555">Feito com amor 💛</div>' +
+    '</div>';
+
+  printDocument(html);
+}
+
+function generateNotaVenda(vendaId) {
+  var all = vendaGetAll();
+  var v = null;
+  for (var i = 0; i < all.length; i++) { if (all[i].id === vendaId) { v = all[i]; break; } }
+  if (!v) return;
+  var empresa = getEmpresaNome();
+  var d = new Date(v.date || Date.now());
+  var dateStr = ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();
+
+  var html = '<div style="' + pdfStyles() + 'max-width:380px;margin:0 auto">' +
+    '<div style="text-align:center;border-bottom:2px solid #222;padding-bottom:10px;margin-bottom:14px">' +
+    '<div style="font-size:22px;font-weight:900">' + escHtml(empresa) + '</div>' +
+    '<div style="font-size:14px;color:#555;margin-top:4px">Nota de Venda</div>' +
+    '<div style="font-size:13px;margin-top:4px">Data: ' + dateStr + '</div>' +
+    '</div>' +
+    '<table style="width:100%;border-collapse:collapse;font-size:13px">' +
+    '<tr><td style="padding:6px 0;color:#555">Produto</td><td style="padding:6px 0;font-weight:700;text-align:right">' + escHtml(v.product) + '</td></tr>' +
+    '<tr><td style="padding:6px 0;color:#555">Quantidade</td><td style="padding:6px 0;text-align:right">' + (v.qty || 1) + ' unidade(s)</td></tr>' +
+    '<tr><td style="padding:6px 0;color:#555">Valor unit.</td><td style="padding:6px 0;text-align:right">' + formatBRL(v.value || 0) + '</td></tr>' +
+    '<tr><td style="padding:6px 0;color:#555">Canal</td><td style="padding:6px 0;text-align:right">' + escHtml(CANAL_LABEL[v.channel] || v.channel || '—') + '</td></tr>' +
+    '<tr><td style="padding:6px 0;color:#555">Pagamento</td><td style="padding:6px 0;text-align:right">' + escHtml(PAY_LABEL[v.payment] || v.payment || '—') + '</td></tr>' +
+    '</table>' +
+    '<div style="border-top:2px solid #222;margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-size:16px;font-weight:900">' +
+    '<span>TOTAL</span><span>' + formatBRL(v.total || 0) + '</span></div>' +
+    '<div style="text-align:center;margin-top:20px;font-size:13px;color:#555">Obrigada pela preferência! 💛<br>' + escHtml(empresa) + '</div>' +
+    '</div>';
+
+  printDocument(html);
+}
+
+function generateNotaEncomenda(encId) {
+  var all = encomendaGetAll();
+  var e = null;
+  for (var i = 0; i < all.length; i++) { if (all[i].id === encId) { e = all[i]; break; } }
+  if (!e) return;
+  var empresa = getEmpresaNome();
+  var STATUS_LABEL = { pendente: 'Pendente', pronto: 'Pronto', entregue: 'Entregue' };
+  var dt = e.deliveryDate ? e.deliveryDate.split('-').reverse().join('/') : '—';
+
+  var html = '<div style="' + pdfStyles() + 'max-width:380px;margin:0 auto">' +
+    '<div style="text-align:center;border-bottom:2px solid #222;padding-bottom:10px;margin-bottom:14px">' +
+    '<div style="font-size:22px;font-weight:900">' + escHtml(empresa) + '</div>' +
+    '<div style="font-size:14px;color:#555;margin-top:4px">Nota de Encomenda</div>' +
+    '</div>' +
+    '<table style="width:100%;border-collapse:collapse;font-size:13px">' +
+    '<tr><td style="padding:6px 0;color:#555">Cliente</td><td style="padding:6px 0;font-weight:700;text-align:right">' + escHtml(e.client) + '</td></tr>' +
+    '<tr><td style="padding:6px 0;color:#555">Produto</td><td style="padding:6px 0;text-align:right">' + escHtml(e.product) + '</td></tr>' +
+    '<tr><td style="padding:6px 0;color:#555">Entrega</td><td style="padding:6px 0;text-align:right">' + dt + '</td></tr>' +
+    '<tr><td style="padding:6px 0;color:#555">Status</td><td style="padding:6px 0;text-align:right">' + escHtml(STATUS_LABEL[e.status] || e.status || '—') + '</td></tr>' +
+    (e.obs ? '<tr><td style="padding:6px 0;color:#555">Obs.</td><td style="padding:6px 0;text-align:right">' + escHtml(e.obs) + '</td></tr>' : '') +
+    '</table>' +
+    '<div style="border-top:2px solid #222;margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-size:16px;font-weight:900">' +
+    '<span>VALOR</span><span>' + formatBRL(e.value || 0) + '</span></div>' +
+    '<div style="text-align:center;margin-top:20px;font-size:13px;color:#555">Obrigada pela preferência! 💛<br>' + escHtml(empresa) + '</div>' +
+    '</div>';
+
+  printDocument(html);
+}
+
+function generateRelatorioMensal() {
+  var empresa   = getEmpresaNome();
+  var monthName = MONTHS_FULL[relMonthNum] || '';
+  var vendas    = relGetFilteredVendas();
+
+  var gross = 0;
+  var byProduct = {};
+  var byCanal   = {};
+  var byPay     = {};
+  for (var i = 0; i < vendas.length; i++) {
+    var v    = vendas[i];
+    var tot  = Number(v.total) || 0;
+    gross += tot;
+    var pk = (v.product || 'Outros').substring(0, 40);
+    var ck = CANAL_LABEL[v.channel] || v.channel || 'Outro';
+    var wk = PAY_LABEL[v.payment]   || v.payment  || 'Outro';
+    if (!byProduct[pk]) byProduct[pk] = 0;  byProduct[pk] += tot;
+    if (!byCanal[ck])   byCanal[ck]   = 0;  byCanal[ck]   += tot;
+    if (!byPay[wk])     byPay[wk]     = 0;  byPay[wk]     += tot;
+  }
+
+  function sortedRows(map) {
+    var rows = [];
+    for (var k in map) { if (Object.prototype.hasOwnProperty.call(map, k)) rows.push({ name: k, val: map[k] }); }
+    rows.sort(function(a, b) { return b.val - a.val; });
+    return rows;
+  }
+
+  function buildTable(rows) {
+    var h = '<table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px">';
+    for (var ri = 0; ri < rows.length; ri++) {
+      var bg = ri % 2 === 0 ? '#f9f6f0' : '#fff';
+      h += '<tr style="background:' + bg + '">' +
+        '<td style="padding:5px 8px">' + escHtml(rows[ri].name) + '</td>' +
+        '<td style="padding:5px 8px;text-align:right;font-weight:700">' + formatBRL(rows[ri].val) + '</td>' +
+        '</tr>';
+    }
+    h += '</table>';
+    return h;
+  }
+
+  var settings = storeGet(STORE.SETTINGS) || {};
+  var goal     = Number(settings.goalRevenue) || 0;
+  var pct      = goal > 0 ? Math.round((gross / goal) * 100) : null;
+
+  var html = '<div style="' + pdfStyles() + 'max-width:500px;margin:0 auto">' +
+    '<div style="text-align:center;border-bottom:2px solid #222;padding-bottom:10px;margin-bottom:16px">' +
+    '<div style="font-size:22px;font-weight:900">' + escHtml(empresa) + '</div>' +
+    '<div style="font-size:15px;font-weight:700;margin-top:4px">Relatório de Faturamento</div>' +
+    '<div style="font-size:13px;color:#555;margin-top:2px">' + monthName + ' / ' + relYearNum + '</div>' +
+    '</div>' +
+
+    '<div style="background:#f9f6f0;border-radius:8px;padding:12px;margin-bottom:16px;text-align:center">' +
+    '<div style="font-size:13px;color:#555">Faturamento Total</div>' +
+    '<div style="font-size:28px;font-weight:900;margin:4px 0">' + formatBRL(gross) + '</div>' +
+    (pct !== null ? '<div style="font-size:13px;color:#555">Meta: ' + formatBRL(goal) + ' &nbsp;·&nbsp; ' + pct + '% atingido</div>' : '') +
+    '<div style="font-size:13px;color:#555">' + vendas.length + ' venda(s) no período</div>' +
+    '</div>' +
+
+    '<div style="font-weight:900;font-size:13px;margin-bottom:6px;text-transform:uppercase;border-bottom:1px solid #ccc;padding-bottom:4px">Por Produto</div>' +
+    (byProduct ? buildTable(sortedRows(byProduct)) : '<p style="color:#999">Sem dados</p>') +
+
+    '<div style="font-weight:900;font-size:13px;margin-bottom:6px;text-transform:uppercase;border-bottom:1px solid #ccc;padding-bottom:4px">Por Canal</div>' +
+    (byCanal ? buildTable(sortedRows(byCanal)) : '<p style="color:#999">Sem dados</p>') +
+
+    '<div style="font-weight:900;font-size:13px;margin-bottom:6px;text-transform:uppercase;border-bottom:1px solid #ccc;padding-bottom:4px">Por Pagamento</div>' +
+    (byPay ? buildTable(sortedRows(byPay)) : '<p style="color:#999">Sem dados</p>') +
+
+    '<div style="text-align:center;color:#999;font-size:11px;margin-top:16px;border-top:1px solid #ccc;padding-top:10px">' +
+    'Gerado em ' + new Date().toLocaleDateString('pt-BR') + ' · ' + escHtml(empresa) +
+    '</div></div>';
+
+  printDocument(html);
 }
 
 // ════════════════════════════════
@@ -5368,6 +5626,7 @@ function onSaveMeta() {
   metaSave(items);
   closeModal('modalMeta');
   renderMetas();
+  showToast('✅ Meta salva!', 2000);
 }
 
 function renderMetas() {
@@ -5464,6 +5723,7 @@ function onSaveDataCom() {
   dataComSave(items);
   closeModal('modalDataCom');
   renderDatasCom();
+  showToast('✅ Data salva!', 2000);
 }
 
 function deleteDataCom(id) {
@@ -5808,5 +6068,6 @@ if (!navigator.onLine) showToast('📵 Sem conexão — modo offline ativo', 0);
 try { checkAppAlerts(); } catch(e) {}
 </script>
 
+<div id="printArea"></div>
 </body>
 </html>
