@@ -590,9 +590,37 @@
     .lote-check-label { font-size: 13px; color: var(--text); line-height: 1.4; cursor: pointer; }
 
     /* ── Mais: Vendas / Encomendas / Compras ── */
-    .mais-seg-nav { display:flex; gap:4px; margin-bottom:16px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:4px; }
-    .mais-seg { flex:1; padding:8px 2px; border:none; border-radius:8px; font-size:11px; font-weight:700; background:none; color:var(--muted); cursor:pointer; transition:background .15s,color .15s; }
+    .mais-seg-nav { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin-bottom:16px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:4px; }
+    .mais-seg { padding:8px 2px; border:none; border-radius:8px; font-size:11px; font-weight:700; background:none; color:var(--muted); cursor:pointer; transition:background .15s,color .15s; }
     .mais-seg.active { background:var(--accent); color:#fff; }
+    /* Clientes */
+    .cl-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:8px; cursor:pointer; transition:box-shadow .15s; }
+    .cl-card:active { box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    .cl-card-header { display:flex; align-items:center; gap:10px; }
+    .cl-avatar { width:40px; height:40px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff; font-weight:700; flex-shrink:0; }
+    .cl-name { font-weight:700; color:var(--text); font-size:15px; }
+    .cl-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+    .cl-vip { display:inline-block; background:#D4A853; color:#fff; border-radius:6px; font-size:10px; font-weight:800; padding:2px 7px; margin-left:6px; vertical-align:middle; }
+    .cl-detail-header { display:flex; align-items:center; gap:12px; padding:16px 0 12px; border-bottom:1px solid var(--border); margin-bottom:16px; }
+    .cl-detail-avatar { width:56px; height:56px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-size:26px; color:#fff; font-weight:700; flex-shrink:0; }
+    .cl-detail-name { font-size:20px; font-weight:800; color:var(--text); }
+    .cl-detail-meta { font-size:13px; color:var(--muted); }
+    .cl-info-row { display:flex; gap:8px; margin-bottom:6px; font-size:13px; }
+    .cl-info-label { color:var(--muted); min-width:100px; }
+    .cl-info-val { color:var(--text); font-weight:600; }
+    .cl-section-title { font-weight:700; color:var(--text); font-size:13px; margin:16px 0 8px; text-transform:uppercase; letter-spacing:.5px; }
+    .cl-order-item { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:10px 12px; margin-bottom:6px; font-size:13px; }
+    .tpl-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; margin-bottom:8px; }
+    .tpl-card-title { font-weight:700; font-size:13px; color:var(--text); margin-bottom:4px; }
+    .tpl-card-text { font-size:12px; color:var(--muted); white-space:pre-wrap; }
+    .tpl-actions { display:flex; gap:6px; margin-top:8px; }
+    /* Fornecedores */
+    .forn-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:8px; }
+    .forn-card-header { display:flex; align-items:center; gap:12px; }
+    .forn-icon { width:44px; height:44px; border-radius:12px; background:var(--cream); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+    .forn-name { font-weight:700; color:var(--text); font-size:15px; }
+    .forn-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+    .forn-actions { display:flex; gap:6px; margin-top:10px; justify-content:flex-end; }
     .venda-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
     .venda-stat { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px; }
     .venda-stat__label { font-size:11px; color:var(--muted); margin-bottom:4px; font-weight:600; }
@@ -1148,10 +1176,12 @@
     <!-- ── MAIS: Vendas / Encomendas / Compras ── -->
     <section class="section" id="section-mais" aria-label="Mais">
       <div class="mais-seg-nav">
-        <button class="mais-seg active" data-seg="vendas"     onclick="switchMaisSeg('vendas')"     type="button">💰 Vendas</button>
-        <button class="mais-seg"        data-seg="encomendas" onclick="switchMaisSeg('encomendas')" type="button">📋 Pedidos</button>
-        <button class="mais-seg"        data-seg="compras"    onclick="switchMaisSeg('compras')"    type="button">🛒 Compras</button>
-        <button class="mais-seg"        data-seg="financeiro" onclick="switchMaisSeg('financeiro')" type="button">📊 Financeiro</button>
+        <button class="mais-seg active" data-seg="vendas"       onclick="switchMaisSeg('vendas')"       type="button">💰 Vendas</button>
+        <button class="mais-seg"        data-seg="encomendas"  onclick="switchMaisSeg('encomendas')"  type="button">📋 Pedidos</button>
+        <button class="mais-seg"        data-seg="compras"     onclick="switchMaisSeg('compras')"     type="button">🛒 Compras</button>
+        <button class="mais-seg"        data-seg="financeiro"  onclick="switchMaisSeg('financeiro')"  type="button">📊 Financeiro</button>
+        <button class="mais-seg"        data-seg="clientes"    onclick="switchMaisSeg('clientes')"    type="button">👥 Clientes</button>
+        <button class="mais-seg"        data-seg="fornecedores" onclick="switchMaisSeg('fornecedores')" type="button">🏭 Fornec.</button>
       </div>
 
       <!-- VENDAS segment -->
@@ -1290,6 +1320,38 @@
 
         <div style="height:8px"></div>
       </div>
+
+      <!-- CLIENTES segment -->
+      <div id="segClientes" style="display:none">
+        <!-- List view -->
+        <div id="clListView">
+          <div class="search-bar" style="margin-bottom:12px">
+            <input class="search-input" type="search" id="clSearchInput" placeholder="Buscar cliente…" oninput="clOnSearch()" aria-label="Buscar cliente" />
+          </div>
+          <div id="clList"></div>
+          <div class="empty-state" id="clEmpty">
+            <div class="empty-state__icon">👥</div>
+            <div class="empty-state__title">Nenhum cliente cadastrado</div>
+            <div class="empty-state__desc">Toque em + para cadastrar seu primeiro cliente.</div>
+          </div>
+        </div>
+        <!-- Detail view -->
+        <div id="clDetailView" style="display:none"></div>
+      </div>
+
+      <!-- FORNECEDORES segment -->
+      <div id="segFornecedores" style="display:none">
+        <div class="search-bar" style="margin-bottom:12px">
+          <input class="search-input" type="search" id="fornSearchInput" placeholder="Buscar fornecedor…" oninput="fornOnSearch()" aria-label="Buscar fornecedor" />
+        </div>
+        <div id="fornList"></div>
+        <div class="empty-state" id="fornEmpty">
+          <div class="empty-state__icon">🏭</div>
+          <div class="empty-state__title">Nenhum fornecedor cadastrado</div>
+          <div class="empty-state__desc">Toque em + para cadastrar seu primeiro fornecedor.</div>
+        </div>
+      </div>
+
     </section>
 
   </main>
@@ -1327,11 +1389,138 @@
 <button class="fab" id="fabStock"  onclick="openAddStock()"  aria-label="Adicionar item ao estoque" type="button" style="display:none">+</button>
 <button class="fab" id="fabRecipe" onclick="openAddRecipe()" aria-label="Nova receita"               type="button" style="display:none">+</button>
 <button class="fab" id="fabLote"   onclick="openNovoLote()"  aria-label="Novo lote de produção"      type="button" style="display:none">+</button>
-<button class="fab" id="fabVenda"     onclick="openNovaVenda()"     aria-label="Nova venda"     type="button" style="display:none">+</button>
-<button class="fab" id="fabEncomenda" onclick="openNovaEncomenda()" aria-label="Nova encomenda" type="button" style="display:none">+</button>
+<button class="fab" id="fabVenda"       onclick="openNovaVenda()"     aria-label="Nova venda"        type="button" style="display:none">+</button>
+<button class="fab" id="fabEncomenda"  onclick="openNovaEncomenda()" aria-label="Nova encomenda"    type="button" style="display:none">+</button>
+<button class="fab" id="fabCliente"    onclick="openAddCliente()"    aria-label="Novo cliente"      type="button" style="display:none">+</button>
+<button class="fab" id="fabFornecedor" onclick="openAddForn()"       aria-label="Novo fornecedor"   type="button" style="display:none">+</button>
 
 <!-- Offline toast -->
 <div class="offline-toast" id="offlineToast" role="status" aria-live="polite"></div>
+
+<!-- ══════════════════════════════════
+     FULL-SCREEN FORM: Cliente
+══════════════════════════════════ -->
+<div class="recipe-form hidden" id="clFormOverlay" role="dialog" aria-modal="true" aria-label="Cliente">
+  <div class="recipe-form-header">
+    <button class="recipe-form-back" onclick="closeClForm()" type="button" aria-label="Fechar">←</button>
+    <span class="recipe-form-title" id="clFormTitle">Novo Cliente</span>
+    <button class="recipe-form-save" onclick="onSaveCliente()" type="button">Salvar</button>
+  </div>
+  <div class="recipe-form-body">
+    <div class="ob-field">
+      <label class="ob-label" for="fClNome">Nome *</label>
+      <input class="ob-input" type="text" id="fClNome" placeholder="Nome completo" maxlength="80" />
+    </div>
+    <div class="ob-field">
+      <label class="ob-label" for="fClContato">Contato (WhatsApp / telefone)</label>
+      <input class="ob-input" type="tel" id="fClContato" placeholder="(11) 91234-5678" maxlength="30" />
+    </div>
+    <div class="ob-field">
+      <label class="ob-label" for="fClAniversario">Aniversário</label>
+      <input class="ob-input" type="date" id="fClAniversario" />
+    </div>
+    <div class="ob-field">
+      <label class="ob-label" for="fClChegou">Como chegou até nós?</label>
+      <select class="ob-input" id="fClChegou">
+        <option value="">— Selecione —</option>
+        <option value="instagram">Instagram</option>
+        <option value="indicacao">Indicação</option>
+        <option value="ifood">iFood</option>
+        <option value="rappi">Rappi</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="google">Google</option>
+        <option value="evento">Evento</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+    <div class="ob-field">
+      <label class="ob-label" for="fClPrefs">Preferências</label>
+      <textarea class="ob-input" id="fClPrefs" placeholder="Sabores favoritos, formatos…" maxlength="300" style="height:72px;resize:none"></textarea>
+    </div>
+    <div class="ob-field">
+      <label class="ob-label" for="fClRestricoes">Restrições alimentares</label>
+      <input class="ob-input" type="text" id="fClRestricoes" placeholder="Ex: Lactose, glúten, açúcar…" maxlength="150" />
+    </div>
+    <div class="ob-field">
+      <label class="ob-label" for="fClObs">Observações</label>
+      <textarea class="ob-input" id="fClObs" placeholder="Outras informações úteis…" maxlength="300" style="height:72px;resize:none"></textarea>
+    </div>
+    <div class="form-error" id="clFormError"></div>
+    <div style="height:24px"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: Fornecedor
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalFornecedor" role="dialog" aria-modal="true" aria-label="Fornecedor">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalFornecedor')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="fornModalTitle">Novo Fornecedor</span>
+      <button class="modal-close" onclick="closeModal('modalFornecedor')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="ob-field" style="flex:0 0 80px">
+          <label class="ob-label" for="fFornIcone">Ícone</label>
+          <input class="ob-input" type="text" id="fFornIcone" placeholder="🏭" maxlength="4" style="text-align:center;font-size:22px" />
+        </div>
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="fFornNome">Nome *</label>
+          <input class="ob-input" type="text" id="fFornNome" placeholder="Nome do fornecedor" maxlength="80" />
+        </div>
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fFornContato">Contato</label>
+        <input class="ob-input" type="tel" id="fFornContato" placeholder="(11) 91234-5678" maxlength="30" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fFornEspec">Especialidade</label>
+        <input class="ob-input" type="text" id="fFornEspec" placeholder="Ex: Laticínios, embalagens…" maxlength="80" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fFornInsumos">Insumos fornecidos</label>
+        <textarea class="ob-input" id="fFornInsumos" placeholder="Lista dos ingredientes/materiais que este fornecedor entrega…" maxlength="300" style="height:72px;resize:none"></textarea>
+      </div>
+      <div class="form-error" id="fornFormError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalFornecedor')" type="button">Cancelar</button>
+      <button class="btn-primary" onclick="onSaveForn()" type="button" style="margin-top:0;flex:1;justify-content:center">🏭 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: Mensagem (template)
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalTemplate" role="dialog" aria-modal="true" aria-label="Mensagem pronta">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalTemplate')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="tplModalTitle">Nova Mensagem</span>
+      <button class="modal-close" onclick="closeModal('modalTemplate')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label class="ob-label" for="fTplTitulo">Título *</label>
+        <input class="ob-input" type="text" id="fTplTitulo" placeholder="Ex: Confirmação de encomenda" maxlength="60" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fTplTexto">Mensagem * <span style="font-size:11px;color:var(--muted)">(use {nome} e {data})</span></label>
+        <textarea class="ob-input" id="fTplTexto" placeholder="Olá {nome}! Sua encomenda está confirmada para {data}…" maxlength="500" style="height:110px;resize:none"></textarea>
+      </div>
+      <div class="form-error" id="tplFormError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalTemplate')" type="button">Cancelar</button>
+      <button class="btn-primary" onclick="onSaveTemplate()" type="button" style="margin-top:0;flex:1;justify-content:center">💬 Salvar</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════
      MODAL: Estoque (add/edit)
@@ -1894,9 +2083,12 @@ var STORE = {
   PRODUCAO:   'cp_producao_v1',
   VENDAS:     'cp_vendas_v1',
   ENCOMENDAS:  'cp_encomendas_v1',
-  CUSTOS_FIXOS: 'cp_custos_fixos_v1',
-  CUSTOS_VAR:   'cp_custos_var_v1',
-  TAXAS:        'cp_taxas_v1'
+  CUSTOS_FIXOS:  'cp_custos_fixos_v1',
+  CUSTOS_VAR:    'cp_custos_var_v1',
+  TAXAS:         'cp_taxas_v1',
+  CLIENTES:      'cp_clientes_v1',
+  FORNECEDORES:  'cp_fornecedores_v1',
+  MSG_TEMPLATES: 'cp_msg_templates_v1'
 };
 
 function storeGet(key) {
@@ -1935,8 +2127,10 @@ function navigate(tab) {
   document.getElementById('fabStock').style.display  = (tab === 'producao') ? 'flex' : 'none';
   document.getElementById('fabRecipe').style.display = (tab === 'receitas' && recipeView === 'list') ? 'flex' : 'none';
   document.getElementById('fabLote').style.display   = (tab === 'vendas')   ? 'flex' : 'none';
-  document.getElementById('fabVenda').style.display     = (tab === 'mais' && maisSeg === 'vendas')     ? 'flex' : 'none';
-  document.getElementById('fabEncomenda').style.display = (tab === 'mais' && maisSeg === 'encomendas') ? 'flex' : 'none';
+  document.getElementById('fabVenda').style.display       = (tab === 'mais' && maisSeg === 'vendas')                               ? 'flex' : 'none';
+  document.getElementById('fabEncomenda').style.display   = (tab === 'mais' && maisSeg === 'encomendas')                             ? 'flex' : 'none';
+  document.getElementById('fabCliente').style.display     = (tab === 'mais' && maisSeg === 'clientes' && clView === 'list')          ? 'flex' : 'none';
+  document.getElementById('fabFornecedor').style.display  = (tab === 'mais' && maisSeg === 'fornecedores')                           ? 'flex' : 'none';
   if (tab === 'inicio')   renderDashboard();
   if (tab === 'receitas') renderRecipes();
   if (tab === 'producao') renderStock();
@@ -3297,7 +3491,7 @@ var encEditingId = null;
 
 function switchMaisSeg(seg) {
   maisSeg = seg;
-  var segs = ['vendas', 'encomendas', 'compras', 'financeiro'];
+  var segs = ['vendas', 'encomendas', 'compras', 'financeiro', 'clientes', 'fornecedores'];
   for (var si = 0; si < segs.length; si++) {
     var s = segs[si];
     var elId = 'seg' + s.charAt(0).toUpperCase() + s.slice(1);
@@ -3306,19 +3500,25 @@ function switchMaisSeg(seg) {
     var btn = document.querySelector('.mais-seg[data-seg="' + s + '"]');
     if (btn) btn.classList[s === seg ? 'add' : 'remove']('active');
   }
-  document.getElementById('fabVenda').style.display     = (seg === 'vendas')     ? 'flex' : 'none';
-  document.getElementById('fabEncomenda').style.display = (seg === 'encomendas') ? 'flex' : 'none';
-  if (seg === 'vendas')      renderVendas();
-  if (seg === 'encomendas')  renderEncomendas();
-  if (seg === 'compras')     shopRender();
-  if (seg === 'financeiro')  renderFinanceiro();
+  document.getElementById('fabVenda').style.display       = (seg === 'vendas')       ? 'flex' : 'none';
+  document.getElementById('fabEncomenda').style.display   = (seg === 'encomendas')   ? 'flex' : 'none';
+  document.getElementById('fabCliente').style.display     = (seg === 'clientes' && clView === 'list') ? 'flex' : 'none';
+  document.getElementById('fabFornecedor').style.display  = (seg === 'fornecedores') ? 'flex' : 'none';
+  if (seg === 'vendas')       renderVendas();
+  if (seg === 'encomendas')   renderEncomendas();
+  if (seg === 'compras')      shopRender();
+  if (seg === 'financeiro')   renderFinanceiro();
+  if (seg === 'clientes')     renderClientes();
+  if (seg === 'fornecedores') renderFornecedores();
 }
 
 function renderMaisActive() {
-  if (maisSeg === 'vendas')      renderVendas();
-  if (maisSeg === 'encomendas')  renderEncomendas();
-  if (maisSeg === 'compras')     shopRender();
-  if (maisSeg === 'financeiro')  renderFinanceiro();
+  if (maisSeg === 'vendas')       renderVendas();
+  if (maisSeg === 'encomendas')   renderEncomendas();
+  if (maisSeg === 'compras')      shopRender();
+  if (maisSeg === 'financeiro')   renderFinanceiro();
+  if (maisSeg === 'clientes')     renderClientes();
+  if (maisSeg === 'fornecedores') renderFornecedores();
 }
 
 // ════════════════════════════════
@@ -4337,6 +4537,474 @@ if ('serviceWorker' in navigator) {
       console.warn('[SW] Registration failed:', err);
     });
   });
+}
+
+// ════════════════════════════════
+// CLIENTES
+// ════════════════════════════════
+var clView = 'list';
+var clSelectedId = null;
+var clSearch = '';
+var clEditingId = null;
+
+var COMO_CHEGOU_LABEL = {
+  instagram: 'Instagram', indicacao: 'Indicação', ifood: 'iFood',
+  rappi: 'Rappi', whatsapp: 'WhatsApp', google: 'Google',
+  evento: 'Evento', outro: 'Outro'
+};
+
+var DEFAULT_TEMPLATES = [
+  { id: 'dtpl1', titulo: 'Confirmação de encomenda', texto: 'Olá {nome}! Sua encomenda foi confirmada para {data}. Qualquer dúvida é só chamar! 🍮' },
+  { id: 'dtpl2', titulo: 'Lembrete de entrega',      texto: 'Oi {nome}! Seu pedido está pronto para retirada/entrega em {data}. 🎉' },
+  { id: 'dtpl3', titulo: 'Pós-venda',                texto: 'Oi {nome}! Espero que tenha adorado o pudim! Conta pra mim como foi! 💛' },
+  { id: 'dtpl4', titulo: 'Aniversário',              texto: 'Feliz aniversário, {nome}! 🎂 Que sua data seja muito especial! Com carinho, CADIM PUDIM.' }
+];
+
+function clienteGetAll()      { return storeGet(STORE.CLIENTES) || []; }
+function clienteSave(items)   { storeSet(STORE.CLIENTES, items); }
+function templateGetAll() {
+  var saved = storeGet(STORE.MSG_TEMPLATES);
+  if (saved && saved.length) return saved;
+  return DEFAULT_TEMPLATES.slice();
+}
+function templateSave(items)  { storeSet(STORE.MSG_TEMPLATES, items); }
+
+function clienteGetById(id) {
+  var all = clienteGetAll();
+  for (var i = 0; i < all.length; i++) { if (all[i].id === id) return all[i]; }
+  return null;
+}
+
+function clienteIsVip(nome) {
+  var encs = encomendaGetAll();
+  var count = 0;
+  var low = nome.toLowerCase();
+  for (var i = 0; i < encs.length; i++) {
+    if (encs[i].client && encs[i].client.toLowerCase() === low) count++;
+  }
+  return count >= 3;
+}
+
+function clienteOrderHistory(nome) {
+  var encs = encomendaGetAll();
+  var result = [];
+  var low = nome.toLowerCase();
+  for (var i = 0; i < encs.length; i++) {
+    if (encs[i].client && encs[i].client.toLowerCase() === low) result.push(encs[i]);
+  }
+  result.sort(function(a, b) { return b.deliveryDate > a.deliveryDate ? 1 : -1; });
+  return result;
+}
+
+function clienteAdd(data) {
+  var items = clienteGetAll();
+  data.id = genId();
+  items.unshift(data);
+  clienteSave(items);
+}
+
+function clienteUpdate(id, data) {
+  var items = clienteGetAll();
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === id) { data.id = id; items[i] = data; break; }
+  }
+  clienteSave(items);
+}
+
+function clienteDelete(id) {
+  var items = clienteGetAll();
+  var next = [];
+  for (var i = 0; i < items.length; i++) { if (items[i].id !== id) next.push(items[i]); }
+  clienteSave(next);
+}
+
+function clOnSearch() {
+  clSearch = document.getElementById('clSearchInput').value;
+  renderClientes();
+}
+
+function clShowDetail(id) {
+  clView = 'list';
+  clSelectedId = id;
+  clView = 'detail';
+  document.getElementById('fabCliente').style.display = 'none';
+  renderClientes();
+}
+
+function clBackToList() {
+  clView = 'list';
+  clSelectedId = null;
+  document.getElementById('fabCliente').style.display = 'flex';
+  renderClientes();
+}
+
+function renderClientes() {
+  if (clView === 'detail') {
+    document.getElementById('clListView').style.display   = 'none';
+    document.getElementById('clDetailView').style.display = '';
+    renderClDetail(clSelectedId);
+  } else {
+    document.getElementById('clListView').style.display   = '';
+    document.getElementById('clDetailView').style.display = 'none';
+    renderClList();
+  }
+}
+
+function renderClList() {
+  var all = clienteGetAll();
+  var q   = clSearch.trim().toLowerCase();
+  var filtered = [];
+  for (var i = 0; i < all.length; i++) {
+    if (!q || all[i].nome.toLowerCase().indexOf(q) !== -1) filtered.push(all[i]);
+  }
+  var list  = document.getElementById('clList');
+  var empty = document.getElementById('clEmpty');
+  if (!filtered.length) {
+    list.innerHTML  = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  var html = '';
+  for (var j = 0; j < filtered.length; j++) {
+    var cl  = filtered[j];
+    var vip = clienteIsVip(cl.nome);
+    var ini = escHtml(cl.nome.charAt(0).toUpperCase());
+    var sub = cl.contato ? escHtml(cl.contato) : (cl.comoChegou ? escHtml(COMO_CHEGOU_LABEL[cl.comoChegou] || cl.comoChegou) : '');
+    html += '<div class="cl-card" onclick="clShowDetail(\'' + cl.id + '\')">' +
+      '<div class="cl-card-header">' +
+      '<div class="cl-avatar">' + ini + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+      '<div class="cl-name">' + escHtml(cl.nome) + (vip ? '<span class="cl-vip">VIP ⭐</span>' : '') + '</div>' +
+      '<div class="cl-sub">' + sub + '</div>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function renderClDetail(id) {
+  var cl = clienteGetById(id);
+  if (!cl) { clBackToList(); return; }
+  var vip = clienteIsVip(cl.nome);
+  var orders = clienteOrderHistory(cl.nome);
+  var STATUS_LABEL = { pendente: '⏳ Pendente', pronto: '✅ Pronto', entregue: '🎁 Entregue' };
+
+  var ordersHtml = '';
+  if (orders.length) {
+    for (var i = 0; i < orders.length; i++) {
+      var o = orders[i];
+      var dt = o.deliveryDate ? o.deliveryDate.split('-').reverse().join('/') : '—';
+      var st = STATUS_LABEL[o.status] || o.status || '';
+      ordersHtml += '<div class="cl-order-item">' +
+        '<strong>' + escHtml(o.product || '—') + '</strong> &nbsp;' + st +
+        '<div style="color:var(--muted);font-size:12px;margin-top:3px">Entrega: ' + dt +
+        (o.value ? ' &nbsp;|&nbsp; ' + formatBRL(parseFloat(o.value) || 0) : '') + '</div>' +
+        '</div>';
+    }
+  } else {
+    ordersHtml = '<div style="color:var(--muted);font-size:13px">Nenhum pedido encontrado.</div>';
+  }
+
+  var tpls = templateGetAll();
+  var tplHtml = '';
+  for (var t = 0; t < tpls.length; t++) {
+    var tpl = tpls[t];
+    tplHtml += '<div class="tpl-card">' +
+      '<div class="tpl-card-title">' + escHtml(tpl.titulo) + '</div>' +
+      '<div class="tpl-card-text">' + escHtml(tpl.texto) + '</div>' +
+      '<div class="tpl-actions">' +
+      '<button class="btn-secondary" style="padding:6px 10px;font-size:12px" onclick="copyTemplate(\'' + tpl.id + '\',\'' + id + '\')" type="button">📋 Copiar</button>' +
+      '<button class="btn-secondary" style="padding:6px 10px;font-size:12px" onclick="openEditTemplate(\'' + tpl.id + '\')" type="button">✏️ Editar</button>' +
+      '<button class="btn-secondary" style="padding:6px 10px;font-size:12px;color:var(--red)" onclick="deleteTemplate(\'' + tpl.id + '\')" type="button">🗑</button>' +
+      '</div>' +
+      '</div>';
+  }
+  tplHtml += '<button class="btn-secondary" style="width:100%;margin-top:4px" onclick="openAddTemplate()" type="button">+ Nova mensagem</button>';
+
+  var ini = escHtml(cl.nome.charAt(0).toUpperCase());
+  var html =
+    '<button class="btn-secondary" style="margin-bottom:12px" onclick="clBackToList()" type="button">← Voltar</button>' +
+    '<div class="cl-detail-header">' +
+    '<div class="cl-detail-avatar">' + ini + '</div>' +
+    '<div>' +
+    '<div class="cl-detail-name">' + escHtml(cl.nome) + (vip ? ' <span class="cl-vip">VIP ⭐</span>' : '') + '</div>' +
+    '<div class="cl-detail-meta">' + (cl.contato ? escHtml(cl.contato) : '') + '</div>' +
+    '</div>' +
+    '<div style="margin-left:auto;display:flex;gap:6px">' +
+    '<button class="btn-secondary" style="padding:8px 12px" onclick="openEditCliente(\'' + id + '\')" type="button">✏️</button>' +
+    '<button class="btn-secondary" style="padding:8px 12px;color:var(--red)" onclick="openConfirmDelete(\'' + escHtml(cl.nome) + '\',function(){clienteDelete(\'' + id + '\');clBackToList();})" type="button">🗑</button>' +
+    '</div>' +
+    '</div>';
+
+  if (cl.aniversario) html += '<div class="cl-info-row"><span class="cl-info-label">🎂 Aniversário</span><span class="cl-info-val">' + cl.aniversario.split('-').reverse().join('/') + '</span></div>';
+  if (cl.comoChegou)  html += '<div class="cl-info-row"><span class="cl-info-label">📍 Como chegou</span><span class="cl-info-val">' + escHtml(COMO_CHEGOU_LABEL[cl.comoChegou] || cl.comoChegou) + '</span></div>';
+  if (cl.preferencias) html += '<div class="cl-info-row"><span class="cl-info-label">❤️ Preferências</span><span class="cl-info-val">' + escHtml(cl.preferencias) + '</span></div>';
+  if (cl.restricoes)   html += '<div class="cl-info-row"><span class="cl-info-label">⚠️ Restrições</span><span class="cl-info-val">' + escHtml(cl.restricoes) + '</span></div>';
+  if (cl.obs)          html += '<div class="cl-info-row"><span class="cl-info-label">📝 Obs</span><span class="cl-info-val">' + escHtml(cl.obs) + '</span></div>';
+
+  html += '<div class="cl-section-title">📋 Histórico de pedidos (' + orders.length + ')</div>' + ordersHtml;
+  html += '<div class="cl-section-title">💬 Mensagens prontas</div>' + tplHtml;
+  html += '<div style="height:20px"></div>';
+
+  document.getElementById('clDetailView').innerHTML = html;
+}
+
+function copyTemplate(tplId, clienteId) {
+  var tpls = templateGetAll();
+  var tpl = null;
+  for (var i = 0; i < tpls.length; i++) { if (tpls[i].id === tplId) { tpl = tpls[i]; break; } }
+  if (!tpl) return;
+  var cl = clienteGetById(clienteId);
+  var nome = cl ? cl.nome : '';
+  var hoje = new Date().toLocaleDateString('pt-BR');
+  var texto = tpl.texto.replace(/\{nome\}/g, nome).replace(/\{data\}/g, hoje);
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(texto).then(function() { showToast('✅ Mensagem copiada!', 2000); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = texto;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✅ Mensagem copiada!', 2000);
+  }
+}
+
+var tplEditingId = null;
+
+function openAddTemplate() {
+  tplEditingId = null;
+  document.getElementById('tplModalTitle').textContent = 'Nova Mensagem';
+  document.getElementById('fTplTitulo').value = '';
+  document.getElementById('fTplTexto').value  = '';
+  document.getElementById('tplFormError').textContent = '';
+  openModal('modalTemplate');
+}
+
+function openEditTemplate(id) {
+  var tpls = templateGetAll();
+  var tpl = null;
+  for (var i = 0; i < tpls.length; i++) { if (tpls[i].id === id) { tpl = tpls[i]; break; } }
+  if (!tpl) return;
+  tplEditingId = id;
+  document.getElementById('tplModalTitle').textContent = 'Editar Mensagem';
+  document.getElementById('fTplTitulo').value = tpl.titulo;
+  document.getElementById('fTplTexto').value  = tpl.texto;
+  document.getElementById('tplFormError').textContent = '';
+  openModal('modalTemplate');
+}
+
+function onSaveTemplate() {
+  var titulo = document.getElementById('fTplTitulo').value.trim();
+  var texto  = document.getElementById('fTplTexto').value.trim();
+  if (!titulo) { document.getElementById('tplFormError').textContent = 'Título obrigatório.'; return; }
+  if (!texto)  { document.getElementById('tplFormError').textContent = 'Texto obrigatório.'; return; }
+  var tpls = templateGetAll();
+  if (tplEditingId) {
+    for (var i = 0; i < tpls.length; i++) {
+      if (tpls[i].id === tplEditingId) { tpls[i].titulo = titulo; tpls[i].texto = texto; break; }
+    }
+  } else {
+    tpls.push({ id: genId(), titulo: titulo, texto: texto });
+  }
+  templateSave(tpls);
+  closeModal('modalTemplate');
+  if (clView === 'detail' && clSelectedId) renderClDetail(clSelectedId);
+}
+
+function deleteTemplate(id) {
+  var tpls = templateGetAll();
+  var next = [];
+  for (var i = 0; i < tpls.length; i++) { if (tpls[i].id !== id) next.push(tpls[i]); }
+  templateSave(next);
+  if (clView === 'detail' && clSelectedId) renderClDetail(clSelectedId);
+}
+
+function openAddCliente() {
+  clEditingId = null;
+  document.getElementById('clFormTitle').textContent = 'Novo Cliente';
+  document.getElementById('fClNome').value        = '';
+  document.getElementById('fClContato').value     = '';
+  document.getElementById('fClAniversario').value = '';
+  document.getElementById('fClPrefs').value       = '';
+  document.getElementById('fClRestricoes').value  = '';
+  document.getElementById('fClChegou').value      = '';
+  document.getElementById('fClObs').value         = '';
+  document.getElementById('clFormError').textContent = '';
+  document.getElementById('clFormOverlay').classList.remove('hidden');
+  document.getElementById('fClNome').focus();
+}
+
+function openEditCliente(id) {
+  var cl = clienteGetById(id);
+  if (!cl) return;
+  clEditingId = id;
+  document.getElementById('clFormTitle').textContent = 'Editar Cliente';
+  document.getElementById('fClNome').value        = cl.nome        || '';
+  document.getElementById('fClContato').value     = cl.contato     || '';
+  document.getElementById('fClAniversario').value = cl.aniversario || '';
+  document.getElementById('fClPrefs').value       = cl.preferencias || '';
+  document.getElementById('fClRestricoes').value  = cl.restricoes  || '';
+  document.getElementById('fClChegou').value      = cl.comoChegou  || '';
+  document.getElementById('fClObs').value         = cl.obs         || '';
+  document.getElementById('clFormError').textContent = '';
+  document.getElementById('clFormOverlay').classList.remove('hidden');
+  document.getElementById('fClNome').focus();
+}
+
+function closeClForm() {
+  document.getElementById('clFormOverlay').classList.add('hidden');
+}
+
+function onSaveCliente() {
+  var nome = document.getElementById('fClNome').value.trim();
+  if (!nome) { document.getElementById('clFormError').textContent = 'Nome obrigatório.'; return; }
+  var data = {
+    nome:        nome,
+    contato:     document.getElementById('fClContato').value.trim(),
+    aniversario: document.getElementById('fClAniversario').value,
+    preferencias: document.getElementById('fClPrefs').value.trim(),
+    restricoes:  document.getElementById('fClRestricoes').value.trim(),
+    comoChegou:  document.getElementById('fClChegou').value,
+    obs:         document.getElementById('fClObs').value.trim()
+  };
+  if (clEditingId) {
+    clienteUpdate(clEditingId, data);
+  } else {
+    clienteAdd(data);
+  }
+  closeClForm();
+  renderClientes();
+}
+
+// ════════════════════════════════
+// FORNECEDORES
+// ════════════════════════════════
+var fornSearch   = '';
+var fornEditingId = null;
+
+function fornGetAll()      { return storeGet(STORE.FORNECEDORES) || []; }
+function fornSave(items)   { storeSet(STORE.FORNECEDORES, items); }
+
+function fornGetById(id) {
+  var all = fornGetAll();
+  for (var i = 0; i < all.length; i++) { if (all[i].id === id) return all[i]; }
+  return null;
+}
+
+function fornAdd(data) {
+  var items = fornGetAll();
+  data.id = genId();
+  items.unshift(data);
+  fornSave(items);
+}
+
+function fornUpdate(id, data) {
+  var items = fornGetAll();
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === id) { data.id = id; items[i] = data; break; }
+  }
+  fornSave(items);
+}
+
+function fornDelete(id) {
+  var items = fornGetAll();
+  var next = [];
+  for (var i = 0; i < items.length; i++) { if (items[i].id !== id) next.push(items[i]); }
+  fornSave(next);
+}
+
+function fornOnSearch() {
+  fornSearch = document.getElementById('fornSearchInput').value;
+  renderFornecedores();
+}
+
+function renderFornecedores() {
+  var all = fornGetAll();
+  var q   = fornSearch.trim().toLowerCase();
+  var filtered = [];
+  for (var i = 0; i < all.length; i++) {
+    var f = all[i];
+    if (!q || f.nome.toLowerCase().indexOf(q) !== -1 || (f.especialidade && f.especialidade.toLowerCase().indexOf(q) !== -1)) {
+      filtered.push(f);
+    }
+  }
+  var list  = document.getElementById('fornList');
+  var empty = document.getElementById('fornEmpty');
+  if (!filtered.length) {
+    list.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  var html = '';
+  for (var j = 0; j < filtered.length; j++) {
+    var forn = filtered[j];
+    html += '<div class="forn-card">' +
+      '<div class="forn-card-header">' +
+      '<div class="forn-icon">' + escHtml(forn.icone || '🏭') + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+      '<div class="forn-name">' + escHtml(forn.nome) + '</div>' +
+      '<div class="forn-sub">' + escHtml(forn.especialidade || '') + '</div>' +
+      '</div>' +
+      '</div>' +
+      (forn.contato  ? '<div style="font-size:12px;color:var(--muted);margin-top:6px">📞 ' + escHtml(forn.contato) + '</div>'  : '') +
+      (forn.insumos  ? '<div style="font-size:12px;color:var(--muted);margin-top:4px">📦 ' + escHtml(forn.insumos) + '</div>'  : '') +
+      '<div class="forn-actions">' +
+      '<button class="btn-secondary" style="padding:6px 14px;font-size:13px" onclick="openEditForn(\'' + forn.id + '\')" type="button">✏️ Editar</button>' +
+      '<button class="btn-secondary" style="padding:6px 14px;font-size:13px;color:var(--red)" onclick="openConfirmDelete(\'' + escHtml(forn.nome) + '\',function(){fornDelete(\'' + forn.id + '\');renderFornecedores();})" type="button">🗑 Excluir</button>' +
+      '</div>' +
+      '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function openAddForn() {
+  fornEditingId = null;
+  document.getElementById('fornModalTitle').textContent = 'Novo Fornecedor';
+  document.getElementById('fFornIcone').value       = '';
+  document.getElementById('fFornNome').value        = '';
+  document.getElementById('fFornContato').value     = '';
+  document.getElementById('fFornEspec').value       = '';
+  document.getElementById('fFornInsumos').value     = '';
+  document.getElementById('fornFormError').textContent = '';
+  openModal('modalFornecedor');
+}
+
+function openEditForn(id) {
+  var forn = fornGetById(id);
+  if (!forn) return;
+  fornEditingId = id;
+  document.getElementById('fornModalTitle').textContent = 'Editar Fornecedor';
+  document.getElementById('fFornIcone').value       = forn.icone       || '';
+  document.getElementById('fFornNome').value        = forn.nome        || '';
+  document.getElementById('fFornContato').value     = forn.contato     || '';
+  document.getElementById('fFornEspec').value       = forn.especialidade || '';
+  document.getElementById('fFornInsumos').value     = forn.insumos     || '';
+  document.getElementById('fornFormError').textContent = '';
+  openModal('modalFornecedor');
+}
+
+function onSaveForn() {
+  var nome = document.getElementById('fFornNome').value.trim();
+  if (!nome) { document.getElementById('fornFormError').textContent = 'Nome obrigatório.'; return; }
+  var data = {
+    icone:        document.getElementById('fFornIcone').value.trim() || '🏭',
+    nome:         nome,
+    contato:      document.getElementById('fFornContato').value.trim(),
+    especialidade: document.getElementById('fFornEspec').value.trim(),
+    insumos:      document.getElementById('fFornInsumos').value.trim()
+  };
+  if (fornEditingId) {
+    fornUpdate(fornEditingId, data);
+  } else {
+    fornAdd(data);
+  }
+  closeModal('modalFornecedor');
+  renderFornecedores();
 }
 
 // ── Offline toast ──
