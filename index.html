@@ -2031,45 +2031,60 @@
 
     <!-- Tabela Nutricional ANVISA -->
     <div class="rf-section">
-      <div class="rf-section-title">Tabela Nutricional ANVISA</div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:6px">Valores por porção de 100g</p>
-      <p style="font-size:11px;color:var(--accent);margin-bottom:14px;line-height:1.4">ℹ️ Preenchimento manual — consulte a tabela TACO ou calcule com base nos ingredientes. Obrigatório apenas para rótulos ANVISA.</p>
-      <div class="nut-grid">
+      <div class="rf-section-header">
+        <div class="rf-section-title" style="margin-bottom:0">Tabela Nutricional ANVISA</div>
+        <button type="button" class="rf-add-ing-btn" onclick="autoCalcNutrition()">🔄 Calcular</button>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin:8px 0 4px">Valores por 100g do produto pronto. Clique em <strong>🔄 Calcular</strong> para preencher automaticamente pelos ingredientes, ou preencha manualmente.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
         <div class="ob-field">
-          <label class="ob-label" for="rfCalories">Valor energético</label>
-          <div class="nut-input-row">
-            <input class="ob-input" type="number" id="rfCalories" min="0" placeholder="0" style="flex:1" />
-            <span class="nut-unit">kcal</span>
-          </div>
+          <label class="ob-label" for="rfCalories">Valor energético (kcal)</label>
+          <input class="ob-input" type="number" id="rfCalories" min="0" placeholder="0" />
         </div>
         <div class="ob-field">
-          <label class="ob-label" for="rfCarbs">Carboidratos</label>
-          <div class="nut-input-row">
-            <input class="ob-input" type="number" id="rfCarbs" min="0" step="0.1" placeholder="0" style="flex:1" />
-            <span class="nut-unit">g</span>
-          </div>
+          <label class="ob-label" for="rfCarbs">Carboidratos (g)</label>
+          <input class="ob-input" type="number" id="rfCarbs" min="0" step="0.1" placeholder="0" />
         </div>
         <div class="ob-field">
-          <label class="ob-label" for="rfProtein">Proteínas</label>
-          <div class="nut-input-row">
-            <input class="ob-input" type="number" id="rfProtein" min="0" step="0.1" placeholder="0" style="flex:1" />
-            <span class="nut-unit">g</span>
-          </div>
+          <label class="ob-label" for="rfSugars">Açúcares totais (g)</label>
+          <input class="ob-input" type="number" id="rfSugars" min="0" step="0.1" placeholder="0" />
         </div>
         <div class="ob-field">
-          <label class="ob-label" for="rfFat">Gorduras totais</label>
-          <div class="nut-input-row">
-            <input class="ob-input" type="number" id="rfFat" min="0" step="0.1" placeholder="0" style="flex:1" />
-            <span class="nut-unit">g</span>
-          </div>
+          <label class="ob-label" for="rfAddedSugars">Açúcares adicionados (g)</label>
+          <input class="ob-input" type="number" id="rfAddedSugars" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfFat">Gorduras totais (g)</label>
+          <input class="ob-input" type="number" id="rfFat" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfSatFat">Gorduras saturadas (g)</label>
+          <input class="ob-input" type="number" id="rfSatFat" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfTransFat">Gorduras trans (g)</label>
+          <input class="ob-input" type="number" id="rfTransFat" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfFiber">Fibra alimentar (g)</label>
+          <input class="ob-input" type="number" id="rfFiber" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfProtein">Proteínas (g)</label>
+          <input class="ob-input" type="number" id="rfProtein" min="0" step="0.1" placeholder="0" />
+        </div>
+        <div class="ob-field">
+          <label class="ob-label" for="rfSodium">Sódio (mg)</label>
+          <input class="ob-input" type="number" id="rfSodium" min="0" placeholder="0" />
         </div>
       </div>
-      <div class="ob-field" style="margin-top:10px">
-        <label class="ob-label" for="rfSodium">Sódio</label>
-        <div class="nut-input-row">
-          <input class="ob-input" type="number" id="rfSodium" min="0" placeholder="0" style="max-width:160px" />
-          <span class="nut-unit">mg</span>
-        </div>
+      <div class="ob-field" style="margin-top:8px">
+        <label class="ob-label" for="rfPortionG">Tamanho da porção (g/ml)</label>
+        <input class="ob-input" type="number" id="rfPortionG" min="1" placeholder="100" style="max-width:140px" />
+      </div>
+      <div class="ob-field" style="margin-top:6px">
+        <label class="ob-label" for="rfPortionHH">Medida caseira</label>
+        <input class="ob-input" type="text" id="rfPortionHH" maxlength="40" placeholder="Ex: 1 fatia, 1 unidade" />
       </div>
     </div>
 
@@ -2983,6 +2998,146 @@ function recipeGetFiltered() {
   return items;
 }
 
+// Nutritional database (TACO/IBGE values per 100g of each ingredient)
+// Fields: kcal, carbs, sugars, addedSugars, fat, satFat, transFat, fiber, protein, sodium
+var NUTRI_DB = [
+  { keys: ['leite condensado'],            n: { kcal:321, carbs:54.3, sugars:54.3, addedSugars:30,   fat:8.6,  satFat:5.4,  transFat:0,   fiber:0,   protein:7.3,  sodium:101 } },
+  { keys: ['creme de leite','nata'],       n: { kcal:248, carbs:3.2,  sugars:3.2,  addedSugars:0,    fat:24.9, satFat:15.5, transFat:0.3, fiber:0,   protein:2.7,  sodium:54  } },
+  { keys: ['leite integral','leite','leite longa vida'], n: { kcal:61, carbs:4.7, sugars:4.7, addedSugars:0, fat:3.5, satFat:2.0, transFat:0.1, fiber:0, protein:3.2, sodium:50 } },
+  { keys: ['leite desnatado'],             n: { kcal:35,  carbs:5.0,  sugars:5.0,  addedSugars:0,    fat:0.1,  satFat:0.1,  transFat:0,   fiber:0,   protein:3.4,  sodium:52  } },
+  { keys: ['ovo','ovos','gema','clara'],   n: { kcal:146, carbs:1.1,  sugars:1.1,  addedSugars:0,    fat:9.9,  satFat:3.1,  transFat:0,   fiber:0,   protein:12.4, sodium:145 } },
+  { keys: ['açúcar','açucar','açúcar refinado','açúcar cristal'], n: { kcal:387, carbs:99.5, sugars:99.5, addedSugars:99.5, fat:0, satFat:0, transFat:0, fiber:0, protein:0, sodium:1 } },
+  { keys: ['manteiga'],                    n: { kcal:726, carbs:0,    sugars:0,    addedSugars:0,    fat:82.5, satFat:51.4, transFat:2.1, fiber:0,   protein:0.5,  sodium:695 } },
+  { keys: ['farinha de trigo','farinha'],  n: { kcal:360, carbs:74.4, sugars:2.0,  addedSugars:0,    fat:1.4,  satFat:0.2,  transFat:0,   fiber:2.3, protein:10.5, sodium:2   } },
+  { keys: ['chocolate em pó','cacau em pó'], n: { kcal:361, carbs:53.5, sugars:47.1, addedSugars:47.1, fat:15.5, satFat:9.0, transFat:0, fiber:12.0, protein:11.3, sodium:57 } },
+  { keys: ['amido de milho','maisena','amido'],   n: { kcal:350, carbs:87.6, sugars:0.6, addedSugars:0, fat:0.1, satFat:0, transFat:0, fiber:0.9, protein:0.3, sodium:3 } },
+  { keys: ['coco ralado','coco'],          n: { kcal:604, carbs:7.2,  sugars:6.8,  addedSugars:0,    fat:60.4, satFat:52.1, transFat:0,   fiber:13.7,protein:5.6,  sodium:21  } },
+  { keys: ['doce de leite'],               n: { kcal:316, carbs:58.7, sugars:55.4, addedSugars:40,   fat:7.8,  satFat:4.9,  transFat:0,   fiber:0,   protein:5.9,  sodium:79  } },
+  { keys: ['leite em pó'],                 n: { kcal:497, carbs:38.5, sugars:38.5, addedSugars:0,    fat:26.8, satFat:16.7, transFat:0.3, fiber:0,   protein:25.6, sodium:370 } },
+  { keys: ['cream cheese'],               n: { kcal:350, carbs:4.1,  sugars:3.8,  addedSugars:0,    fat:34.1, satFat:19.1, transFat:0,   fiber:0,   protein:5.9,  sodium:298 } },
+  { keys: ['requeijão','requeijao'],       n: { kcal:282, carbs:2.7,  sugars:2.7,  addedSugars:0,    fat:23.3, satFat:14.5, transFat:0,   fiber:0,   protein:15.7, sodium:442 } },
+  { keys: ['maracujá','maracuja'],         n: { kcal:68,  carbs:13.8, sugars:8.4,  addedSugars:0,    fat:0.7,  satFat:0.1,  transFat:0,   fiber:10.4,protein:2.4,  sodium:28  } },
+  { keys: ['limão','limao'],               n: { kcal:30,  carbs:6.9,  sugars:2.7,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:2.8, protein:0.9,  sodium:3   } },
+  { keys: ['morango'],                     n: { kcal:34,  carbs:7.7,  sugars:4.7,  addedSugars:0,    fat:0.4,  satFat:0,    transFat:0,   fiber:2.0, protein:0.7,  sodium:1   } },
+  { keys: ['baunilha','essência de baunilha','extrato de baunilha'], n: { kcal:288, carbs:12.7, sugars:12.7, addedSugars:0, fat:0.1, satFat:0, transFat:0, fiber:0, protein:0.1, sodium:9 } },
+  { keys: ['chocolate','chocolate ao leite','barra de chocolate'], n: { kcal:530, carbs:57.8, sugars:50.2, addedSugars:50.2, fat:30.7, satFat:17.8, transFat:0, fiber:5.5, protein:6.8, sodium:16 } },
+  { keys: ['gelatina','gelatina sem sabor'],n: { kcal:335, carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,   protein:83.5, sodium:261 } },
+  { keys: ['abacaxi'],                     n: { kcal:48,  carbs:12.3, sugars:9.8,  addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:1.0, protein:0.5,  sodium:1   } },
+  { keys: ['banana'],                      n: { kcal:92,  carbs:23.8, sugars:12.2, addedSugars:0,    fat:0.1,  satFat:0,    transFat:0,   fiber:1.9, protein:1.0,  sodium:1   } },
+  { keys: ['manga'],                       n: { kcal:64,  carbs:15.5, sugars:13.7, addedSugars:0,    fat:0.3,  satFat:0.1,  transFat:0,   fiber:1.6, protein:0.9,  sodium:2   } },
+  { keys: ['iogurte','iogurte natural'],   n: { kcal:58,  carbs:5.9,  sugars:5.9,  addedSugars:0,    fat:2.6,  satFat:1.6,  transFat:0,   fiber:0,   protein:3.4,  sodium:53  } },
+  { keys: ['sal','cloreto de sódio'],      n: { kcal:0,   carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,   protein:0,    sodium:38758 } },
+  { keys: ['fermento em pó','fermento'],   n: { kcal:53,  carbs:27.7, sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,   protein:0,    sodium:10600 } },
+  { keys: ['bicarbonato'],                 n: { kcal:0,   carbs:0,    sugars:0,    addedSugars:0,    fat:0,    satFat:0,    transFat:0,   fiber:0,   protein:0,    sodium:27360 } },
+  { keys: ['margarina'],                   n: { kcal:533, carbs:1.0,  sugars:0.5,  addedSugars:0,    fat:57.5, satFat:17.5, transFat:7.2, fiber:0,   protein:0.5,  sodium:480 } },
+  { keys: ['óleo','oleo','óleo de soja'],  n: { kcal:884, carbs:0,    sugars:0,    addedSugars:0,    fat:100,  satFat:13.6, transFat:0,   fiber:0,   protein:0,    sodium:0   } },
+  { keys: ['queijo'],                      n: { kcal:354, carbs:1.3,  sugars:0.5,  addedSugars:0,    fat:28.4, satFat:17.8, transFat:0.4, fiber:0,   protein:23.5, sodium:572 } }
+];
+
+// Convert ingredient qty to grams based on unit and name
+function ingredientToGrams(qty, unit, name) {
+  var q = Number(qty) || 0;
+  var low = (name || '').toLowerCase();
+  switch ((unit || '').toLowerCase()) {
+    case 'g':  return q;
+    case 'kg': return q * 1000;
+    case 'ml': return q;       // density ≈1 for most liquids
+    case 'l':  return q * 1000;
+    case 'un':
+      if (low.indexOf('ovo') !== -1 || low.indexOf('egg') !== -1) return q * 55;
+      if (low.indexOf('lata') !== -1) return q * 395;
+      if (low.indexOf('banana') !== -1) return q * 90;
+      if (low.indexOf('limão') !== -1 || low.indexOf('limao') !== -1) return q * 80;
+      return q * 100;
+    case 'lata': return q * 395;
+    case 'pct':  return q * 400;
+    case 'cx':   return q * 500;
+    case 'dz':   return q * 12 * 55;
+    case 'rolo': return q * 200;
+    default:     return q;
+  }
+}
+
+// Look up ingredient in NUTRI_DB (fuzzy partial match)
+function lookupNutriDB(name) {
+  var low = (name || '').toLowerCase().trim();
+  for (var i = 0; i < NUTRI_DB.length; i++) {
+    var entry = NUTRI_DB[i];
+    for (var j = 0; j < entry.keys.length; j++) {
+      if (low.indexOf(entry.keys[j]) !== -1 || entry.keys[j].indexOf(low) !== -1) {
+        return entry.n;
+      }
+    }
+  }
+  return null;
+}
+
+// Auto-calculate nutrition from form ingredients, fill form fields
+function autoCalcNutrition() {
+  var rows = document.querySelectorAll('#formIngredientList .ing-row');
+  if (!rows.length) {
+    showToast('⚠️ Adicione ingredientes primeiro.', 2000);
+    return;
+  }
+  var totals = { kcal:0, carbs:0, sugars:0, addedSugars:0, fat:0, satFat:0, transFat:0, fiber:0, protein:0, sodium:0 };
+  var totalGrams = 0;
+  var found = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var nameEl = rows[i].querySelector('.ing-name');
+    var qtyEl  = rows[i].querySelector('.ing-qty');
+    var unitEl = rows[i].querySelector('.ing-unit');
+    var iName  = nameEl ? nameEl.value.trim() : '';
+    var iQty   = qtyEl  ? qtyEl.value         : '0';
+    var iUnit  = unitEl ? unitEl.value         : 'g';
+    if (!iName) continue;
+    var grams  = ingredientToGrams(iQty, iUnit, iName);
+    totalGrams += grams;
+    var nd = lookupNutriDB(iName);
+    if (!nd) continue;
+    found++;
+    var factor = grams / 100;
+    totals.kcal       += nd.kcal       * factor;
+    totals.carbs      += nd.carbs      * factor;
+    totals.sugars     += nd.sugars     * factor;
+    totals.addedSugars+= nd.addedSugars* factor;
+    totals.fat        += nd.fat        * factor;
+    totals.satFat     += nd.satFat     * factor;
+    totals.transFat   += nd.transFat   * factor;
+    totals.fiber      += nd.fiber      * factor;
+    totals.protein    += nd.protein    * factor;
+    totals.sodium     += nd.sodium     * factor;
+  }
+  if (totalGrams === 0) { showToast('⚠️ Informe as quantidades dos ingredientes.', 2500); return; }
+  // Scale to per 100g of recipe
+  var scale = 100 / totalGrams;
+  function rnd(v) { return Math.round(v * scale * 10) / 10; }
+  function rnd0(v){ return Math.round(v * scale); }
+  document.getElementById('rfCalories').value   = rnd0(totals.kcal);
+  document.getElementById('rfCarbs').value      = rnd(totals.carbs);
+  document.getElementById('rfSugars').value     = rnd(totals.sugars);
+  document.getElementById('rfAddedSugars').value= rnd(totals.addedSugars);
+  document.getElementById('rfFat').value        = rnd(totals.fat);
+  document.getElementById('rfSatFat').value     = rnd(totals.satFat);
+  document.getElementById('rfTransFat').value   = rnd(totals.transFat);
+  document.getElementById('rfFiber').value      = rnd(totals.fiber);
+  document.getElementById('rfProtein').value    = rnd(totals.protein);
+  document.getElementById('rfSodium').value     = rnd0(totals.sodium);
+  var msg = found < rows.length
+    ? '✅ Calculado! (' + found + '/' + rows.length + ' ingredientes reconhecidos)'
+    : '✅ Tabela nutricional calculada!';
+  showToast(msg, 3000);
+}
+
+// ANVISA VD reference table (RDC 429/2020) – values per 100g of recipe
+var ANVISA_VD = { kcal: 2000, carbs: 300, fat: 55, satFat: 22, fiber: 25, protein: 50, sodium: 2300 };
+
+function anvisaVDpct(field, val100g, portionG) {
+  var vd = ANVISA_VD[field];
+  if (!vd) return null;
+  var portion = (val100g * portionG) / 100;
+  return Math.round((portion / vd) * 100);
+}
+
 function calcMargin(price, cost, yieldQty) {
   price    = Number(price)    || 0;
   cost     = Number(cost)     || 0;
@@ -3157,20 +3312,30 @@ function renderRecipeDetail() {
 
   // Nutrition table
   var n = r.nutrition || {};
+  var portG = Number(r.portionG) || 100;
   var nutRows = [
-    { label:'Valor energético', val:n.calories, unit:'kcal' },
-    { label:'Carboidratos',     val:n.carbs,    unit:'g' },
-    { label:'Proteínas',        val:n.protein,  unit:'g' },
-    { label:'Gorduras totais',  val:n.fat,      unit:'g' },
-    { label:'Sódio',            val:n.sodium,   unit:'mg' }
+    { label:'Valor energético', val:n.calories, unit:'kcal', vdKey:'kcal' },
+    { label:'Carboidratos',     val:n.carbs,    unit:'g',    vdKey:'carbs' },
+    { label:'Açúcares totais',  val:n.sugars,   unit:'g',    vdKey:null },
+    { label:'Açúcares adicionados', val:n.addedSugars, unit:'g', vdKey:null },
+    { label:'Gorduras totais',  val:n.fat,      unit:'g',    vdKey:'fat' },
+    { label:'Gorduras saturadas',val:n.satFat,  unit:'g',    vdKey:'satFat' },
+    { label:'Gorduras trans',   val:n.transFat, unit:'g',    vdKey:null },
+    { label:'Fibra alimentar',  val:n.fiber,    unit:'g',    vdKey:'fiber' },
+    { label:'Proteínas',        val:n.protein,  unit:'g',    vdKey:'protein' },
+    { label:'Sódio',            val:n.sodium,   unit:'mg',   vdKey:'sodium' }
   ];
   var nutHTML = '';
   for (var ni = 0; ni < nutRows.length; ni++) {
     var nr = nutRows[ni];
     if (nr.val === null || nr.val === undefined || nr.val === '') continue;
+    var portVal = Math.round((Number(nr.val) * portG / 100) * 10) / 10;
+    var vdPct = nr.vdKey ? anvisaVDpct(nr.vdKey, Number(nr.val), portG) : null;
     nutHTML += '<div class="nut-row">' +
       '<span class="nut-label">' + nr.label + '</span>' +
-      '<span class="nut-value">' + nr.val + ' ' + nr.unit + '</span>' +
+      '<span class="nut-value">' + portVal + '&nbsp;' + nr.unit +
+        (vdPct !== null ? ' <small style="color:var(--muted)">(' + vdPct + '%VD)</small>' : '') +
+      '</span>' +
     '</div>';
   }
 
@@ -3223,7 +3388,7 @@ function renderRecipeDetail() {
       '<div class="sizes-list">' + sizesHTML + '</div>' : '') +
     (nutHTML ?
       '<h3 class="section-title" style="margin-top:4px">🥗 Tabela Nutricional</h3>' +
-      '<p style="font-size:11px;color:var(--muted);margin-bottom:10px">Por 100g</p>' +
+      '<p style="font-size:11px;color:var(--muted);margin-bottom:10px">Por porção de ' + portG + 'g' + (r.portionHH ? ' (' + escHtml(r.portionHH) + ')' : '') + '</p>' +
       '<div class="nut-table">' + nutHTML + '</div>' : '') +
     (etiqBtns ?
       '<div style="margin-top:16px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:12px">' +
@@ -3258,6 +3423,13 @@ function openAddRecipe() {
   document.getElementById('rfProtein').value   = '';
   document.getElementById('rfFat').value       = '';
   document.getElementById('rfSodium').value    = '';
+  document.getElementById('rfSugars').value      = '';
+  document.getElementById('rfAddedSugars').value = '';
+  document.getElementById('rfSatFat').value      = '';
+  document.getElementById('rfTransFat').value    = '';
+  document.getElementById('rfFiber').value       = '';
+  document.getElementById('rfPortionG').value    = '';
+  document.getElementById('rfPortionHH').value   = '';
   document.getElementById('recipeFormError').textContent = '';
   document.getElementById('rfExtraSizesBody').innerHTML = '';
   document.getElementById('formIngredientList').innerHTML =
@@ -3293,6 +3465,13 @@ function openEditRecipe(id) {
   document.getElementById('rfProtein').value  = nut.protein  !== undefined ? nut.protein  : '';
   document.getElementById('rfFat').value      = nut.fat      !== undefined ? nut.fat      : '';
   document.getElementById('rfSodium').value   = nut.sodium   !== undefined ? nut.sodium   : '';
+  document.getElementById('rfSugars').value      = nut.sugars      !== undefined ? nut.sugars      : '';
+  document.getElementById('rfAddedSugars').value = nut.addedSugars !== undefined ? nut.addedSugars : '';
+  document.getElementById('rfSatFat').value      = nut.satFat      !== undefined ? nut.satFat      : '';
+  document.getElementById('rfTransFat').value    = nut.transFat    !== undefined ? nut.transFat    : '';
+  document.getElementById('rfFiber').value       = nut.fiber       !== undefined ? nut.fiber       : '';
+  document.getElementById('rfPortionG').value    = r.portionG      !== undefined ? r.portionG      : '';
+  document.getElementById('rfPortionHH').value   = r.portionHH     || '';
   document.getElementById('recipeFormError').textContent = '';
   var exBody = document.getElementById('rfExtraSizesBody');
   exBody.innerHTML = '';
@@ -3438,12 +3617,19 @@ function onSaveRecipe() {
       return res;
     }()),
     nutrition: {
-      calories: nutVal('rfCalories'),
-      carbs:    nutVal('rfCarbs'),
-      protein:  nutVal('rfProtein'),
-      fat:      nutVal('rfFat'),
-      sodium:   nutVal('rfSodium')
-    }
+      calories:    nutVal('rfCalories'),
+      carbs:       nutVal('rfCarbs'),
+      sugars:      nutVal('rfSugars'),
+      addedSugars: nutVal('rfAddedSugars'),
+      fat:         nutVal('rfFat'),
+      satFat:      nutVal('rfSatFat'),
+      transFat:    nutVal('rfTransFat'),
+      fiber:       nutVal('rfFiber'),
+      protein:     nutVal('rfProtein'),
+      sodium:      nutVal('rfSodium')
+    },
+    portionG:  Number(document.getElementById('rfPortionG').value) || 100,
+    portionHH: document.getElementById('rfPortionHH').value.trim()
   };
   if (recipeEditingId) {
     recipeUpdate(recipeEditingId, data);
@@ -5488,7 +5674,7 @@ function generateEtiqueta(recipeId, sizeKey) {
     yd     = Number(r.yield && r.yield[sizeKey]) || 0;
     pr     = Number(r.price && r.price[sizeKey]) || 0;
   }
-  var cost    = Number(r.cost) || 0;
+  var cost = Number(r.cost) || 0;
 
   var ingList = '';
   if (r.ingredients && r.ingredients.length) {
@@ -5498,44 +5684,93 @@ function generateEtiqueta(recipeId, sizeKey) {
   }
 
   var n = r.nutrition || {};
-  var nutRows = [
-    { label: 'Valor energético', val: n.calories, unit: 'kcal' },
-    { label: 'Carboidratos',     val: n.carbs,    unit: 'g' },
-    { label: 'Proteínas',        val: n.protein,  unit: 'g' },
-    { label: 'Gorduras totais',  val: n.fat,      unit: 'g' },
-    { label: 'Sódio',            val: n.sodium,   unit: 'mg' }
-  ];
-  var nutHTML = '';
-  for (var ni = 0; ni < nutRows.length; ni++) {
-    var nr = nutRows[ni];
-    if (nr.val === null || nr.val === undefined || nr.val === '') continue;
-    nutHTML += '<tr><td style="padding:3px 6px">' + nr.label + '</td>' +
-      '<td style="padding:3px 6px;text-align:right;font-weight:700">' + nr.val + '&nbsp;' + nr.unit + '</td></tr>';
+  var portionG  = Number(r.portionG)  || 100;
+  var portionHH = r.portionHH || '1 unidade';
+
+  // ANVISA VD references
+  var VD = { kcal:2000, carbs:300, fat:55, satFat:22, fiber:25, protein:50, sodium:2300 };
+  function pct(val, ref) {
+    var v = Number(val) * portionG / 100;
+    return v && ref ? Math.round((v / ref) * 100) : null;
+  }
+  function portVal(val, dec) {
+    var v = Math.round(Number(val) * portionG / 100 * Math.pow(10, dec || 0)) / Math.pow(10, dec || 0);
+    return v;
+  }
+  function vdCell(val, ref) {
+    var p = pct(val, ref);
+    return p !== null ? p + '%' : '**';
+  }
+  function nutRow(label, val, unit, ref, bold) {
+    if (val === null || val === undefined || val === '') return '';
+    var pv = portVal(val, unit === 'mg' ? 0 : 1);
+    var vc = vdCell(val, ref);
+    var fw = bold ? 'font-weight:900;' : '';
+    return '<tr style="border-bottom:1px solid #ccc">' +
+      '<td style="padding:3px 5px;font-size:11px;' + fw + '">' + label + '</td>' +
+      '<td style="padding:3px 5px;font-size:11px;text-align:right;' + fw + '">' + pv + '&nbsp;' + unit + '</td>' +
+      '<td style="padding:3px 5px;font-size:11px;text-align:right">' + vc + '</td>' +
+    '</tr>';
+  }
+
+  var nutTable = '';
+  var hasNut = (n.calories !== null && n.calories !== undefined && n.calories !== '');
+  if (hasNut) {
+    var kcalVal = portVal(n.calories, 0);
+    var kjVal   = Math.round(kcalVal * 4.184);
+    nutTable =
+      '<div style="border-top:3px solid #000;border-bottom:3px solid #000;margin-top:8px;padding:4px 0">' +
+      '<div style="font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:0.5px">Informação Nutricional</div>' +
+      '<div style="font-size:11px;border-bottom:1px solid #000;padding:2px 0;margin:2px 0">' +
+        'Porção de ' + portionG + ' g (ou ml) (' + escHtml(portionHH) + ')' +
+      '</div>' +
+      '<table style="width:100%;border-collapse:collapse">' +
+        '<tr style="border-bottom:2px solid #000">' +
+          '<th style="font-size:11px;text-align:left;padding:2px 5px">Nutriente</th>' +
+          '<th style="font-size:11px;text-align:right;padding:2px 5px">Por porção</th>' +
+          '<th style="font-size:11px;text-align:right;padding:2px 5px">%VD(*)</th>' +
+        '</tr>' +
+        '<tr style="border-bottom:2px solid #000">' +
+          '<td style="padding:3px 5px;font-size:11px;font-weight:900">Valor energético</td>' +
+          '<td style="padding:3px 5px;font-size:11px;text-align:right;font-weight:900">' + kcalVal + '&nbsp;kcal<br><span style="font-weight:400">(' + kjVal + '&nbsp;kJ)</span></td>' +
+          '<td style="padding:3px 5px;font-size:11px;text-align:right">' + vdCell(n.calories, VD.kcal) + '</td>' +
+        '</tr>' +
+        nutRow('Carboidratos',          n.carbs,       'g',  VD.carbs,   true) +
+        nutRow('  Açúcares totais',     n.sugars,      'g',  null,       false) +
+        nutRow('  Açúcares adicionados',n.addedSugars, 'g',  null,       false) +
+        nutRow('Gorduras totais',        n.fat,         'g',  VD.fat,     true) +
+        nutRow('  Gorduras saturadas',  n.satFat,      'g',  VD.satFat,  false) +
+        nutRow('  Gorduras trans',      n.transFat,    'g',  null,       false) +
+        nutRow('Fibra alimentar',        n.fiber,       'g',  VD.fiber,   true) +
+        nutRow('Proteínas',              n.protein,     'g',  VD.protein, true) +
+        nutRow('Sódio',                  n.sodium,      'mg', VD.sodium,  true) +
+      '</table>' +
+      '<div style="font-size:9px;color:#555;margin-top:4px;border-top:1px solid #000;padding-top:3px">' +
+        '(*) Percentual de Valores Diários fornecidos pela porção.<br>' +
+        '(**) Valor diário não estabelecido.' +
+      '</div>' +
+      '</div>';
   }
 
   var today  = new Date();
   var expiry = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
   var fmt = function(d) { return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); };
 
-  var html = '<div style="' + pdfStyles() + 'max-width:320px;margin:0 auto;border:2px solid #222;padding:14px">' +
-    '<div style="text-align:center;border-bottom:2px solid #222;padding-bottom:8px;margin-bottom:8px">' +
-    '<div style="font-size:20px;font-weight:900;letter-spacing:1px">' + escHtml(empresa) + '</div>' +
-    '<div style="font-size:15px;font-weight:700;margin-top:4px">' + escHtml(r.name) + '</div>' +
-    '<div style="font-size:13px;margin-top:2px">' + escHtml(sLabel) + (yd > 0 ? ' &nbsp;·&nbsp; ' + yd + ' unidades' : '') + '</div>' +
-    (pr > 0 ? '<div style="font-size:13px;font-weight:700;margin-top:2px">R$ ' + pr.toFixed(2).replace('.',',') + '</div>' : '') +
+  var html =
+    '<div style="' + pdfStyles() + 'max-width:320px;margin:0 auto;border:2px solid #000;padding:12px;font-family:Arial,Helvetica,sans-serif">' +
+    '<div style="text-align:center;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:6px">' +
+      '<div style="font-size:18px;font-weight:900;letter-spacing:1px">' + escHtml(empresa) + '</div>' +
+      '<div style="font-size:14px;font-weight:700;margin-top:3px">' + escHtml(r.name) + '</div>' +
+      '<div style="font-size:12px;margin-top:2px">' + escHtml(sLabel) + (yd > 0 ? ' &nbsp;·&nbsp; ' + yd + ' un/receita' : '') + '</div>' +
+      (pr > 0 ? '<div style="font-size:13px;font-weight:700;margin-top:2px">R$ ' + pr.toFixed(2).replace('.',',') + '</div>' : '') +
     '</div>' +
-    (ingList ? '<div style="margin-bottom:8px"><strong>Ingredientes:</strong><br>' + escHtml(ingList) + '</div>' : '') +
-    '<div style="margin-bottom:8px">' +
-    '<strong>Fabricação:</strong> ' + fmt(today) + '&nbsp;&nbsp;' +
-    '<strong>Validade:</strong> ' + fmt(expiry) + ' (7 dias)' +
+    (ingList ? '<div style="font-size:11px;margin-bottom:6px"><strong>Ingredientes:</strong> ' + escHtml(ingList) + '</div>' : '') +
+    '<div style="font-size:11px;margin-bottom:6px">' +
+      '<strong>Fabricação:</strong> ' + fmt(today) + ' &nbsp; ' +
+      '<strong>Validade:</strong> ' + fmt(expiry) + ' (7 dias)' +
     '</div>' +
-    (nutHTML ?
-      '<div style="border-top:1px solid #888;padding-top:8px">' +
-      '<div style="font-weight:900;font-size:13px;margin-bottom:4px;text-transform:uppercase">Informação Nutricional</div>' +
-      '<div style="font-size:11px;color:#555;margin-bottom:4px">Porção: 100 g</div>' +
-      '<table style="width:100%;border-collapse:collapse;font-size:12px;border-top:2px solid #222;border-bottom:2px solid #222">' +
-      nutHTML + '</table></div>' : '') +
-    '<div style="text-align:center;margin-top:10px;font-size:11px;color:#555">Feito com amor 💛</div>' +
+    nutTable +
+    '<div style="text-align:center;margin-top:8px;font-size:10px;color:#555">Produto artesanal · Feito com amor 💛</div>' +
     '</div>';
 
   printDocument(html);
