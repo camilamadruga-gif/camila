@@ -967,9 +967,48 @@
     .bi-search-bar { display:flex; gap:8px; margin-bottom:12px; }
     .bi-search-bar .ob-input { flex:1; }
     .bi-empty { text-align:center; color:var(--muted); font-size:13px; padding:24px 0; }
+    /* Beta Gate */
+    #betaGate { display:none; position:fixed; inset:0; z-index:9999; background:var(--cream);
+                flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; }
+    .beta-logo { font-size:52px; margin-bottom:8px; }
+    .beta-brand { font-family:'Cormorant Garamond',serif; font-size:36px; font-weight:700; color:var(--accent); margin-bottom:4px; }
+    .beta-tagline { font-size:13px; color:var(--muted); margin-bottom:40px; text-align:center; }
+    .beta-box { background:var(--surface); border:1px solid var(--border); border-radius:16px;
+                padding:28px 24px; width:100%; max-width:340px; }
+    .beta-box-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:6px; }
+    .beta-box-sub { font-size:12px; color:var(--muted); margin-bottom:18px; line-height:1.5; }
+    .beta-input { width:100%; box-sizing:border-box; padding:12px 14px; border:1.5px solid var(--border);
+                  border-radius:10px; font-size:15px; font-family:'Nunito',sans-serif; font-weight:700;
+                  letter-spacing:2px; text-transform:uppercase; background:var(--cream); color:var(--text);
+                  outline:none; margin-bottom:12px; }
+    .beta-input:focus { border-color:var(--accent); }
+    .beta-error { font-size:12px; color:#c0392b; margin-bottom:12px; min-height:16px; font-weight:600; }
+    .beta-btn { width:100%; padding:13px; background:var(--accent); color:#fff; border:none; border-radius:10px;
+                font-family:'Nunito',sans-serif; font-size:15px; font-weight:700; cursor:pointer; }
+    .beta-btn:active { opacity:.85; }
+    .beta-footer { margin-top:32px; font-size:11px; color:var(--muted); text-align:center; }
   </style>
 </head>
 <body>
+
+<!-- ══════════════════════════════════
+     BETA GATE
+══════════════════════════════════ -->
+<div id="betaGate" role="dialog" aria-modal="true" aria-label="Acesso beta">
+  <div class="beta-logo">🍬</div>
+  <div class="beta-brand">Confei</div>
+  <div class="beta-tagline">Gestão de doces artesanais</div>
+  <div class="beta-box">
+    <div class="beta-box-title">Acesso exclusivo</div>
+    <div class="beta-box-sub">Este app está em fase beta. Digite o código de acesso que você recebeu para continuar.</div>
+    <input id="betaCodeInput" class="beta-input" type="text" placeholder="CONFEI-XX"
+           autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+           onkeydown="if(event.key==='Enter')submitBetaCode()" />
+    <div id="betaCodeError" class="beta-error"></div>
+    <button class="beta-btn" type="button" onclick="submitBetaCode()">Entrar</button>
+  </div>
+  <div class="beta-footer">Não tem um código? Entre em contato com a Confei.</div>
+</div>
 
 <!-- ══════════════════════════════════
      ONBOARDING
@@ -5400,6 +5439,41 @@ function renderDashboard() {
 }
 
 // ════════════════════════════════
+// BETA ACCESS GATE
+// ════════════════════════════════
+// To add/remove testers: edit this array and redeploy.
+var BETA_CODES = [
+  'CONFEI-MINHA',
+  'CONFEI-01', 'CONFEI-02', 'CONFEI-03', 'CONFEI-04', 'CONFEI-05',
+  'CONFEI-06', 'CONFEI-07', 'CONFEI-08', 'CONFEI-09', 'CONFEI-10'
+];
+
+function betaCodeValid(code) {
+  for (var i = 0; i < BETA_CODES.length; i++) {
+    if (BETA_CODES[i] === code) return true;
+  }
+  return false;
+}
+
+function betaIsUnlocked() {
+  try {
+    var c = localStorage.getItem('cp_beta_v1');
+    return !!(c && betaCodeValid(c));
+  } catch(e) { return false; }
+}
+
+function submitBetaCode() {
+  var val = (document.getElementById('betaCodeInput').value || '').trim().toUpperCase();
+  if (betaCodeValid(val)) {
+    try { localStorage.setItem('cp_beta_v1', val); } catch(e) {}
+    location.reload();
+  } else {
+    document.getElementById('betaCodeError').textContent = 'Código inválido. Solicite acesso à Confei.';
+    document.getElementById('betaCodeInput').select();
+  }
+}
+
+// ════════════════════════════════
 // ONBOARDING
 // ════════════════════════════════
 (function() {
@@ -5518,6 +5592,12 @@ function renderDashboard() {
     shopRender();
     renderRecipes();
   });
+
+  if (!betaIsUnlocked()) {
+    document.getElementById('betaGate').style.display = 'flex';
+    return;
+  }
+  document.getElementById('betaGate').style.display = 'none';
 
   if (!isDone()) {
     overlay.classList.remove('hidden');
