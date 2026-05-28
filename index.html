@@ -632,6 +632,42 @@
     .enc-action-btn--status { background:var(--accent); color:#fff; border-color:var(--accent); }
     .enc-action-btn--del { color:var(--red); border-color:transparent; background:none; }
 
+    /* ── Financeiro ── */
+    .fin-section { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:14px; }
+    .fin-section-title { font-size:13px; font-weight:800; color:var(--text); margin-bottom:12px; }
+    .fin-stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .fin-stat { border-radius:10px; padding:12px 10px; }
+    .fin-stat--revenue { background:rgba(74,140,92,.08); border:1px solid rgba(74,140,92,.2); }
+    .fin-stat--cost { background:rgba(192,57,43,.06); border:1px solid rgba(192,57,43,.15); }
+    .fin-stat--profit { background:rgba(200,132,58,.08); border:1px solid rgba(200,132,58,.2); grid-column:1/-1; }
+    .fin-stat--neutral { background:var(--cream); border:1px solid var(--border); }
+    .fin-stat__label { font-size:11px; font-weight:700; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.05em; }
+    .fin-stat__value { font-size:20px; font-weight:800; color:var(--text); }
+    .fin-stat__sub { font-size:11px; color:var(--muted); margin-top:2px; }
+    .fin-stat__value--green { color:var(--green); }
+    .fin-stat__value--red { color:var(--red); }
+    .custo-item { display:flex; align-items:center; gap:8px; padding:10px 0; border-bottom:1px solid var(--border); }
+    .custo-item:last-child { border-bottom:none; }
+    .custo-item__name { flex:1; font-size:14px; font-weight:600; color:var(--text); }
+    .custo-item__value { font-size:14px; font-weight:700; color:var(--accent); }
+    .custo-item__actions { display:flex; gap:4px; }
+    .custo-edit-btn,.custo-del-btn { background:none; border:none; cursor:pointer; font-size:16px; padding:4px; opacity:.6; line-height:1; }
+    .custo-edit-btn:hover,.custo-del-btn:hover { opacity:1; }
+    .fin-add-btn { display:flex; align-items:center; gap:6px; padding:10px; border:2px dashed var(--border); border-radius:10px; background:none; color:var(--muted); font-size:13px; font-weight:700; cursor:pointer; width:100%; justify-content:center; margin-top:8px; }
+    .fin-add-btn:hover { border-color:var(--accent); color:var(--accent); }
+    .taxa-row { display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); }
+    .taxa-row:last-child { border-bottom:none; }
+    .taxa-label { flex:1; font-size:14px; font-weight:600; color:var(--text); }
+    .taxa-input-wrap { display:flex; align-items:center; gap:4px; }
+    .taxa-input { width:72px; text-align:right; padding:6px 8px !important; font-size:14px !important; font-weight:700 !important; }
+    .taxa-unit { font-size:12px; font-weight:700; color:var(--muted); }
+    .breakeven-result { background:rgba(200,132,58,.08); border:1px solid rgba(200,132,58,.2); border-radius:10px; padding:14px; }
+    .breakeven-value { font-size:24px; font-weight:800; color:var(--accent); margin-bottom:4px; }
+    .breakeven-sub { font-size:12px; color:var(--muted); }
+    .meta-result { background:rgba(74,140,92,.08); border:1px solid rgba(74,140,92,.2); border-radius:10px; padding:14px; margin-top:10px; }
+    .meta-result__value { font-size:22px; font-weight:800; color:var(--green); }
+    .meta-result__sub { font-size:12px; color:var(--muted); margin-top:4px; }
+
     /* ── Bottom Nav ── */
     .app-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
@@ -1115,6 +1151,7 @@
         <button class="mais-seg active" data-seg="vendas"     onclick="switchMaisSeg('vendas')"     type="button">💰 Vendas</button>
         <button class="mais-seg"        data-seg="encomendas" onclick="switchMaisSeg('encomendas')" type="button">📋 Pedidos</button>
         <button class="mais-seg"        data-seg="compras"    onclick="switchMaisSeg('compras')"    type="button">🛒 Compras</button>
+        <button class="mais-seg"        data-seg="financeiro" onclick="switchMaisSeg('financeiro')" type="button">📊 Financeiro</button>
       </div>
 
       <!-- VENDAS segment -->
@@ -1169,6 +1206,89 @@
             <button class="shop-add-btn" onclick="openAddManualItem()" type="button">+ Adicionar item à lista</button>
           </div>
         </div>
+      </div>
+
+      <!-- FINANCEIRO segment -->
+      <div id="segFinanceiro" style="display:none">
+
+        <!-- Taxas de Cartão -->
+        <div class="fin-section">
+          <div class="fin-section-title">💳 Taxas de Cartão</div>
+          <div id="taxasForm">
+            <div class="taxa-row">
+              <span class="taxa-label">Pix</span>
+              <div class="taxa-input-wrap">
+                <input class="ob-input taxa-input" type="number" id="taxaPix" min="0" max="100" step="0.01" value="0" />
+                <span class="taxa-unit">%</span>
+              </div>
+            </div>
+            <div class="taxa-row">
+              <span class="taxa-label">Débito</span>
+              <div class="taxa-input-wrap">
+                <input class="ob-input taxa-input" type="number" id="taxaDebito" min="0" max="100" step="0.01" value="1.5" />
+                <span class="taxa-unit">%</span>
+              </div>
+            </div>
+            <div class="taxa-row">
+              <span class="taxa-label">Crédito</span>
+              <div class="taxa-input-wrap">
+                <input class="ob-input taxa-input" type="number" id="taxaCredito" min="0" max="100" step="0.01" value="2.5" />
+                <span class="taxa-unit">%</span>
+              </div>
+            </div>
+            <div class="taxa-row">
+              <span class="taxa-label">Dinheiro</span>
+              <div class="taxa-input-wrap">
+                <input class="ob-input taxa-input" type="number" id="taxaDinheiro" min="0" max="100" step="0.01" value="0" />
+                <span class="taxa-unit">%</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn-secondary" onclick="onSaveTaxas()" type="button" style="margin-top:10px;width:100%">Salvar taxas</button>
+        </div>
+
+        <!-- Resumo do Mês -->
+        <div class="fin-section">
+          <div class="fin-section-title">📊 Resumo do Mês</div>
+          <div id="finResumo"></div>
+        </div>
+
+        <!-- Custos Fixos -->
+        <div class="fin-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div class="fin-section-title" style="margin-bottom:0">🏢 Custos Fixos <small style="font-size:11px;font-weight:400;color:var(--muted)">(R$/mês)</small></div>
+          </div>
+          <div id="custosFixosList"></div>
+          <button class="fin-add-btn" onclick="openAddCustoFixo()" type="button">+ Adicionar custo fixo</button>
+        </div>
+
+        <!-- Custos Variáveis -->
+        <div class="fin-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+            <div class="fin-section-title" style="margin-bottom:0">📈 Custos Variáveis <small style="font-size:11px;font-weight:400;color:var(--muted)">(% da receita)</small></div>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Taxas de plataforma, embalagens, comissões etc.</p>
+          <div id="custosVarList"></div>
+          <button class="fin-add-btn" onclick="openAddCustoVar()" type="button">+ Adicionar custo variável</button>
+        </div>
+
+        <!-- Ponto de Equilíbrio -->
+        <div class="fin-section">
+          <div class="fin-section-title">⚖️ Ponto de Equilíbrio</div>
+          <div id="finBreakEven"></div>
+        </div>
+
+        <!-- Simulador de Meta -->
+        <div class="fin-section">
+          <div class="fin-section-title">🎯 Simulador de Meta</div>
+          <div class="ob-field">
+            <label class="ob-label" for="finMetaTarget">Lucro desejado por mês (R$)</label>
+            <input class="ob-input" type="number" id="finMetaTarget" min="0" step="100" placeholder="0,00" oninput="renderFinMeta()" />
+          </div>
+          <div id="finMeta"></div>
+        </div>
+
+        <div style="height:8px"></div>
       </div>
     </section>
 
@@ -1629,6 +1749,64 @@
 </div>
 
 <!-- ══════════════════════════════════
+     MODAL: Custo Fixo
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalCustoFixo" role="dialog" aria-modal="true" aria-label="Custo fixo">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalCustoFixo')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="cfModalTitle">Novo Custo Fixo</span>
+      <button class="modal-close" onclick="closeModal('modalCustoFixo')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label class="ob-label" for="fCFName">Descrição *</label>
+        <input class="ob-input" type="text" id="fCFName" placeholder="Ex: Aluguel, Gás, Energia…" maxlength="60" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fCFValue">Valor mensal (R$) *</label>
+        <input class="ob-input" type="number" id="fCFValue" min="0" step="0.01" placeholder="0,00" />
+      </div>
+      <div class="form-error" id="cfFormError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalCustoFixo')" type="button">Cancelar</button>
+      <button class="btn-primary" onclick="onSaveCustoFixo()" type="button" style="margin-top:0;flex:1;justify-content:center">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: Custo Variável
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalCustoVar" role="dialog" aria-modal="true" aria-label="Custo variável">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalCustoVar')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="cvModalTitle">Novo Custo Variável</span>
+      <button class="modal-close" onclick="closeModal('modalCustoVar')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label class="ob-label" for="fCVName">Descrição *</label>
+        <input class="ob-input" type="text" id="fCVName" placeholder="Ex: Taxa iFood, Embalagem…" maxlength="60" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fCVPct">Percentual da receita (%) *</label>
+        <input class="ob-input" type="number" id="fCVPct" min="0" max="100" step="0.01" placeholder="0,00" />
+      </div>
+      <div class="form-error" id="cvFormError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalCustoVar')" type="button">Cancelar</button>
+      <button class="btn-primary" onclick="onSaveCustoVar()" type="button" style="margin-top:0;flex:1;justify-content:center">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
      LOTE FORM (full-screen overlay)
 ══════════════════════════════════ -->
 <div class="recipe-form" id="loteForm" role="dialog" aria-modal="true" aria-label="Novo lote de produção">
@@ -1715,7 +1893,10 @@ var STORE = {
   RECIPES:    'cp_recipes_v1',
   PRODUCAO:   'cp_producao_v1',
   VENDAS:     'cp_vendas_v1',
-  ENCOMENDAS: 'cp_encomendas_v1'
+  ENCOMENDAS:  'cp_encomendas_v1',
+  CUSTOS_FIXOS: 'cp_custos_fixos_v1',
+  CUSTOS_VAR:   'cp_custos_var_v1',
+  TAXAS:        'cp_taxas_v1'
 };
 
 function storeGet(key) {
@@ -2757,6 +2938,356 @@ document.getElementById('recipeSearch').addEventListener('input', function() {
 });
 
 // ════════════════════════════════
+// FINANCEIRO
+// ════════════════════════════════
+
+function taxasGet() {
+  var t = storeGet(STORE.TAXAS) || {};
+  return {
+    pix:      Number(t.pix      !== undefined ? t.pix      : 0),
+    debito:   Number(t.debito   !== undefined ? t.debito   : 1.5),
+    credito:  Number(t.credito  !== undefined ? t.credito  : 2.5),
+    dinheiro: Number(t.dinheiro !== undefined ? t.dinheiro : 0)
+  };
+}
+function taxasSave(data) { storeSet(STORE.TAXAS, data); }
+
+function custoFixoGetAll()    { return storeGet(STORE.CUSTOS_FIXOS) || []; }
+function custoFixoSave(items) { storeSet(STORE.CUSTOS_FIXOS, items); }
+function custoFixoAdd(data) {
+  var items = custoFixoGetAll();
+  items.push({ id: genId(), name: String(data.name || '').trim(), value: Math.max(0, Number(data.value) || 0) });
+  custoFixoSave(items);
+}
+function custoFixoUpdate(id, data) {
+  var items = custoFixoGetAll();
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === id) {
+      items[i].name  = String(data.name || '').trim();
+      items[i].value = Math.max(0, Number(data.value) || 0);
+      break;
+    }
+  }
+  custoFixoSave(items);
+}
+function custoFixoRemove(id) {
+  custoFixoSave(custoFixoGetAll().filter(function(c) { return c.id !== id; }));
+}
+function custoFixoFindById(id) {
+  var items = custoFixoGetAll();
+  for (var i = 0; i < items.length; i++) if (items[i].id === id) return items[i];
+  return null;
+}
+
+function custoVarGetAll()    { return storeGet(STORE.CUSTOS_VAR) || []; }
+function custoVarSave(items) { storeSet(STORE.CUSTOS_VAR, items); }
+function custoVarAdd(data) {
+  var items = custoVarGetAll();
+  items.push({ id: genId(), name: String(data.name || '').trim(), pct: Math.min(100, Math.max(0, Number(data.pct) || 0)) });
+  custoVarSave(items);
+}
+function custoVarUpdate(id, data) {
+  var items = custoVarGetAll();
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === id) {
+      items[i].name = String(data.name || '').trim();
+      items[i].pct  = Math.min(100, Math.max(0, Number(data.pct) || 0));
+      break;
+    }
+  }
+  custoVarSave(items);
+}
+function custoVarRemove(id) {
+  custoVarSave(custoVarGetAll().filter(function(c) { return c.id !== id; }));
+}
+function custoVarFindById(id) {
+  var items = custoVarGetAll();
+  for (var i = 0; i < items.length; i++) if (items[i].id === id) return items[i];
+  return null;
+}
+
+// ── Financeiro calc helpers ──
+function finCalcRevenue() {
+  var taxas = taxasGet();
+  var now   = new Date();
+  var allV  = vendaGetAll();
+  var gross = 0, fees = 0;
+  for (var i = 0; i < allV.length; i++) {
+    var v = allV[i];
+    if (v.date) {
+      var vd = new Date(v.date);
+      if (vd.getFullYear() === now.getFullYear() && vd.getMonth() === now.getMonth()) {
+        var t = Number(v.total) || 0;
+        gross += t;
+        var taxa = (Number(taxas[v.payment]) || 0) / 100;
+        fees += t * taxa;
+      }
+    }
+  }
+  return { gross: gross, fees: fees, net: gross - fees };
+}
+
+function finCalcCosts(netRevenue) {
+  var fixos = custoFixoGetAll();
+  var vars  = custoVarGetAll();
+  var totalFixo = 0;
+  for (var i = 0; i < fixos.length; i++) totalFixo += Number(fixos[i].value) || 0;
+  var varRate = 0;
+  for (var j = 0; j < vars.length; j++) varRate += Number(vars[j].pct) || 0;
+  varRate = varRate / 100;
+  var totalVar = netRevenue * varRate;
+  return { fixo: totalFixo, varRate: varRate, varAmount: totalVar, total: totalFixo + totalVar };
+}
+
+// ── Render Financeiro ──
+function renderFinanceiro() {
+  finLoadTaxas();
+  renderFinResumo();
+  renderCustosFixos();
+  renderCustosVar();
+  renderFinBreakEven();
+  renderFinMeta();
+}
+
+function finLoadTaxas() {
+  var t = taxasGet();
+  document.getElementById('taxaPix').value      = t.pix;
+  document.getElementById('taxaDebito').value   = t.debito;
+  document.getElementById('taxaCredito').value  = t.credito;
+  document.getElementById('taxaDinheiro').value = t.dinheiro;
+}
+
+function onSaveTaxas() {
+  taxasSave({
+    pix:      Number(document.getElementById('taxaPix').value)      || 0,
+    debito:   Number(document.getElementById('taxaDebito').value)   || 0,
+    credito:  Number(document.getElementById('taxaCredito').value)  || 0,
+    dinheiro: Number(document.getElementById('taxaDinheiro').value) || 0
+  });
+  renderFinanceiro();
+}
+
+function renderFinResumo() {
+  var rev   = finCalcRevenue();
+  var costs = finCalcCosts(rev.net);
+  var lucro = rev.net - costs.total;
+  var lucroClass = lucro >= 0 ? 'fin-stat__value--green' : 'fin-stat__value--red';
+  var html =
+    '<div class="fin-stat-grid">' +
+      '<div class="fin-stat fin-stat--revenue">' +
+        '<div class="fin-stat__label">Faturamento bruto</div>' +
+        '<div class="fin-stat__value">' + formatBRL(rev.gross) + '</div>' +
+        (rev.fees > 0 ? '<div class="fin-stat__sub">Taxas cartao: -' + formatBRL(rev.fees) + '</div>' : '') +
+      '</div>' +
+      '<div class="fin-stat fin-stat--cost">' +
+        '<div class="fin-stat__label">Total custos</div>' +
+        '<div class="fin-stat__value">' + formatBRL(costs.total) + '</div>' +
+        '<div class="fin-stat__sub">Fixos: ' + formatBRL(costs.fixo) + ' - Var: ' + formatBRL(costs.varAmount) + '</div>' +
+      '</div>' +
+      '<div class="fin-stat fin-stat--profit">' +
+        '<div class="fin-stat__label">Lucro liquido estimado</div>' +
+        '<div class="fin-stat__value ' + lucroClass + '">' + formatBRL(lucro) + '</div>' +
+        '<div class="fin-stat__sub">Receita liquida (apos taxas): ' + formatBRL(rev.net) + '</div>' +
+      '</div>' +
+    '</div>';
+  document.getElementById('finResumo').innerHTML = html;
+}
+
+function renderCustosFixos() {
+  var items = custoFixoGetAll();
+  var el = document.getElementById('custosFixosList');
+  if (items.length === 0) {
+    el.innerHTML = '<p class="form-hint">Nenhum custo fixo cadastrado.</p>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var c  = items[i];
+    var id = escHtml(c.id);
+    html += '<div class="custo-item">' +
+      '<span class="custo-item__name">' + escHtml(c.name) + '</span>' +
+      '<span class="custo-item__value">' + formatBRL(c.value) + '/mes</span>' +
+      '<div class="custo-item__actions">' +
+        '<button class="custo-edit-btn" onclick="openEditCustoFixo(\'' + id + '\')" type="button" aria-label="Editar">&#9999;&#65039;</button>' +
+        '<button class="custo-del-btn"  onclick="openDeleteCustoFixo(\'' + id + '\')" type="button" aria-label="Excluir">&#128465;</button>' +
+      '</div>' +
+    '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function renderCustosVar() {
+  var items = custoVarGetAll();
+  var el = document.getElementById('custosVarList');
+  if (items.length === 0) {
+    el.innerHTML = '<p class="form-hint">Nenhum custo variavel cadastrado.</p>';
+    return;
+  }
+  var totalPct = 0;
+  var html = '';
+  for (var i = 0; i < items.length; i++) {
+    var c  = items[i];
+    var id = escHtml(c.id);
+    totalPct += Number(c.pct) || 0;
+    html += '<div class="custo-item">' +
+      '<span class="custo-item__name">' + escHtml(c.name) + '</span>' +
+      '<span class="custo-item__value">' + escHtml(String(c.pct)) + '%</span>' +
+      '<div class="custo-item__actions">' +
+        '<button class="custo-edit-btn" onclick="openEditCustoVar(\'' + id + '\')" type="button" aria-label="Editar">&#9999;&#65039;</button>' +
+        '<button class="custo-del-btn"  onclick="openDeleteCustoVar(\'' + id + '\')" type="button" aria-label="Excluir">&#128465;</button>' +
+      '</div>' +
+    '</div>';
+  }
+  html += '<div style="padding-top:6px;font-size:12px;font-weight:700;color:var(--muted)">Total variavel: ' + totalPct.toFixed(2).replace(/\.?0+$/, '') + '% da receita</div>';
+  el.innerHTML = html;
+}
+
+function renderFinBreakEven() {
+  var el = document.getElementById('finBreakEven');
+  var fixos   = custoFixoGetAll();
+  var vars    = custoVarGetAll();
+  var totalFixo = 0;
+  for (var i = 0; i < fixos.length; i++) totalFixo += Number(fixos[i].value) || 0;
+  var varRate = 0;
+  for (var j = 0; j < vars.length; j++) varRate += Number(vars[j].pct) || 0;
+  varRate = varRate / 100;
+  if (totalFixo === 0 && varRate === 0) {
+    el.innerHTML = '<p class="form-hint">Cadastre seus custos para calcular o ponto de equilibrio.</p>';
+    return;
+  }
+  if (varRate >= 1) {
+    el.innerHTML = '<p style="color:var(--red);font-size:13px">&#9888;&#65039; Custos variaveis >= 100% da receita - revise os percentuais.</p>';
+    return;
+  }
+  var breakEven = totalFixo / (1 - varRate);
+  el.innerHTML =
+    '<div class="breakeven-result">' +
+      '<div class="fin-stat__label">Faturamento minimo para cobrir todos os custos</div>' +
+      '<div class="breakeven-value">' + formatBRL(breakEven) + '<small style="font-size:14px;font-weight:400"> /mes</small></div>' +
+      '<div class="breakeven-sub">Custos fixos: ' + formatBRL(totalFixo) + ' - Custos variaveis: ' + (varRate * 100).toFixed(1) + '% da receita</div>' +
+    '</div>';
+}
+
+function renderFinMeta() {
+  var el = document.getElementById('finMeta');
+  var targetStr = document.getElementById('finMetaTarget').value;
+  if (!targetStr) { el.innerHTML = ''; return; }
+  var target = Number(targetStr) || 0;
+  var fixos   = custoFixoGetAll();
+  var vars    = custoVarGetAll();
+  var totalFixo = 0;
+  for (var i = 0; i < fixos.length; i++) totalFixo += Number(fixos[i].value) || 0;
+  var varRate = 0;
+  for (var j = 0; j < vars.length; j++) varRate += Number(vars[j].pct) || 0;
+  varRate = varRate / 100;
+  if (varRate >= 1) {
+    el.innerHTML = '<p style="color:var(--red);font-size:13px">&#9888;&#65039; Custos variaveis >= 100% da receita.</p>';
+    return;
+  }
+  var required = (totalFixo + target) / (1 - varRate);
+  el.innerHTML =
+    '<div class="meta-result">' +
+      '<div class="fin-stat__label">Para lucrar ' + formatBRL(target) + '/mes voce precisa faturar</div>' +
+      '<div class="meta-result__value">' + formatBRL(required) + '<small style="font-size:14px;font-weight:400"> /mes</small></div>' +
+      '<div class="meta-result__sub">= ' + formatBRL(totalFixo) + ' (fixos) + ' + formatBRL(target) + ' (lucro) / ' + ((1 - varRate) * 100).toFixed(1) + '% margem liquida</div>' +
+    '</div>';
+}
+
+// ── Custo Fixo form ──
+var cfEditingId = null;
+
+function openAddCustoFixo() {
+  cfEditingId = null;
+  document.getElementById('cfModalTitle').textContent = 'Novo Custo Fixo';
+  document.getElementById('fCFName').value  = '';
+  document.getElementById('fCFValue').value = '';
+  document.getElementById('cfFormError').textContent = '';
+  openModal('modalCustoFixo');
+}
+
+function openEditCustoFixo(id) {
+  var c = custoFixoFindById(id);
+  if (!c) return;
+  cfEditingId = id;
+  document.getElementById('cfModalTitle').textContent = 'Editar Custo Fixo';
+  document.getElementById('fCFName').value  = c.name;
+  document.getElementById('fCFValue').value = c.value;
+  document.getElementById('cfFormError').textContent = '';
+  openModal('modalCustoFixo');
+}
+
+function onSaveCustoFixo() {
+  var name  = document.getElementById('fCFName').value.trim();
+  var value = Number(document.getElementById('fCFValue').value);
+  var err   = document.getElementById('cfFormError');
+  if (!name)       { err.textContent = 'Informe a descricao.'; return; }
+  if (!value || value <= 0) { err.textContent = 'Informe um valor valido.'; return; }
+  if (cfEditingId) {
+    custoFixoUpdate(cfEditingId, { name: name, value: value });
+  } else {
+    custoFixoAdd({ name: name, value: value });
+  }
+  closeModal('modalCustoFixo');
+  renderFinanceiro();
+}
+
+function openDeleteCustoFixo(id) {
+  var c = custoFixoFindById(id);
+  if (!c) return;
+  openConfirmDelete(c.name, function() {
+    custoFixoRemove(id);
+    renderFinanceiro();
+  });
+}
+
+// ── Custo Variavel form ──
+var cvEditingId = null;
+
+function openAddCustoVar() {
+  cvEditingId = null;
+  document.getElementById('cvModalTitle').textContent = 'Novo Custo Variavel';
+  document.getElementById('fCVName').value = '';
+  document.getElementById('fCVPct').value  = '';
+  document.getElementById('cvFormError').textContent = '';
+  openModal('modalCustoVar');
+}
+
+function openEditCustoVar(id) {
+  var c = custoVarFindById(id);
+  if (!c) return;
+  cvEditingId = id;
+  document.getElementById('cvModalTitle').textContent = 'Editar Custo Variavel';
+  document.getElementById('fCVName').value = c.name;
+  document.getElementById('fCVPct').value  = c.pct;
+  document.getElementById('cvFormError').textContent = '';
+  openModal('modalCustoVar');
+}
+
+function onSaveCustoVar() {
+  var name = document.getElementById('fCVName').value.trim();
+  var pct  = Number(document.getElementById('fCVPct').value);
+  var err  = document.getElementById('cvFormError');
+  if (!name)          { err.textContent = 'Informe a descricao.'; return; }
+  if (isNaN(pct) || pct < 0) { err.textContent = 'Informe um percentual valido.'; return; }
+  if (cvEditingId) {
+    custoVarUpdate(cvEditingId, { name: name, pct: pct });
+  } else {
+    custoVarAdd({ name: name, pct: pct });
+  }
+  closeModal('modalCustoVar');
+  renderFinanceiro();
+}
+
+function openDeleteCustoVar(id) {
+  var c = custoVarFindById(id);
+  if (!c) return;
+  openConfirmDelete(c.name, function() {
+    custoVarRemove(id);
+    renderFinanceiro();
+  });
+}
+
+// ════════════════════════════════
 // MAIS TAB — segmento state
 // ════════════════════════════════
 var maisSeg     = 'vendas';
@@ -2766,7 +3297,7 @@ var encEditingId = null;
 
 function switchMaisSeg(seg) {
   maisSeg = seg;
-  var segs = ['vendas', 'encomendas', 'compras'];
+  var segs = ['vendas', 'encomendas', 'compras', 'financeiro'];
   for (var si = 0; si < segs.length; si++) {
     var s = segs[si];
     var elId = 'seg' + s.charAt(0).toUpperCase() + s.slice(1);
@@ -2777,15 +3308,17 @@ function switchMaisSeg(seg) {
   }
   document.getElementById('fabVenda').style.display     = (seg === 'vendas')     ? 'flex' : 'none';
   document.getElementById('fabEncomenda').style.display = (seg === 'encomendas') ? 'flex' : 'none';
-  if (seg === 'vendas')     renderVendas();
-  if (seg === 'encomendas') renderEncomendas();
-  if (seg === 'compras')    shopRender();
+  if (seg === 'vendas')      renderVendas();
+  if (seg === 'encomendas')  renderEncomendas();
+  if (seg === 'compras')     shopRender();
+  if (seg === 'financeiro')  renderFinanceiro();
 }
 
 function renderMaisActive() {
-  if (maisSeg === 'vendas')     renderVendas();
-  if (maisSeg === 'encomendas') renderEncomendas();
-  if (maisSeg === 'compras')    shopRender();
+  if (maisSeg === 'vendas')      renderVendas();
+  if (maisSeg === 'encomendas')  renderEncomendas();
+  if (maisSeg === 'compras')     shopRender();
+  if (maisSeg === 'financeiro')  renderFinanceiro();
 }
 
 // ════════════════════════════════
