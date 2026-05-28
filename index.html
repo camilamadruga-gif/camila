@@ -967,6 +967,31 @@
     .bi-search-bar { display:flex; gap:8px; margin-bottom:12px; }
     .bi-search-bar .ob-input { flex:1; }
     .bi-empty { text-align:center; color:var(--muted); font-size:13px; padding:24px 0; }
+    /* ── Precificação ── */
+    .prec-section { margin-bottom: 20px; }
+    .prec-section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 10px; }
+    .prec-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); font-size:14px; }
+    .prec-row:last-child { border-bottom:none; }
+    .prec-row-label { color:var(--text); }
+    .prec-row-value { font-weight:700; color:var(--text); }
+    .prec-row-muted { color:var(--muted); font-size:12px; }
+    .prec-total { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--surface); border:1.5px solid var(--border); border-radius:12px; margin:8px 0; }
+    .prec-total-label { font-size:13px; font-weight:700; color:var(--text); }
+    .prec-total-value { font-size:18px; font-weight:800; color:var(--text); }
+    .prec-highlight { background:rgba(200,132,58,.1); border:2px solid var(--accent); border-radius:12px; padding:14px 16px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; }
+    .prec-highlight-label { font-size:13px; font-weight:700; color:var(--accent); }
+    .prec-highlight-value { font-size:22px; font-weight:900; color:var(--accent); }
+    .prec-actual { background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; }
+    .prec-actual-row { display:flex; justify-content:space-between; align-items:center; }
+    .prec-assumptions { background:var(--cream); border:1px solid var(--border); border-radius:10px; padding:12px 14px; font-size:12px; color:var(--muted); line-height:1.8; margin-top:8px; }
+    .prec-size-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+    .prec-size-tab { padding:7px 14px; border:1.5px solid var(--border); border-radius:20px; background:var(--surface); color:var(--muted); font-size:13px; font-weight:700; cursor:pointer; }
+    .prec-size-tab.active { border-color:var(--accent); background:rgba(200,132,58,.1); color:var(--accent); }
+    .prec-margin-row { display:flex; gap:10px; align-items:center; background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:18px; }
+    .prec-margin-row label { font-size:13px; font-weight:700; color:var(--text); flex-shrink:0; }
+    .prec-margin-row input[type=range] { flex:1; accent-color:var(--accent); }
+    .prec-margin-row .prec-pct-input { width:64px; text-align:center; font-weight:700; font-size:15px; }
+    .prec-warn { background:rgba(192,57,43,.08); border:1px solid rgba(192,57,43,.25); border-radius:10px; padding:10px 14px; font-size:13px; color:#c0392b; margin-bottom:14px; line-height:1.5; }
     /* ── Font Size Overrides ── */
     .fs-btn { flex:1; padding:10px 4px; border:1.5px solid var(--border); border-radius:10px; background:var(--surface); color:var(--muted); cursor:pointer; font-family:'Nunito',sans-serif; font-weight:700; transition:all .15s; }
     .fs-btn.active { border-color:var(--accent); background:rgba(200,132,58,.1); color:var(--accent); }
@@ -1567,6 +1592,28 @@
             <div class="ob-field" style="flex:1">
               <label class="ob-label" for="cfgProlabore">Pró-labore (R$)</label>
               <input class="ob-input" type="number" id="cfgProlabore" min="0" step="100" placeholder="0,00" />
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--muted);margin:12px 0 8px;font-weight:700">Horas de trabalho (para precificação)</p>
+          <div class="form-row">
+            <div class="ob-field" style="flex:1">
+              <label class="ob-label" for="cfgHorasDia">Horas/dia</label>
+              <input class="ob-input" type="number" id="cfgHorasDia" min="1" max="24" step="0.5" placeholder="8" />
+            </div>
+            <div class="ob-field" style="flex:1">
+              <label class="ob-label" for="cfgDiasMes">Dias/mês</label>
+              <input class="ob-input" type="number" id="cfgDiasMes" min="1" max="31" step="1" placeholder="22" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="ob-field" style="flex:1">
+              <label class="ob-label" for="cfgEncargos">Encargos trabalhistas %</label>
+              <input class="ob-input" type="number" id="cfgEncargos" min="0" max="100" step="0.5" placeholder="20" />
+              <p style="font-size:11px;color:var(--muted);margin-top:3px">MEI: ~20% (13º+férias). CLT: ~68%</p>
+            </div>
+            <div class="ob-field" style="flex:1">
+              <label class="ob-label" for="cfgMargemPadrao">Margem de lucro %</label>
+              <input class="ob-input" type="number" id="cfgMargemPadrao" min="1" max="95" step="1" placeholder="30" />
             </div>
           </div>
           <button class="btn-secondary" onclick="onSaveConfigFinanceiro()" type="button" style="width:100%">Salvar metas</button>
@@ -2698,6 +2745,19 @@
     </div>
     <p id="customIngError" style="color:var(--red);font-size:13px;margin-top:4px"></p>
     <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     FULL-SCREEN: Precificação
+══════════════════════════════════ -->
+<div class="recipe-form" id="precForm" role="dialog" aria-modal="true" aria-label="Precificação completa">
+  <div class="rf-header">
+    <button class="rf-cancel-btn" onclick="closePrecForm()" type="button">← Voltar</button>
+    <span class="rf-title">💰 Precificação</span>
+  </div>
+  <div class="recipe-form__body" id="precFormBody" style="padding-bottom:40px">
+    <!-- renderizado por JS -->
   </div>
 </div>
 
@@ -3931,8 +3991,9 @@ function renderRecipeDetail() {
       '</div>' +
       '<div style="display:flex;flex-wrap:wrap;gap:8px">' + etiqBtns + '</div>' +
       '</div>' : '') +
-    '<div style="margin-top:12px;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:12px">' +
-      '<button class="btn-secondary" style="width:100%;justify-content:center" onclick="openCalcForm(\'' + id + '\')" type="button">🧮 Calculadora de Ingredientes</button>' +
+    '<div style="margin-top:12px;display:flex;gap:10px">' +
+      '<button class="btn-secondary" style="flex:1;justify-content:center" onclick="openCalcForm(\'' + id + '\')" type="button">🧮 Ingredientes</button>' +
+      '<button class="btn-primary" style="flex:1;justify-content:center;margin-top:0" onclick="openPrecForm(\'' + id + '\')" type="button">💰 Precificar</button>' +
     '</div>' +
     '<div style="height:20px"></div>';
 
@@ -7082,6 +7143,255 @@ function calcRecipeCostFromStock() {
 }
 
 // ════════════════════════════════
+// PRECIFICAÇÃO COMPLETA
+// ════════════════════════════════
+var precFormRecipeId  = null;
+var precFormActiveSz  = null;
+var precFormMargem    = 30;
+
+function openPrecForm(recipeId) {
+  var r = recipeFindById(recipeId);
+  if (!r) return;
+  var settings = storeGet(STORE.SETTINGS) || {};
+  precFormRecipeId = recipeId;
+  precFormMargem   = Number(settings.margemPadrao) || 30;
+  // Default to first available size
+  var firstSz = null;
+  var szKeys = ['g','m','p'];
+  for (var i = 0; i < szKeys.length; i++) {
+    if ((Number(r.yield && r.yield[szKeys[i]]) || 0) > 0) { firstSz = szKeys[i]; break; }
+  }
+  if (!firstSz && r.extraSizes && r.extraSizes.length > 0) firstSz = 'x0';
+  precFormActiveSz = firstSz;
+  renderPrecForm();
+  document.getElementById('precForm').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePrecForm() {
+  document.getElementById('precForm').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function precOnMargemChange(val) {
+  precFormMargem = Math.max(1, Math.min(95, Number(val) || 30));
+  document.getElementById('precMargemSlider').value = precFormMargem;
+  document.getElementById('precMargemVal').textContent = precFormMargem + '%';
+  renderPrecBreakdown();
+}
+function precSelectSize(sz) {
+  precFormActiveSz = sz;
+  var tabs = document.querySelectorAll('.prec-size-tab');
+  for (var i = 0; i < tabs.length; i++) {
+    if (tabs[i].dataset.sz === sz) tabs[i].classList.add('active');
+    else tabs[i].classList.remove('active');
+  }
+  renderPrecBreakdown();
+}
+
+function calcPrecificacaoCompleta(r, sizeKey, margemOverride) {
+  var settings = storeGet(STORE.SETTINGS) || {};
+  var prolabore   = Number(settings.prolabore)        || 0;
+  var horasDia    = Number(settings.horasDia)         || 8;
+  var diasMes     = Number(settings.diasMes)          || 22;
+  var encargos    = Number(settings.encargosLaborPct) || 20;
+  var margemDes   = margemOverride !== undefined ? Number(margemOverride) : (Number(settings.margemPadrao) || 30);
+  var horasMes    = horasDia * diasMes;
+
+  // Valor hora efetivo = prolabore com encargos / horas mês
+  var custoMensalMO = prolabore * (1 + encargos / 100);
+  var valorHora     = horasMes > 0 ? custoMensalMO / horasMes : 0;
+
+  // Rendimento e preço para o tamanho
+  var yieldQty = 0, precoAtual = 0, sLabel = '';
+  if (sizeKey && sizeKey.charAt(0) === 'x') {
+    var xIdx = parseInt(sizeKey.substring(1), 10);
+    var xs = (r.extraSizes || [])[xIdx] || {};
+    yieldQty   = Number(xs.yield) || 0;
+    precoAtual = Number(xs.price) || 0;
+    sLabel     = xs.label || sizeKey;
+  } else {
+    yieldQty   = Number(r.yield && r.yield[sizeKey]) || 0;
+    precoAtual = Number(r.price && r.price[sizeKey]) || 0;
+    var szNames = r.sizes || {};
+    sLabel     = szNames[sizeKey] || sizeKey.toUpperCase();
+  }
+  if (yieldQty <= 0) return null;
+
+  // Custo matéria-prima total da receita
+  var cmpTotal = Number(r.cost) || 0;
+  var prepMin  = Number(r.prepTime) || 0;
+
+  // Mão de obra total da receita
+  var moTotal  = valorHora * (prepMin / 60);
+
+  // Custos fixos rateados para esta receita
+  var fixedItems     = custoFixoGetAll();
+  var totalFixoMensal = 0;
+  for (var i = 0; i < fixedItems.length; i++) totalFixoMensal += Number(fixedItems[i].value) || 0;
+  var cfHora  = horasMes > 0 ? totalFixoMensal / horasMes : 0;
+  var cfTotal = cfHora * (prepMin / 60);
+
+  // Custo total por unidade
+  var cmpUn = cmpTotal / yieldQty;
+  var moUn  = moTotal  / yieldQty;
+  var cfUn  = cfTotal  / yieldQty;
+  var custoUn = cmpUn + moUn + cfUn;
+
+  // Custos variáveis %
+  var varItems = custoVarGetAll();
+  var totalVarPct = 0;
+  for (var j = 0; j < varItems.length; j++) totalVarPct += Number(varItems[j].pct) || 0;
+
+  // Markup divisor (método SEBRAE): PV = Custo / (1 - CV% - Lucro%)
+  var markupDiv = 1 - (totalVarPct / 100) - (margemDes / 100);
+  if (markupDiv < 0.01) markupDiv = 0.01;
+  var precoSugerido = custoUn / markupDiv;
+
+  // Margem bruta real (sem custos variáveis)
+  var margemBruta  = precoAtual > 0 ? ((precoAtual - custoUn) / precoAtual) * 100 : null;
+  var margemLiquid = margemBruta !== null ? margemBruta - totalVarPct : null;
+
+  return {
+    sLabel: sLabel, yieldQty: yieldQty,
+    cmpUn: cmpUn, moUn: moUn, cfUn: cfUn, custoUn: custoUn,
+    totalVarPct: totalVarPct, margemDesejada: margemDes,
+    precoSugerido: precoSugerido, precoAtual: precoAtual,
+    margemBruta: margemBruta, margemLiquid: margemLiquid,
+    valorHora: valorHora, prepMin: prepMin,
+    horasMes: horasMes, prolabore: prolabore, encargos: encargos,
+    totalFixoMensal: totalFixoMensal, cmpTotal: cmpTotal,
+    moTotal: moTotal, cfTotal: cfTotal
+  };
+}
+
+function renderPrecForm() {
+  var r = recipeFindById(precFormRecipeId);
+  if (!r) return;
+  var icon = r.icon || '🍮';
+
+  // Build size tabs
+  var tabsHTML = '';
+  var szKeys = ['g','m','p'];
+  var szNames = r.sizes || {};
+  for (var i = 0; i < szKeys.length; i++) {
+    var k = szKeys[i];
+    if ((Number(r.yield && r.yield[k]) || 0) === 0) continue;
+    var lbl = szNames[k] || k.toUpperCase();
+    tabsHTML += '<button class="prec-size-tab' + (precFormActiveSz === k ? ' active' : '') +
+      '" data-sz="' + k + '" onclick="precSelectSize(\'' + k + '\')" type="button">' + escHtml(lbl) + '</button>';
+  }
+  var xSizes = r.extraSizes || [];
+  for (var xi = 0; xi < xSizes.length; xi++) {
+    if ((Number(xSizes[xi].yield) || 0) === 0) continue;
+    var sz2 = 'x' + xi;
+    tabsHTML += '<button class="prec-size-tab' + (precFormActiveSz === sz2 ? ' active' : '') +
+      '" data-sz="' + sz2 + '" onclick="precSelectSize(\'' + sz2 + '\')" type="button">' + escHtml(xSizes[xi].label || sz2) + '</button>';
+  }
+
+  var settings = storeGet(STORE.SETTINGS) || {};
+
+  var html =
+    '<div class="rf-section" style="padding-bottom:6px">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">' +
+        '<span style="font-size:36px">' + escHtml(icon) + '</span>' +
+        '<div><div style="font-size:17px;font-weight:800;color:var(--text)">' + escHtml(r.name) + '</div>' +
+          (Number(r.prepTime) > 0 ? '<div style="font-size:13px;color:var(--muted)">' + r.prepTime + ' min de preparo</div>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="prec-section-title">Tamanho / rendimento</div>' +
+      (tabsHTML ? '<div class="prec-size-tabs">' + tabsHTML + '</div>' : '<p class="form-hint">Nenhum rendimento cadastrado na receita.</p>') +
+      '<div class="prec-section-title">Margem de lucro desejada</div>' +
+      '<div class="prec-margin-row">' +
+        '<label for="precMargemSlider">Meta:</label>' +
+        '<input type="range" id="precMargemSlider" min="1" max="90" step="1" value="' + precFormMargem + '" oninput="precOnMargemChange(this.value)" />' +
+        '<span id="precMargemVal" style="font-size:15px;font-weight:800;color:var(--accent);flex-shrink:0;min-width:44px;text-align:right">' + precFormMargem + '%</span>' +
+      '</div>' +
+    '</div>' +
+    '<div id="precBreakdown"></div>';
+
+  document.getElementById('precFormBody').innerHTML = html;
+  renderPrecBreakdown();
+}
+
+function renderPrecBreakdown() {
+  var r = recipeFindById(precFormRecipeId);
+  if (!r || !precFormActiveSz) {
+    document.getElementById('precBreakdown').innerHTML = '<p class="form-hint">Selecione um tamanho acima.</p>';
+    return;
+  }
+  var p = calcPrecificacaoCompleta(r, precFormActiveSz, precFormMargem);
+  var el = document.getElementById('precBreakdown');
+  if (!p) {
+    el.innerHTML = '<p class="form-hint" style="color:var(--red)">Rendimento zero para este tamanho. Cadastre na receita.</p>';
+    return;
+  }
+
+  var settings = storeGet(STORE.SETTINGS) || {};
+  var warns = '';
+  if (!settings.prolabore) warns += '<p class="prec-warn">⚠️ Pró-labore não cadastrado — mão de obra calculada como R$0. Configure em Config → Metas Financeiras.</p>';
+  if (!settings.horasDia || !settings.diasMes) warns += '<p class="prec-warn">⚠️ Horas de trabalho não configuradas — usando padrão 8h × 22 dias = 176h/mês.</p>';
+  if ((Number(r.cost) || 0) === 0) warns += '<p class="prec-warn">⚠️ Custo de matéria-prima é R$0. Cadastre preços no estoque e use o botão 🧮 Calcular na receita.</p>';
+  if (!Number(r.prepTime)) warns += '<p class="prec-warn">⚠️ Tempo de preparo não informado — mão de obra e custos fixos calculados como R$0. Edite a receita e informe os minutos.</p>';
+
+  var mgColor = p.margemLiquid !== null
+    ? (p.margemLiquid >= p.margemDesejada ? 'var(--green)' : p.margemLiquid >= 20 ? 'var(--gold)' : 'var(--red)')
+    : 'var(--muted)';
+
+  var breakdownHTML = warns +
+    '<div class="rf-section">' +
+
+    '<div class="prec-section-title">Custo por unidade (' + escHtml(p.sLabel) + ')</div>' +
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 14px;margin-bottom:14px">' +
+      '<div class="prec-row"><span class="prec-row-label">🌾 Matéria-prima</span><span class="prec-row-value">' + formatBRL(p.cmpUn) + '</span></div>' +
+      '<div class="prec-row"><span class="prec-row-label">👩‍🍳 Mão de obra</span><span class="prec-row-value">' + formatBRL(p.moUn) +
+        (p.prepMin > 0 ? '<small class="prec-row-muted"> (' + p.prepMin + 'min)</small>' : '') + '</span></div>' +
+      '<div class="prec-row"><span class="prec-row-label">🏢 Custos fixos rateados</span><span class="prec-row-value">' + formatBRL(p.cfUn) + '</span></div>' +
+    '</div>' +
+    '<div class="prec-total">' +
+      '<span class="prec-total-label">Custo total por unidade</span>' +
+      '<span class="prec-total-value">' + formatBRL(p.custoUn) + '</span>' +
+    '</div>' +
+
+    '<div class="prec-section-title" style="margin-top:18px">Formação do preço</div>' +
+    '<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:8px 14px;margin-bottom:14px">' +
+      '<div class="prec-row"><span class="prec-row-label">Custo/un</span><span class="prec-row-value">' + formatBRL(p.custoUn) + '</span></div>' +
+      '<div class="prec-row"><span class="prec-row-label">Custos variáveis</span><span class="prec-row-value">' + p.totalVarPct.toFixed(1) + '%</span></div>' +
+      '<div class="prec-row"><span class="prec-row-label">Margem de lucro</span><span class="prec-row-value">' + p.margemDesejada + '%</span></div>' +
+    '</div>' +
+    '<div class="prec-highlight">' +
+      '<span class="prec-highlight-label">💰 Preço mínimo sugerido</span>' +
+      '<span class="prec-highlight-value">' + formatBRL(p.precoSugerido) + '</span>' +
+    '</div>' +
+
+    (p.precoAtual > 0 ?
+      '<div class="prec-actual">' +
+        '<div class="prec-actual-row">' +
+          '<span style="font-size:13px;font-weight:700;color:var(--text)">Preço atual cadastrado</span>' +
+          '<span style="font-size:16px;font-weight:800;color:var(--text)">' + formatBRL(p.precoAtual) + '</span>' +
+        '</div>' +
+        '<div class="prec-actual-row" style="margin-top:8px">' +
+          '<span style="font-size:12px;color:var(--muted)">Margem líquida (descontado CV)</span>' +
+          '<span style="font-size:15px;font-weight:800;color:' + mgColor + '">' +
+            (p.margemLiquid !== null ? p.margemLiquid.toFixed(1) + '%' : '—') +
+          '</span>' +
+        '</div>' +
+        (p.precoAtual < p.precoSugerido ?
+          '<p style="font-size:12px;color:var(--red);margin-top:8px">⚠️ Preço atual abaixo do mínimo sugerido — pode estar operando com prejuízo.</p>' : '') +
+      '</div>'
+    : '<p class="form-hint" style="margin-bottom:14px">Nenhum preço cadastrado para este tamanho. Edite a receita para adicionar.</p>') +
+
+    '<div class="prec-assumptions">' +
+      '<strong>Premissas usadas:</strong><br>' +
+      (p.prolabore > 0 ? '• Pró-labore: ' + formatBRL(p.prolabore) + ' + ' + p.encargos + '% encargos = ' + formatBRL(p.prolabore * (1 + p.encargos / 100)) + '/mês<br>' : '• Pró-labore: não configurado<br>') +
+      '• ' + (storeGet(STORE.SETTINGS) && (storeGet(STORE.SETTINGS).horasDia || 8)) + 'h/dia × ' + (storeGet(STORE.SETTINGS) && (storeGet(STORE.SETTINGS).diasMes || 22)) + ' dias = ' + p.horasMes + 'h/mês · Valor hora: ' + formatBRL(p.valorHora) + '<br>' +
+      (p.totalFixoMensal > 0 ? '• Custos fixos: ' + formatBRL(p.totalFixoMensal) + '/mês → ' + formatBRL(p.totalFixoMensal / p.horasMes) + '/h<br>' : '• Custos fixos: não cadastrados<br>') +
+      '• Rendimento: ' + p.yieldQty + ' unidades por receita' +
+    '</div>' +
+    '</div>';
+
+  el.innerHTML = breakdownHTML;
+}
+
+// ════════════════════════════════
 // CONFIGURAÇÕES
 // ════════════════════════════════
 // ════════════════════════════════
@@ -7388,8 +7698,12 @@ function renderConfig() {
   var taxas    = taxasGet();
   document.getElementById('cfgCompanyName').value    = profile.companyName  || '';
   document.getElementById('cfgOwnerName').value      = profile.ownerName    || '';
-  document.getElementById('cfgGoalRevenue').value    = settings.goalRevenue || '';
-  document.getElementById('cfgProlabore').value      = settings.prolabore   || '';
+  document.getElementById('cfgGoalRevenue').value    = settings.goalRevenue      || '';
+  document.getElementById('cfgProlabore').value      = settings.prolabore        || '';
+  document.getElementById('cfgHorasDia').value       = settings.horasDia         || '';
+  document.getElementById('cfgDiasMes').value        = settings.diasMes          || '';
+  document.getElementById('cfgEncargos').value       = settings.encargosLaborPct || '';
+  document.getElementById('cfgMargemPadrao').value   = settings.margemPadrao     || '';
   document.getElementById('cfgTaxaPix').value        = taxas.pix;
   document.getElementById('cfgTaxaDebito').value     = taxas.debito;
   document.getElementById('cfgTaxaCredito').value    = taxas.credito;
@@ -7419,8 +7733,12 @@ function onSaveConfigEmpresa() {
 
 function onSaveConfigFinanceiro() {
   var settings = storeGet(STORE.SETTINGS) || {};
-  settings.goalRevenue = Number(document.getElementById('cfgGoalRevenue').value) || 0;
-  settings.prolabore   = Number(document.getElementById('cfgProlabore').value)   || 0;
+  settings.goalRevenue      = Number(document.getElementById('cfgGoalRevenue').value)  || 0;
+  settings.prolabore        = Number(document.getElementById('cfgProlabore').value)    || 0;
+  settings.horasDia         = Number(document.getElementById('cfgHorasDia').value)     || 8;
+  settings.diasMes          = Number(document.getElementById('cfgDiasMes').value)      || 22;
+  settings.encargosLaborPct = Number(document.getElementById('cfgEncargos').value)     || 20;
+  settings.margemPadrao     = Number(document.getElementById('cfgMargemPadrao').value) || 30;
   storeSet(STORE.SETTINGS, settings);
   renderDashboard();
   showToast('✅ Metas financeiras salvas!', 2500);
