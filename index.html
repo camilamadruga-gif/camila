@@ -589,6 +589,49 @@
     .lote-check-cb { width: 20px; height: 20px; accent-color: var(--green); flex-shrink: 0; margin-top: 2px; cursor: pointer; }
     .lote-check-label { font-size: 13px; color: var(--text); line-height: 1.4; cursor: pointer; }
 
+    /* ── Mais: Vendas / Encomendas / Compras ── */
+    .mais-seg-nav { display:flex; gap:4px; margin-bottom:16px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:4px; }
+    .mais-seg { flex:1; padding:8px 2px; border:none; border-radius:8px; font-size:11px; font-weight:700; background:none; color:var(--muted); cursor:pointer; transition:background .15s,color .15s; }
+    .mais-seg.active { background:var(--accent); color:#fff; }
+    .venda-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+    .venda-stat { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px; }
+    .venda-stat__label { font-size:11px; color:var(--muted); margin-bottom:4px; font-weight:600; }
+    .venda-stat__value { font-size:18px; font-weight:800; color:var(--text); }
+    .venda-stat--wide { grid-column:1/-1; }
+    .pay-breakdown { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+    .pay-chip { font-size:11px; font-weight:700; background:rgba(74,140,92,.1); color:var(--green); padding:3px 9px; border-radius:20px; }
+    .filter-row { display:flex; gap:6px; overflow-x:auto; margin-bottom:12px; padding-bottom:4px; scrollbar-width:none; }
+    .filter-row::-webkit-scrollbar { display:none; }
+    .filter-btn { flex-shrink:0; padding:5px 12px; border-radius:20px; border:1px solid var(--border); background:none; font-size:12px; font-weight:700; color:var(--muted); cursor:pointer; white-space:nowrap; }
+    .filter-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .venda-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; }
+    .venda-card__row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+    .venda-card__product { font-size:14px; font-weight:700; color:var(--text); flex:1; min-width:0; }
+    .venda-card__total { font-size:16px; font-weight:800; color:var(--green); flex-shrink:0; margin-left:8px; }
+    .venda-card__row2 { display:flex; align-items:center; justify-content:space-between; }
+    .venda-card__meta { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+    .canal-badge { font-size:10px; font-weight:800; padding:2px 8px; border-radius:20px; background:rgba(200,132,58,.1); color:var(--accent); }
+    .pay-badge { font-size:10px; font-weight:800; padding:2px 8px; border-radius:20px; background:rgba(74,140,92,.1); color:var(--green); }
+    .venda-delete-btn { background:none; border:none; cursor:pointer; font-size:15px; padding:4px; opacity:.5; line-height:1; flex-shrink:0; }
+    .venda-delete-btn:hover { opacity:1; }
+    .enc-card { background:var(--surface); border:1px solid var(--border); border-left:4px solid var(--muted); border-radius:12px; padding:12px; margin-bottom:10px; }
+    .enc-card--pendente { border-left-color:var(--gold); }
+    .enc-card--pronto { border-left-color:var(--green); }
+    .enc-card--entregue { border-left-color:var(--muted); opacity:.75; }
+    .enc-card__header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:6px; }
+    .enc-card__client { font-size:15px; font-weight:800; color:var(--text); flex:1; min-width:0; }
+    .enc-status { font-size:10px; font-weight:800; padding:3px 10px; border-radius:20px; white-space:nowrap; flex-shrink:0; }
+    .enc-status--pendente { background:rgba(212,168,83,.2); color:#7a5f00; }
+    .enc-status--pronto { background:rgba(74,140,92,.15); color:var(--green); }
+    .enc-status--entregue { background:var(--border); color:var(--muted); }
+    .enc-card__product { font-size:13px; color:var(--text); margin-bottom:3px; }
+    .enc-card__meta { font-size:12px; color:var(--muted); display:flex; gap:10px; flex-wrap:wrap; margin-bottom:6px; }
+    .enc-card__obs { font-size:12px; color:var(--muted); font-style:italic; margin-bottom:8px; }
+    .enc-card__actions { display:flex; gap:6px; padding-top:8px; border-top:1px solid var(--border); }
+    .enc-action-btn { flex:1; padding:7px 4px; border-radius:8px; border:1px solid var(--border); background:none; font-size:12px; font-weight:700; cursor:pointer; color:var(--text); text-align:center; }
+    .enc-action-btn--status { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .enc-action-btn--del { color:var(--red); border-color:transparent; background:none; }
+
     /* ── Bottom Nav ── */
     .app-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
@@ -1066,23 +1109,65 @@
       </div>
     </section>
 
-    <!-- ── LISTA DE COMPRAS ── -->
-    <section class="section" id="section-mais" aria-label="Lista de Compras">
-      <div style="margin-bottom:24px">
-        <h3 class="section-title">⚠️ Gerado pelo estoque baixo</h3>
-        <div id="shopAutoList" class="shop-list"></div>
-        <div class="empty-state" id="shopAutoEmpty">
-          <div class="empty-state__icon">✅</div>
-          <div class="empty-state__title">Estoque em dia!</div>
-          <div class="empty-state__desc">Nenhum item abaixo do mínimo configurado.</div>
+    <!-- ── MAIS: Vendas / Encomendas / Compras ── -->
+    <section class="section" id="section-mais" aria-label="Mais">
+      <div class="mais-seg-nav">
+        <button class="mais-seg active" data-seg="vendas"     onclick="switchMaisSeg('vendas')"     type="button">💰 Vendas</button>
+        <button class="mais-seg"        data-seg="encomendas" onclick="switchMaisSeg('encomendas')" type="button">📋 Pedidos</button>
+        <button class="mais-seg"        data-seg="compras"    onclick="switchMaisSeg('compras')"    type="button">🛒 Compras</button>
+      </div>
+
+      <!-- VENDAS segment -->
+      <div id="segVendas">
+        <div id="vendasSummary"></div>
+        <div class="filter-row" id="vendasFilterRow">
+          <button class="filter-btn active" data-canal="todos"          onclick="setVendaFilter('todos')"          type="button">Todas</button>
+          <button class="filter-btn"        data-canal="encomenda"      onclick="setVendaFilter('encomenda')"      type="button">Encomenda</button>
+          <button class="filter-btn"        data-canal="pronta_entrega" onclick="setVendaFilter('pronta_entrega')" type="button">Pronta Entrega</button>
+          <button class="filter-btn"        data-canal="ifood"          onclick="setVendaFilter('ifood')"          type="button">iFood</button>
+          <button class="filter-btn"        data-canal="rappi"          onclick="setVendaFilter('rappi')"          type="button">Rappi</button>
+        </div>
+        <div id="vendasList"></div>
+        <div class="empty-state" id="vendasEmpty">
+          <div class="empty-state__icon">💰</div>
+          <div class="empty-state__title">Nenhuma venda registrada</div>
+          <div class="empty-state__desc">Toque em + para registrar sua primeira venda.</div>
         </div>
       </div>
 
-      <div>
-        <h3 class="section-title">📝 Itens extras</h3>
-        <div id="shopManualList" class="shop-list"></div>
-        <div class="shop-add-bar">
-          <button class="shop-add-btn" onclick="openAddManualItem()" type="button">+ Adicionar item à lista</button>
+      <!-- ENCOMENDAS segment -->
+      <div id="segEncomendas" style="display:none">
+        <div class="filter-row" id="encFilterRow">
+          <button class="filter-btn active" data-status="todos"    onclick="setEncFilter('todos')"    type="button">Todas</button>
+          <button class="filter-btn"        data-status="pendente" onclick="setEncFilter('pendente')" type="button">⏳ Pendente</button>
+          <button class="filter-btn"        data-status="pronto"   onclick="setEncFilter('pronto')"   type="button">✅ Pronto</button>
+          <button class="filter-btn"        data-status="entregue" onclick="setEncFilter('entregue')" type="button">🎁 Entregue</button>
+        </div>
+        <div id="encomendaList"></div>
+        <div class="empty-state" id="encomendaEmpty">
+          <div class="empty-state__icon">📋</div>
+          <div class="empty-state__title">Nenhuma encomenda</div>
+          <div class="empty-state__desc">Toque em + para cadastrar uma encomenda.</div>
+        </div>
+      </div>
+
+      <!-- COMPRAS segment (existing shopping list content) -->
+      <div id="segCompras" style="display:none">
+        <div style="margin-bottom:24px">
+          <h3 class="section-title">⚠️ Gerado pelo estoque baixo</h3>
+          <div id="shopAutoList" class="shop-list"></div>
+          <div class="empty-state" id="shopAutoEmpty">
+            <div class="empty-state__icon">✅</div>
+            <div class="empty-state__title">Estoque em dia!</div>
+            <div class="empty-state__desc">Nenhum item abaixo do mínimo configurado.</div>
+          </div>
+        </div>
+        <div>
+          <h3 class="section-title">📝 Itens extras</h3>
+          <div id="shopManualList" class="shop-list"></div>
+          <div class="shop-add-bar">
+            <button class="shop-add-btn" onclick="openAddManualItem()" type="button">+ Adicionar item à lista</button>
+          </div>
         </div>
       </div>
     </section>
@@ -1110,10 +1195,10 @@
       <span class="nav-tab__icon">⚗️</span>
       <span class="nav-tab__label">Produção</span>
     </button>
-    <button class="nav-tab" id="tab-mais" onclick="navigate('mais')" aria-label="Lista de Compras">
+    <button class="nav-tab" id="tab-mais" onclick="navigate('mais')" aria-label="Mais">
       <span class="nav-tab__dot"></span>
-      <span class="nav-tab__icon">🛒</span>
-      <span class="nav-tab__label">Compras</span>
+      <span class="nav-tab__icon">💼</span>
+      <span class="nav-tab__label">Mais</span>
     </button>
   </nav>
 </div>
@@ -1122,6 +1207,8 @@
 <button class="fab" id="fabStock"  onclick="openAddStock()"  aria-label="Adicionar item ao estoque" type="button" style="display:none">+</button>
 <button class="fab" id="fabRecipe" onclick="openAddRecipe()" aria-label="Nova receita"               type="button" style="display:none">+</button>
 <button class="fab" id="fabLote"   onclick="openNovoLote()"  aria-label="Novo lote de produção"      type="button" style="display:none">+</button>
+<button class="fab" id="fabVenda"     onclick="openNovaVenda()"     aria-label="Nova venda"     type="button" style="display:none">+</button>
+<button class="fab" id="fabEncomenda" onclick="openNovaEncomenda()" aria-label="Nova encomenda" type="button" style="display:none">+</button>
 
 <!-- Offline toast -->
 <div class="offline-toast" id="offlineToast" role="status" aria-live="polite"></div>
@@ -1432,6 +1519,116 @@
 </div>
 
 <!-- ══════════════════════════════════
+     MODAL: Nova Venda
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalVenda" role="dialog" aria-modal="true" aria-label="Nova venda">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalVenda')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">Nova Venda</span>
+      <button class="modal-close" onclick="closeModal('modalVenda')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label class="ob-label" for="fVendaProduto">Produto *</label>
+        <select class="ob-input" id="fVendaProduto" onchange="onVendaProdutoChange()">
+          <option value="">Selecionar produto...</option>
+        </select>
+      </div>
+      <div class="ob-field" id="fVendaCustomRow" style="display:none">
+        <label class="ob-label" for="fVendaCustom">Nome do produto</label>
+        <input class="ob-input" type="text" id="fVendaCustom" placeholder="Ex: Pudim de Leite" maxlength="60" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fVendaCanal">Canal *</label>
+        <select class="ob-input" id="fVendaCanal">
+          <option value="encomenda">Encomenda</option>
+          <option value="pronta_entrega">Pronta Entrega</option>
+          <option value="ifood">iFood</option>
+          <option value="rappi">Rappi</option>
+        </select>
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fVendaPagamento">Pagamento *</label>
+        <select class="ob-input" id="fVendaPagamento">
+          <option value="pix">Pix</option>
+          <option value="debito">Débito</option>
+          <option value="credito">Crédito</option>
+          <option value="dinheiro">Dinheiro</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="fVendaQty">Quantidade *</label>
+          <input class="ob-input" type="number" id="fVendaQty" min="1" step="1" value="1" />
+        </div>
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="fVendaValor">Valor unitário (R$) *</label>
+          <input class="ob-input" type="number" id="fVendaValor" min="0" step="0.01" placeholder="0,00" />
+        </div>
+      </div>
+      <div class="form-error" id="vendaFormError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalVenda')" type="button">Cancelar</button>
+      <button class="btn-primary" onclick="onSaveVenda()" type="button" style="margin-top:0;flex:1;justify-content:center">💰 Registrar Venda</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MODAL: Nova/Editar Encomenda
+══════════════════════════════════ -->
+<div class="modal-backdrop" id="modalEncomenda" role="dialog" aria-modal="true" aria-label="Encomenda">
+  <div class="modal-backdrop__bg" onclick="closeModal('modalEncomenda')"></div>
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title" id="encModalTitle">Nova Encomenda</span>
+      <button class="modal-close" onclick="closeModal('modalEncomenda')" aria-label="Fechar" type="button">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ob-field">
+        <label class="ob-label" for="fEncCliente">Cliente *</label>
+        <input class="ob-input" type="text" id="fEncCliente" placeholder="Nome do cliente" maxlength="60" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fEncProduto">Produto *</label>
+        <input class="ob-input" type="text" id="fEncProduto" placeholder="Ex: Pudim de Leite · 200ml" maxlength="80" />
+      </div>
+      <div class="form-row">
+        <div class="ob-field" style="flex:1">
+          <label class="ob-label" for="fEncData">Data de entrega *</label>
+          <input class="ob-input" type="date" id="fEncData" />
+        </div>
+        <div class="ob-field" style="flex:0 0 120px">
+          <label class="ob-label" for="fEncValor">Valor (R$)</label>
+          <input class="ob-input" type="number" id="fEncValor" min="0" step="0.01" placeholder="0,00" />
+        </div>
+      </div>
+      <div class="ob-field" id="fEncStatusRow" style="display:none">
+        <label class="ob-label" for="fEncStatus">Status</label>
+        <select class="ob-input" id="fEncStatus">
+          <option value="pendente">⏳ Pendente</option>
+          <option value="pronto">✅ Pronto</option>
+          <option value="entregue">🎁 Entregue</option>
+        </select>
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fEncObs">Observações</label>
+        <textarea class="ob-input" id="fEncObs" placeholder="Sabor, decoração, endereço de entrega…" maxlength="200" style="height:70px;resize:none"></textarea>
+      </div>
+      <div class="form-error" id="encFormError"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('modalEncomenda')" type="button">Cancelar</button>
+      <button class="btn-primary" id="encSaveBtn" onclick="onSaveEncomenda()" type="button" style="margin-top:0;flex:1;justify-content:center">📋 Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
      LOTE FORM (full-screen overlay)
 ══════════════════════════════════ -->
 <div class="recipe-form" id="loteForm" role="dialog" aria-modal="true" aria-label="Novo lote de produção">
@@ -1516,7 +1713,9 @@ var STORE = {
   STOCK:      'cp_stock_v1',
   SHOP_MANUAL:'cp_shop_manual_v1',
   RECIPES:    'cp_recipes_v1',
-  PRODUCAO:   'cp_producao_v1'
+  PRODUCAO:   'cp_producao_v1',
+  VENDAS:     'cp_vendas_v1',
+  ENCOMENDAS: 'cp_encomendas_v1'
 };
 
 function storeGet(key) {
@@ -1555,11 +1754,13 @@ function navigate(tab) {
   document.getElementById('fabStock').style.display  = (tab === 'producao') ? 'flex' : 'none';
   document.getElementById('fabRecipe').style.display = (tab === 'receitas' && recipeView === 'list') ? 'flex' : 'none';
   document.getElementById('fabLote').style.display   = (tab === 'vendas')   ? 'flex' : 'none';
+  document.getElementById('fabVenda').style.display     = (tab === 'mais' && maisSeg === 'vendas')     ? 'flex' : 'none';
+  document.getElementById('fabEncomenda').style.display = (tab === 'mais' && maisSeg === 'encomendas') ? 'flex' : 'none';
   if (tab === 'inicio')   renderDashboard();
   if (tab === 'receitas') renderRecipes();
   if (tab === 'producao') renderStock();
   if (tab === 'vendas')   renderProducao();
-  if (tab === 'mais')     shopRender();
+  if (tab === 'mais')     renderMaisActive();
 }
 
 // ── Modal system ──
@@ -2556,6 +2757,437 @@ document.getElementById('recipeSearch').addEventListener('input', function() {
 });
 
 // ════════════════════════════════
+// MAIS TAB — segmento state
+// ════════════════════════════════
+var maisSeg     = 'vendas';
+var vendaFilter = 'todos';
+var encFilter   = 'todos';
+var encEditingId = null;
+
+function switchMaisSeg(seg) {
+  maisSeg = seg;
+  var segs = ['vendas', 'encomendas', 'compras'];
+  for (var si = 0; si < segs.length; si++) {
+    var s = segs[si];
+    var elId = 'seg' + s.charAt(0).toUpperCase() + s.slice(1);
+    var el = document.getElementById(elId);
+    if (el) el.style.display = (s === seg) ? '' : 'none';
+    var btn = document.querySelector('.mais-seg[data-seg="' + s + '"]');
+    if (btn) btn.classList[s === seg ? 'add' : 'remove']('active');
+  }
+  document.getElementById('fabVenda').style.display     = (seg === 'vendas')     ? 'flex' : 'none';
+  document.getElementById('fabEncomenda').style.display = (seg === 'encomendas') ? 'flex' : 'none';
+  if (seg === 'vendas')     renderVendas();
+  if (seg === 'encomendas') renderEncomendas();
+  if (seg === 'compras')    shopRender();
+}
+
+function renderMaisActive() {
+  if (maisSeg === 'vendas')     renderVendas();
+  if (maisSeg === 'encomendas') renderEncomendas();
+  if (maisSeg === 'compras')    shopRender();
+}
+
+// ════════════════════════════════
+// VENDAS
+// ════════════════════════════════
+var CANAL_LABEL = { encomenda: 'Encomenda', pronta_entrega: 'Pronta Entrega', ifood: 'iFood', rappi: 'Rappi' };
+var PAY_LABEL   = { pix: 'Pix', debito: 'Débito', credito: 'Crédito', dinheiro: 'Dinheiro' };
+
+function vendaGetAll()    { return storeGet(STORE.VENDAS) || []; }
+function vendaSave(items) { storeSet(STORE.VENDAS, items); }
+
+function vendaAdd(data) {
+  var items = vendaGetAll();
+  items.unshift({
+    id:          genId(),
+    date:        new Date().toISOString(),
+    product:     String(data.product || '').trim(),
+    stockItemId: data.stockItemId || null,
+    channel:     data.channel || 'pronta_entrega',
+    payment:     data.payment || 'pix',
+    qty:         Math.max(1, Number(data.qty) || 1),
+    value:       Math.max(0, Number(data.value) || 0),
+    total:       Math.max(0, Number(data.total) || 0)
+  });
+  vendaSave(items);
+}
+
+function vendaRemove(id) {
+  var items = vendaGetAll();
+  var filtered = [];
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id !== id) filtered.push(items[i]);
+  }
+  vendaSave(filtered);
+}
+
+function vendaFindById(id) {
+  var items = vendaGetAll();
+  for (var i = 0; i < items.length; i++) if (items[i].id === id) return items[i];
+  return null;
+}
+
+function vendaGetFiltered() {
+  var items = vendaGetAll();
+  if (vendaFilter === 'todos') return items;
+  var filtered = [];
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].channel === vendaFilter) filtered.push(items[i]);
+  }
+  return filtered;
+}
+
+function renderVendas() {
+  renderVendasSummary();
+  renderVendasList();
+}
+
+function renderVendasSummary() {
+  var all   = vendaGetAll();
+  var total = 0;
+  var byPay = {};
+  for (var i = 0; i < all.length; i++) {
+    total += Number(all[i].total) || 0;
+    var p = all[i].payment || 'outros';
+    byPay[p] = (byPay[p] || 0) + (Number(all[i].total) || 0);
+  }
+  var payKeys = ['pix', 'debito', 'credito', 'dinheiro'];
+  var payChips = '';
+  for (var pi = 0; pi < payKeys.length; pi++) {
+    var pk = payKeys[pi];
+    if (!byPay[pk]) continue;
+    payChips += '<span class="pay-chip">' + PAY_LABEL[pk] + ': ' + formatBRL(byPay[pk]) + '</span>';
+  }
+  document.getElementById('vendasSummary').innerHTML =
+    '<div class="venda-summary">' +
+      '<div class="venda-stat"><div class="venda-stat__label">Total faturado</div><div class="venda-stat__value">' + formatBRL(total) + '</div></div>' +
+      '<div class="venda-stat"><div class="venda-stat__label">Nº de vendas</div><div class="venda-stat__value">' + all.length + '</div></div>' +
+      (payChips ? '<div class="venda-stat venda-stat--wide"><div class="venda-stat__label">Por pagamento</div><div class="pay-breakdown">' + payChips + '</div></div>' : '') +
+    '</div>';
+}
+
+function renderVendasList() {
+  var items = vendaGetFiltered();
+  var list  = document.getElementById('vendasList');
+  var empty = document.getElementById('vendasEmpty');
+  if (items.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    var html = '';
+    for (var i = 0; i < items.length; i++) html += buildVendaCardHTML(items[i]);
+    list.innerHTML = html;
+  }
+}
+
+function buildVendaCardHTML(v) {
+  var date = v.date ? new Date(v.date).toLocaleDateString('pt-BR') : '—';
+  var id   = escHtml(v.id);
+  return '<div class="venda-card">' +
+    '<div class="venda-card__row1">' +
+      '<div class="venda-card__product">' + escHtml(v.product) + ' · ' + escHtml(String(v.qty)) + 'x</div>' +
+      '<div class="venda-card__total">' + formatBRL(v.total) + '</div>' +
+    '</div>' +
+    '<div class="venda-card__row2">' +
+      '<div class="venda-card__meta">' +
+        '<span class="canal-badge">' + escHtml(CANAL_LABEL[v.channel] || v.channel) + '</span>' +
+        '<span class="pay-badge">' + escHtml(PAY_LABEL[v.payment] || v.payment) + '</span>' +
+        '<span style="font-size:11px;color:var(--muted)">' + date + '</span>' +
+      '</div>' +
+      '<button class="venda-delete-btn" onclick="openDeleteVenda(\'' + id + '\')" type="button" aria-label="Excluir venda">🗑</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function setVendaFilter(canal) {
+  vendaFilter = canal;
+  var btns = document.querySelectorAll('#vendasFilterRow .filter-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList[btns[i].getAttribute('data-canal') === canal ? 'add' : 'remove']('active');
+  }
+  renderVendasList();
+}
+
+function openNovaVenda() {
+  var allStock = stockGetAll();
+  var prontos = [];
+  for (var i = 0; i < allStock.length; i++) {
+    if (allStock[i].category === 'pronto') prontos.push(allStock[i]);
+  }
+  var sel = document.getElementById('fVendaProduto');
+  sel.innerHTML = '<option value="">Selecionar produto...</option>';
+  for (var j = 0; j < prontos.length; j++) {
+    var pp = prontos[j];
+    var opt = document.createElement('option');
+    opt.value = pp.id;
+    opt.textContent = (pp.icon || '🍮') + ' ' + pp.name + ' (estoque: ' + pp.qty + ')';
+    sel.appendChild(opt);
+  }
+  var outro = document.createElement('option');
+  outro.value = '__custom__';
+  outro.textContent = '✏️ Outro produto (digitar)';
+  sel.appendChild(outro);
+  document.getElementById('fVendaCustomRow').style.display = 'none';
+  document.getElementById('fVendaCustom').value    = '';
+  document.getElementById('fVendaCanal').value     = 'pronta_entrega';
+  document.getElementById('fVendaPagamento').value = 'pix';
+  document.getElementById('fVendaQty').value       = '1';
+  document.getElementById('fVendaValor').value     = '';
+  document.getElementById('vendaFormError').textContent = '';
+  openModal('modalVenda');
+}
+
+function onVendaProdutoChange() {
+  var val = document.getElementById('fVendaProduto').value;
+  document.getElementById('fVendaCustomRow').style.display = (val === '__custom__') ? '' : 'none';
+}
+
+function onSaveVenda() {
+  var prodVal = document.getElementById('fVendaProduto').value;
+  var err     = document.getElementById('vendaFormError');
+  if (!prodVal) { err.textContent = 'Selecione um produto.'; return; }
+  var productName = '';
+  var stockItemId = null;
+  if (prodVal === '__custom__') {
+    productName = document.getElementById('fVendaCustom').value.trim();
+    if (!productName) { err.textContent = 'Informe o nome do produto.'; return; }
+  } else {
+    var item = stockFindById(prodVal);
+    if (!item) { err.textContent = 'Produto não encontrado.'; return; }
+    productName = item.name;
+    stockItemId = prodVal;
+  }
+  var qty   = Math.max(1, Number(document.getElementById('fVendaQty').value) || 1);
+  var value = Number(document.getElementById('fVendaValor').value) || 0;
+  if (value <= 0) { err.textContent = 'Informe o valor unitário.'; return; }
+  var canal   = document.getElementById('fVendaCanal').value;
+  var payment = document.getElementById('fVendaPagamento').value;
+  if (stockItemId) {
+    stockAdjust(stockItemId, -qty);
+    renderStock();
+  }
+  vendaAdd({ product: productName, stockItemId: stockItemId, channel: canal, payment: payment, qty: qty, value: value, total: value * qty });
+  closeModal('modalVenda');
+  renderVendas();
+  renderDashboard();
+}
+
+function openDeleteVenda(id) {
+  var v = vendaFindById(id);
+  if (!v) return;
+  openConfirmDelete(v.product + ' · ' + formatBRL(v.total), function() {
+    vendaRemove(id);
+    renderVendas();
+    renderDashboard();
+  });
+}
+
+// ════════════════════════════════
+// ENCOMENDAS
+// ════════════════════════════════
+var STATUS_LABEL = { pendente: '⏳ Pendente', pronto: '✅ Pronto', entregue: '🎁 Entregue' };
+
+function encomendaGetAll()    { return storeGet(STORE.ENCOMENDAS) || []; }
+function encomendaSave(items) { storeSet(STORE.ENCOMENDAS, items); }
+
+function encomendaAdd(data) {
+  var items = encomendaGetAll();
+  items.unshift({
+    id:           genId(),
+    createdAt:    new Date().toISOString(),
+    client:       String(data.client || '').trim(),
+    product:      String(data.product || '').trim(),
+    deliveryDate: String(data.deliveryDate || ''),
+    value:        Math.max(0, Number(data.value) || 0),
+    status:       'pendente',
+    obs:          String(data.obs || '').trim()
+  });
+  encomendaSave(items);
+}
+
+function encomendaUpdate(id, data) {
+  var items = encomendaGetAll();
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id === id) {
+      items[i].client       = String(data.client || '').trim();
+      items[i].product      = String(data.product || '').trim();
+      items[i].deliveryDate = String(data.deliveryDate || '');
+      items[i].value        = Math.max(0, Number(data.value) || 0);
+      items[i].status       = data.status || items[i].status;
+      items[i].obs          = String(data.obs || '').trim();
+      break;
+    }
+  }
+  encomendaSave(items);
+}
+
+function encomendaRemove(id) {
+  var items = encomendaGetAll();
+  var filtered = [];
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].id !== id) filtered.push(items[i]);
+  }
+  encomendaSave(filtered);
+}
+
+function encomendaFindById(id) {
+  var items = encomendaGetAll();
+  for (var i = 0; i < items.length; i++) if (items[i].id === id) return items[i];
+  return null;
+}
+
+function encomendaSetStatus(id, newStatus) {
+  var e = encomendaFindById(id);
+  if (!e) return;
+  encomendaUpdate(id, {
+    client: e.client, product: e.product, deliveryDate: e.deliveryDate,
+    value: e.value, status: newStatus, obs: e.obs
+  });
+}
+
+function encomendaGetFiltered() {
+  var items = encomendaGetAll();
+  if (encFilter === 'todos') return items;
+  var filtered = [];
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].status === encFilter) filtered.push(items[i]);
+  }
+  return filtered;
+}
+
+function renderEncomendas() {
+  var items = encomendaGetFiltered();
+  var list  = document.getElementById('encomendaList');
+  var empty = document.getElementById('encomendaEmpty');
+  if (items.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    var html = '';
+    for (var i = 0; i < items.length; i++) html += buildEncCardHTML(items[i]);
+    list.innerHTML = html;
+  }
+}
+
+function buildEncCardHTML(e) {
+  var dateStr = '';
+  if (e.deliveryDate) {
+    var parts = e.deliveryDate.split('-');
+    if (parts.length === 3) dateStr = parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+  var id          = escHtml(e.id);
+  var st          = e.status || 'pendente';
+  var statusClass = 'enc-status--' + st;
+  var cardClass   = 'enc-card--' + st;
+  var nextBtn     = '';
+  if (st === 'pendente') {
+    nextBtn = '<button class="enc-action-btn enc-action-btn--status" onclick="onEncSetStatus(\'' + id + '\',\'pronto\')" type="button">✅ Marcar Pronto</button>';
+  } else if (st === 'pronto') {
+    nextBtn = '<button class="enc-action-btn enc-action-btn--status" onclick="onEncSetStatus(\'' + id + '\',\'entregue\')" type="button">🎁 Marcar Entregue</button>';
+  }
+  return '<div class="enc-card ' + cardClass + '">' +
+    '<div class="enc-card__header">' +
+      '<div class="enc-card__client">' + escHtml(e.client) + '</div>' +
+      '<span class="enc-status ' + statusClass + '">' + (STATUS_LABEL[st] || st) + '</span>' +
+    '</div>' +
+    '<div class="enc-card__product">' + escHtml(e.product) + '</div>' +
+    '<div class="enc-card__meta">' +
+      (dateStr ? '<span>📅 ' + dateStr + '</span>' : '') +
+      (e.value > 0 ? '<span>💰 ' + formatBRL(e.value) + '</span>' : '') +
+    '</div>' +
+    (e.obs ? '<div class="enc-card__obs">' + escHtml(e.obs) + '</div>' : '') +
+    '<div class="enc-card__actions">' +
+      nextBtn +
+      '<button class="enc-action-btn" onclick="openEditEncomenda(\'' + id + '\')" type="button">✏️ Editar</button>' +
+      '<button class="enc-action-btn enc-action-btn--del" onclick="openDeleteEncomenda(\'' + id + '\')" type="button">🗑 Excluir</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function setEncFilter(status) {
+  encFilter = status;
+  var btns = document.querySelectorAll('#encFilterRow .filter-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList[btns[i].getAttribute('data-status') === status ? 'add' : 'remove']('active');
+  }
+  renderEncomendas();
+}
+
+function onEncSetStatus(id, newStatus) {
+  encomendaSetStatus(id, newStatus);
+  renderEncomendas();
+  renderDashboard();
+}
+
+function openNovaEncomenda() {
+  encEditingId = null;
+  document.getElementById('encModalTitle').textContent    = 'Nova Encomenda';
+  document.getElementById('fEncCliente').value = '';
+  document.getElementById('fEncProduto').value = '';
+  document.getElementById('fEncData').value    = '';
+  document.getElementById('fEncValor').value   = '';
+  document.getElementById('fEncObs').value     = '';
+  document.getElementById('fEncStatusRow').style.display = 'none';
+  document.getElementById('encFormError').textContent    = '';
+  openModal('modalEncomenda');
+}
+
+function openEditEncomenda(id) {
+  var e = encomendaFindById(id);
+  if (!e) return;
+  encEditingId = id;
+  document.getElementById('encModalTitle').textContent  = 'Editar Encomenda';
+  document.getElementById('fEncCliente').value = e.client       || '';
+  document.getElementById('fEncProduto').value = e.product      || '';
+  document.getElementById('fEncData').value    = e.deliveryDate || '';
+  document.getElementById('fEncValor').value   = e.value > 0 ? e.value : '';
+  document.getElementById('fEncObs').value     = e.obs          || '';
+  document.getElementById('fEncStatus').value  = e.status       || 'pendente';
+  document.getElementById('fEncStatusRow').style.display = '';
+  document.getElementById('encFormError').textContent    = '';
+  openModal('modalEncomenda');
+}
+
+function onSaveEncomenda() {
+  var client  = document.getElementById('fEncCliente').value.trim();
+  var product = document.getElementById('fEncProduto').value.trim();
+  var date    = document.getElementById('fEncData').value;
+  var err     = document.getElementById('encFormError');
+  if (!client)  { err.textContent = 'Informe o nome do cliente.'; return; }
+  if (!product) { err.textContent = 'Informe o produto.';         return; }
+  if (!date)    { err.textContent = 'Informe a data de entrega.'; return; }
+  var data = {
+    client:       client,
+    product:      product,
+    deliveryDate: date,
+    value:        Number(document.getElementById('fEncValor').value) || 0,
+    status:       encEditingId ? (document.getElementById('fEncStatus').value || 'pendente') : 'pendente',
+    obs:          document.getElementById('fEncObs').value.trim()
+  };
+  if (encEditingId) {
+    encomendaUpdate(encEditingId, data);
+  } else {
+    encomendaAdd(data);
+  }
+  closeModal('modalEncomenda');
+  renderEncomendas();
+  renderDashboard();
+}
+
+function openDeleteEncomenda(id) {
+  var e = encomendaFindById(id);
+  if (!e) return;
+  openConfirmDelete(e.client + ' – ' + e.product, function() {
+    encomendaRemove(id);
+    renderEncomendas();
+    renderDashboard();
+  });
+}
+
+// ════════════════════════════════
 // PRODUÇÃO (LOTES)
 // ════════════════════════════════
 
@@ -2910,7 +3542,18 @@ function renderDashboard() {
   document.getElementById('revenueMonth').textContent =
     months[now.getMonth()].charAt(0).toUpperCase() + months[now.getMonth()].slice(1);
 
+  var allVendas = vendaGetAll ? vendaGetAll() : [];
+  var nowD = new Date();
   var revenue = 0;
+  for (var vi = 0; vi < allVendas.length; vi++) {
+    var vd = allVendas[vi];
+    if (vd.date) {
+      var vDate = new Date(vd.date);
+      if (vDate.getFullYear() === nowD.getFullYear() && vDate.getMonth() === nowD.getMonth()) {
+        revenue += Number(vd.total) || 0;
+      }
+    }
+  }
   var goal    = Number(settings.goalRevenue) || 0;
   var pct     = goal > 0 ? Math.min(100, Math.round((revenue / goal) * 100)) : 0;
   var onTrack = pct >= 50;
@@ -2990,18 +3633,33 @@ function renderDashboard() {
   }
 
   // Last sale
-  var lastSale    = storeGet('cp_last_sale');
   var saleSection = document.getElementById('lastSaleSection');
-  if (lastSale) {
+  var allV = vendaGetAll ? vendaGetAll() : [];
+  if (allV.length > 0) {
+    var lv = allV[0];
+    var lvDate = lv.date ? new Date(lv.date).toLocaleDateString('pt-BR') : '';
     saleSection.innerHTML = '<div class="last-sale">' +
       '<span class="last-sale__icon">🛍️</span>' +
       '<div class="last-sale__info">' +
         '<div class="last-sale__label">Última venda</div>' +
-        '<div class="last-sale__client">' + escHtml(lastSale.client || 'Cliente') + '</div>' +
-        '<div class="last-sale__detail">' + escHtml(lastSale.detail || '') + '</div>' +
+        '<div class="last-sale__client">' + escHtml(lv.product || '—') + ' · ' + escHtml(String(lv.qty)) + 'x</div>' +
+        '<div class="last-sale__detail">' + escHtml(CANAL_LABEL ? (CANAL_LABEL[lv.channel] || lv.channel) : lv.channel) + (lvDate ? ' · ' + lvDate : '') + '</div>' +
       '</div>' +
-      '<span class="last-sale__value">' + formatBRL(lastSale.value || 0) + '</span>' +
+      '<span class="last-sale__value">' + formatBRL(lv.total || 0) + '</span>' +
     '</div>';
+  } else {
+    var legacySale = storeGet('cp_last_sale');
+    if (legacySale) {
+      saleSection.innerHTML = '<div class="last-sale">' +
+        '<span class="last-sale__icon">🛍️</span>' +
+        '<div class="last-sale__info">' +
+          '<div class="last-sale__label">Última venda</div>' +
+          '<div class="last-sale__client">' + escHtml(legacySale.client || 'Cliente') + '</div>' +
+          '<div class="last-sale__detail">' + escHtml(legacySale.detail || '') + '</div>' +
+        '</div>' +
+        '<span class="last-sale__value">' + formatBRL(legacySale.value || 0) + '</span>' +
+      '</div>';
+    }
   }
 }
 
