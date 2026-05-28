@@ -23,8 +23,8 @@
       --gold:   #D4A853;
       --green:  #4A8C5C;
       --red:    #C0392B;
-      --text:   #3A2E1E;
-      --muted:  #8A7A68;
+      --text:   #2A1F12;
+      --muted:  #5D4E3C;
       --surface:#FAF5EE;
       --border: #E8DDD0;
       --nav-h:  64px;
@@ -164,7 +164,7 @@
     .revenue-card__header {
       display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;
     }
-    .revenue-card__label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .revenue-card__label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
     .revenue-card__value {
       font-family: 'Cormorant Garamond', serif;
       font-size: 32px; font-weight: 700; color: var(--text); line-height: 1;
@@ -183,7 +183,7 @@
       transition: width 0.6s ease;
     }
     .progress-bar__fill--warn { background: linear-gradient(90deg, var(--accent), var(--gold)); }
-    .progress-bar__info { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--muted); }
+    .progress-bar__info { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: var(--muted); }
 
     .alert-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
     .alert-item {
@@ -235,7 +235,7 @@
     }
     .last-sale__icon { font-size: 28px; flex-shrink: 0; }
     .last-sale__info { flex: 1; min-width: 0; }
-    .last-sale__label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 2px; }
+    .last-sale__label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 2px; }
     .last-sale__client { font-size: 15px; font-weight: 700; color: var(--text); }
     .last-sale__detail { font-size: 12px; color: var(--muted); }
     .last-sale__value {
@@ -305,7 +305,7 @@
     .stock-item__icon { font-size: 24px; flex-shrink: 0; width: 32px; text-align: center; }
     .stock-item__info { flex: 1; min-width: 0; }
     .stock-item__name { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .stock-item__meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .stock-item__meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
     .low-badge {
       display: inline-block; background: rgba(192,57,43,0.12); color: var(--red);
@@ -335,7 +335,7 @@
       font-size: 20px; font-weight: 700; color: var(--text); line-height: 1;
     }
     .qty-val--low .qty-num { color: var(--red); }
-    .qty-val small { font-size: 10px; color: var(--muted); font-weight: 600; }
+    .qty-val small { font-size: 12px; color: var(--muted); font-weight: 600; }
 
     .stock-item__actions { display: flex; gap: 4px; flex-shrink: 0; }
     .act-btn {
@@ -581,8 +581,8 @@
     .lote-info { flex: 1; min-width: 0; }
     .lote-name { font-size: 15px; font-weight: 700; color: var(--text); }
     .lote-meta { font-size: 13px; color: var(--muted); margin-top: 2px; }
-    .lote-deducted { font-size: 11px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); line-height: 1.5; }
-    .lote-stock-added { font-size: 11px; color: var(--green); margin-top: 4px; }
+    .lote-deducted { font-size: 12px; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); line-height: 1.5; }
+    .lote-stock-added { font-size: 12px; color: var(--green); margin-top: 4px; }
     /* Ingredient stock check */
     .ing-check-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-top: 4px; }
     .ing-check-header { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
@@ -634,7 +634,7 @@
     .forn-actions { display:flex; gap:6px; margin-top:10px; justify-content:flex-end; }
     .venda-summary { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
     .venda-stat { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 10px; }
-    .venda-stat__label { font-size:11px; color:var(--muted); margin-bottom:4px; font-weight:600; }
+    .venda-stat__label { font-size:12px; color:var(--muted); margin-bottom:4px; font-weight:600; }
     .venda-stat__value { font-size:18px; font-weight:800; color:var(--text); }
     .venda-stat--wide { grid-column:1/-1; }
     .pay-breakdown { display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
@@ -680,7 +680,7 @@
     .fin-stat--cost { background:rgba(192,57,43,.06); border:1px solid rgba(192,57,43,.15); }
     .fin-stat--profit { background:rgba(200,132,58,.08); border:1px solid rgba(200,132,58,.2); grid-column:1/-1; }
     .fin-stat--neutral { background:var(--cream); border:1px solid var(--border); }
-    .fin-stat__label { font-size:11px; font-weight:700; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.05em; }
+    .fin-stat__label { font-size:12px; font-weight:700; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.05em; }
     .fin-stat__value { font-size:20px; font-weight:800; color:var(--text); }
     .fin-stat__sub { font-size:11px; color:var(--muted); margin-top:2px; }
     .fin-stat__value--green { color:var(--green); }
@@ -1939,7 +1939,7 @@
         </div>
         <div class="ob-field">
           <label class="ob-label" for="fStockUnit">Unidade</label>
-          <select class="ob-input" id="fStockUnit">
+          <select class="ob-input" id="fStockUnit" onchange="stockFormOnUnitChange()">
             <option value="un">un</option>
             <option value="kg">kg</option>
             <option value="g">g</option>
@@ -1956,6 +1956,27 @@
       <div class="ob-field">
         <label class="ob-label" for="fStockMin">Quantidade mínima (alerta)</label>
         <input class="ob-input" type="number" id="fStockMin" min="0" step="0.1" value="0" placeholder="0 = sem alerta" />
+      </div>
+      <div class="ob-field">
+        <label class="ob-label" for="fStockPrice">Preço de compra (R$)</label>
+        <input class="ob-input" type="number" id="fStockPrice" min="0" step="0.01" placeholder="0,00" />
+      </div>
+      <div class="ob-field" id="fStockUnitQtyRow" style="display:none">
+        <label class="ob-label">Conteúdo por embalagem <small style="color:var(--muted);font-weight:400">(opcional)</small></label>
+        <div class="form-row">
+          <div class="ob-field" style="flex:1">
+            <input class="ob-input" type="number" id="fStockUnitQty" min="0" step="0.1" placeholder="Ex: 200" />
+          </div>
+          <div class="ob-field" style="flex:0 0 90px">
+            <select class="ob-input" id="fStockUnitQtyUnit">
+              <option value="g">g</option>
+              <option value="ml">ml</option>
+              <option value="kg">kg</option>
+              <option value="L">L</option>
+            </select>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin:2px 0 0">Ex: creme de leite 1 un = 200g</p>
       </div>
       <div class="form-error" id="stockFormError"></div>
     </div>
@@ -2129,7 +2150,11 @@
       <div class="rf-section-title">Rendimento e Preços</div>
       <div class="ob-field">
         <label class="ob-label" for="rfCost">Custo total da receita (R$)</label>
-        <input class="ob-input" type="number" id="rfCost" min="0" step="0.01" placeholder="0,00" />
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="ob-input" type="number" id="rfCost" min="0" step="0.01" placeholder="0,00" style="flex:1" />
+          <button type="button" onclick="calcRecipeCostFromStock()" style="flex-shrink:0;padding:10px 12px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">🧮 Calcular</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin:4px 0 0">Preencha os ingredientes acima e toque em Calcular para usar os preços do estoque.</p>
       </div>
       <table class="yp-table">
         <thead>
@@ -2740,13 +2765,16 @@ function stockSave(items)    { storeSet(STORE.STOCK, items); }
 function stockAdd(data) {
   var items = stockGetAll();
   items.push({
-    id:       genId(),
-    icon:     String(data.icon || '').trim(),
-    name:     String(data.name || '').trim(),
-    category: data.category === 'embalagem' ? 'embalagem' : data.category === 'pronto' ? 'pronto' : 'ingrediente',
-    qty:      Math.max(0, Number(data.qty) || 0),
-    unit:     String(data.unit || 'un'),
-    minQty:   Math.max(0, Number(data.minQty) || 0)
+    id:          genId(),
+    icon:        String(data.icon || '').trim(),
+    name:        String(data.name || '').trim(),
+    category:    data.category === 'embalagem' ? 'embalagem' : data.category === 'pronto' ? 'pronto' : 'ingrediente',
+    qty:         Math.max(0, Number(data.qty) || 0),
+    unit:        String(data.unit || 'un'),
+    minQty:      Math.max(0, Number(data.minQty) || 0),
+    price:       Number(data.price) || 0,
+    unitQty:     Number(data.unitQty) || 0,
+    unitQtyUnit: String(data.unitQtyUnit || 'g')
   });
   stockSave(items);
 }
@@ -2755,12 +2783,15 @@ function stockUpdate(id, data) {
   var items = stockGetAll();
   for (var i = 0; i < items.length; i++) {
     if (items[i].id === id) {
-      items[i].icon     = String(data.icon || '').trim();
-      items[i].name     = String(data.name || '').trim();
-      items[i].category = data.category === 'embalagem' ? 'embalagem' : data.category === 'pronto' ? 'pronto' : 'ingrediente';
-      items[i].qty      = Math.max(0, Number(data.qty) || 0);
-      items[i].unit     = String(data.unit || 'un');
-      items[i].minQty   = Math.max(0, Number(data.minQty) || 0);
+      items[i].icon        = String(data.icon || '').trim();
+      items[i].name        = String(data.name || '').trim();
+      items[i].category    = data.category === 'embalagem' ? 'embalagem' : data.category === 'pronto' ? 'pronto' : 'ingrediente';
+      items[i].qty         = Math.max(0, Number(data.qty) || 0);
+      items[i].unit        = String(data.unit || 'un');
+      items[i].minQty      = Math.max(0, Number(data.minQty) || 0);
+      items[i].price       = Number(data.price) || 0;
+      items[i].unitQty     = Number(data.unitQty) || 0;
+      items[i].unitQtyUnit = String(data.unitQtyUnit || 'g');
       break;
     }
   }
@@ -2807,6 +2838,9 @@ function stockGetFiltered() {
       return i.name.toLowerCase().indexOf(q) !== -1;
     });
   }
+  items.sort(function(a, b) {
+    return (a.name || '').toLowerCase().localeCompare((b.name || '').toLowerCase(), 'pt-BR');
+  });
   return items;
 }
 
@@ -2842,8 +2876,12 @@ function buildStockItemHTML(item) {
   var isLow    = Number(item.minQty) > 0 && Number(item.qty) <= Number(item.minQty);
   var icon     = item.icon || (item.category === 'ingrediente' ? '🥚' : item.category === 'pronto' ? '🍮' : '📦');
   var catLabel = item.category === 'ingrediente' ? 'Ingrediente' : item.category === 'pronto' ? 'Pronto' : 'Embalagem';
-  var minInfo  = Number(item.minQty) > 0 ? ' · Mín: ' + item.minQty + ' ' + escHtml(item.unit) : '';
-  var id       = escHtml(item.id);
+  var minInfo   = Number(item.minQty) > 0 ? ' · Mín: ' + item.minQty + ' ' + escHtml(item.unit) : '';
+  var priceInfo = Number(item.price) > 0
+    ? ' · ' + formatBRL(item.price) + '/' + escHtml(item.unit)
+      + (Number(item.unitQty) > 0 ? ' (' + item.unitQty + escHtml(item.unitQtyUnit || 'g') + ')' : '')
+    : '';
+  var id        = escHtml(item.id);
 
   return '<div class="stock-item' + (isLow ? ' stock-item--low' : '') + '">' +
     '<span class="stock-item__icon">' + escHtml(icon) + '</span>' +
@@ -2851,7 +2889,7 @@ function buildStockItemHTML(item) {
       '<div class="stock-item__name">' + escHtml(item.name) +
         (isLow ? ' <span class="low-badge">Baixo</span>' : '') +
       '</div>' +
-      '<div class="stock-item__meta">' + catLabel + minInfo + '</div>' +
+      '<div class="stock-item__meta">' + catLabel + minInfo + priceInfo + '</div>' +
     '</div>' +
     '<div class="stock-item__qty-ctrl">' +
       '<button class="qty-btn" onclick="onStockDec(\'' + id + '\')" type="button" aria-label="Diminuir">−</button>' +
@@ -2881,15 +2919,27 @@ function onStockDec(id) {
   shopRender();
 }
 
+var UNIT_EMBALAGEM = { un:1, lata:1, pct:1, cx:1, dz:1, rolo:1 };
+function stockUnitNeedsQty(unit) { return !!UNIT_EMBALAGEM[unit]; }
+
+function stockFormOnUnitChange() {
+  var unit = document.getElementById('fStockUnit').value;
+  document.getElementById('fStockUnitQtyRow').style.display = stockUnitNeedsQty(unit) ? '' : 'none';
+}
+
 function openAddStock() {
   stockEditingId = null;
   document.getElementById('modalStockTitle').textContent = 'Novo Item';
-  document.getElementById('fStockIcon').value = '';
-  document.getElementById('fStockName').value = '';
-  document.getElementById('fStockCat').value  = 'ingrediente';
-  document.getElementById('fStockQty').value  = '0';
-  document.getElementById('fStockUnit').value = 'un';
-  document.getElementById('fStockMin').value  = '0';
+  document.getElementById('fStockIcon').value        = '';
+  document.getElementById('fStockName').value        = '';
+  document.getElementById('fStockCat').value         = 'ingrediente';
+  document.getElementById('fStockQty').value         = '0';
+  document.getElementById('fStockUnit').value        = 'un';
+  document.getElementById('fStockMin').value         = '0';
+  document.getElementById('fStockPrice').value       = '';
+  document.getElementById('fStockUnitQty').value     = '';
+  document.getElementById('fStockUnitQtyUnit').value = 'g';
+  document.getElementById('fStockUnitQtyRow').style.display = '';
   document.getElementById('stockFormError').textContent = '';
   openModal('modalStock');
   setTimeout(function() { document.getElementById('fStockName').focus(); }, 350);
@@ -2900,12 +2950,16 @@ function openEditStock(id) {
   if (!item) return;
   stockEditingId = id;
   document.getElementById('modalStockTitle').textContent = 'Editar Item';
-  document.getElementById('fStockIcon').value = item.icon || '';
-  document.getElementById('fStockName').value = item.name || '';
-  document.getElementById('fStockCat').value  = item.category || 'ingrediente';
-  document.getElementById('fStockQty').value  = item.qty !== undefined ? item.qty : '0';
-  document.getElementById('fStockUnit').value = item.unit || 'un';
-  document.getElementById('fStockMin').value  = item.minQty !== undefined ? item.minQty : '0';
+  document.getElementById('fStockIcon').value        = item.icon || '';
+  document.getElementById('fStockName').value        = item.name || '';
+  document.getElementById('fStockCat').value         = item.category || 'ingrediente';
+  document.getElementById('fStockQty').value         = item.qty !== undefined ? item.qty : '0';
+  document.getElementById('fStockUnit').value        = item.unit || 'un';
+  document.getElementById('fStockMin').value         = item.minQty !== undefined ? item.minQty : '0';
+  document.getElementById('fStockPrice').value       = item.price || '';
+  document.getElementById('fStockUnitQty').value     = item.unitQty || '';
+  document.getElementById('fStockUnitQtyUnit').value = item.unitQtyUnit || 'g';
+  document.getElementById('fStockUnitQtyRow').style.display = stockUnitNeedsQty(item.unit || 'un') ? '' : 'none';
   document.getElementById('stockFormError').textContent = '';
   openModal('modalStock');
   setTimeout(function() { document.getElementById('fStockName').focus(); }, 350);
@@ -2918,13 +2972,17 @@ function onSaveStock() {
     document.getElementById('fStockName').focus();
     return;
   }
+  var unit = document.getElementById('fStockUnit').value;
   var data = {
-    icon:     document.getElementById('fStockIcon').value,
-    name:     name,
-    category: document.getElementById('fStockCat').value,
-    qty:      document.getElementById('fStockQty').value,
-    unit:     document.getElementById('fStockUnit').value,
-    minQty:   document.getElementById('fStockMin').value
+    icon:        document.getElementById('fStockIcon').value,
+    name:        name,
+    category:    document.getElementById('fStockCat').value,
+    qty:         document.getElementById('fStockQty').value,
+    unit:        unit,
+    minQty:      document.getElementById('fStockMin').value,
+    price:       document.getElementById('fStockPrice').value,
+    unitQty:     stockUnitNeedsQty(unit) ? document.getElementById('fStockUnitQty').value : 0,
+    unitQtyUnit: document.getElementById('fStockUnitQtyUnit').value
   };
   if (stockEditingId) {
     stockUpdate(stockEditingId, data);
@@ -5233,7 +5291,9 @@ function onRegistrarLote() {
       var ingLow = (ing.name || '').toLowerCase().trim();
       for (var si = 0; si < allStock.length; si++) {
         if (allStock[si].name.toLowerCase().trim() === ingLow) {
-          stockAdjust(allStock[si].id, -needed);
+          var deductQty = ingQtyToStockUnit(needed, ing.unit, allStock[si]);
+          if (deductQty === null) deductQty = needed;
+          stockAdjust(allStock[si].id, -deductQty);
           var nRound = Number(needed.toFixed(4));
           deducted.push({ name: ing.name, qty: nRound, unit: ing.unit });
           break;
@@ -6883,6 +6943,84 @@ function relRenderAll() {
 function renderRelatorios() {
   relBuildSelects();
   relRenderAll();
+}
+
+// ════════════════════════════════
+// CONVERSÃO DE UNIDADES / CUSTO
+// ════════════════════════════════
+function unitConvertSameFamily(qty, from, to) {
+  if (from === to) return qty;
+  if (from === 'g'  && to === 'kg') return qty / 1000;
+  if (from === 'kg' && to === 'g')  return qty * 1000;
+  if (from === 'ml' && to === 'L')  return qty / 1000;
+  if (from === 'L'  && to === 'ml') return qty * 1000;
+  return null;
+}
+
+// Retorna a quantidade a descontar do estoque (na unidade do item de estoque)
+// dada a quantidade usada na receita (qty, fromUnit) e o item de estoque.
+function ingQtyToStockUnit(qty, fromUnit, stockItem) {
+  var toUnit = stockItem.unit;
+  if (fromUnit === toUnit) return qty;
+  var direct = unitConvertSameFamily(qty, fromUnit, toUnit);
+  if (direct !== null) return direct;
+  // Unidade com conteúdo por embalagem: ex. 1 un = 200g
+  if (Number(stockItem.unitQty) > 0 && stockItem.unitQtyUnit) {
+    var inBase = unitConvertSameFamily(qty, fromUnit, stockItem.unitQtyUnit);
+    if (inBase !== null) return inBase / Number(stockItem.unitQty);
+  }
+  return null;
+}
+
+// Retorna o custo em R$ de (qty, unit) de um ingrediente dado o item de estoque.
+function ingCostFromStock(qty, unit, stockItem) {
+  if (!Number(stockItem.price)) return null;
+  var inStockUnit = ingQtyToStockUnit(qty, unit, stockItem);
+  if (inStockUnit === null) return null;
+  return inStockUnit * Number(stockItem.price);
+}
+
+// Calcula o custo total da receita a partir dos preços do estoque
+// e preenche o campo rfCost. Retorna o valor ou null se nenhum preço encontrado.
+function calcRecipeCostFromStock() {
+  var rows    = document.querySelectorAll('#rfIngList .ing-row');
+  var allStock = stockGetAll();
+  var total   = 0;
+  var found   = 0;
+  var missing = [];
+  for (var i = 0; i < rows.length; i++) {
+    var nameEl = rows[i].querySelector('.ing-name-input');
+    var qtyEl  = rows[i].querySelector('.ing-qty-input');
+    var unitEl = rows[i].querySelector('.ing-unit');
+    if (!nameEl || !qtyEl || !unitEl) continue;
+    var name = (nameEl.value || '').trim();
+    var qty  = Number(qtyEl.value) || 0;
+    var unit = unitEl.value;
+    if (!name || qty <= 0) continue;
+    var low  = name.toLowerCase();
+    var stockItem = null;
+    for (var si = 0; si < allStock.length; si++) {
+      if (allStock[si].name.toLowerCase() === low) { stockItem = allStock[si]; break; }
+    }
+    if (!stockItem) {
+      for (var si2 = 0; si2 < allStock.length; si2++) {
+        if (allStock[si2].name.toLowerCase().indexOf(low) !== -1) { stockItem = allStock[si2]; break; }
+      }
+    }
+    if (!stockItem || !Number(stockItem.price)) { missing.push(name); continue; }
+    var cost = ingCostFromStock(qty, unit, stockItem);
+    if (cost === null) { missing.push(name); continue; }
+    total += cost;
+    found++;
+  }
+  if (found === 0) {
+    showToast('Nenhum ingrediente com preço cadastrado no estoque.', 3000);
+    return;
+  }
+  document.getElementById('rfCost').value = total.toFixed(2);
+  var msg = 'Custo calculado: ' + formatBRL(total);
+  if (missing.length > 0) msg += ' (' + missing.length + ' sem preço: ' + missing.slice(0,3).join(', ') + ')';
+  showToast(msg, 4000);
 }
 
 // ════════════════════════════════
