@@ -1313,6 +1313,8 @@
         <button class="cat-tab" data-cat="ingrediente" type="button">🥚 Ingredientes</button>
         <button class="cat-tab" data-cat="embalagem" type="button">📦 Embalagens</button>
         <button class="cat-tab" data-cat="pronto" type="button">🍮 Prontos</button>
+        <button class="cat-tab" data-cat="limpeza" type="button">🧹 Limpeza</button>
+        <button class="cat-tab" data-cat="escritorio" type="button">📎 Escritório</button>
       </div>
       <div class="low-alert-bar" id="lowAlertBar" style="display:none">
         <span>⚠️</span>
@@ -1461,11 +1463,24 @@
         <!-- Custos Variáveis -->
         <div class="fin-section">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-            <div class="fin-section-title" style="margin-bottom:0">📈 Custos Variáveis <small style="font-size:11px;font-weight:400;color:var(--muted)">(% da receita)</small></div>
+            <div class="fin-section-title" style="margin-bottom:0">📈 Custos Variáveis <small style="font-size:11px;font-weight:400;color:var(--muted)">(% ou R$/mês)</small></div>
           </div>
           <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Taxas de plataforma, embalagens, comissões etc.</p>
           <div id="custosVarList"></div>
           <button class="fin-add-btn" onclick="openAddCustoVar()" type="button">+ Adicionar custo variável</button>
+        </div>
+
+        <!-- Fluxo de Caixa -->
+        <div class="fin-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div class="fin-section-title" style="margin-bottom:0">💰 Fluxo de Caixa</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="qty-btn" onclick="fluxoNavMes(-1)" type="button" aria-label="Mês anterior">‹</button>
+              <span id="fluxoMesLabel" style="font-size:13px;font-weight:600;color:var(--text);min-width:90px;text-align:center"></span>
+              <button class="qty-btn" onclick="fluxoNavMes(1)" type="button" aria-label="Próximo mês">›</button>
+            </div>
+          </div>
+          <div id="fluxoCaixa"></div>
         </div>
 
         <!-- Ponto de Equilíbrio -->
@@ -2035,6 +2050,8 @@
           <option value="ingrediente">🥚 Ingrediente</option>
           <option value="embalagem">📦 Embalagem</option>
           <option value="pronto">🍮 Pronto</option>
+          <option value="limpeza">🧹 Limpeza</option>
+          <option value="escritorio">📎 Escritório</option>
         </select>
       </div>
       <div class="form-row">
@@ -2510,8 +2527,19 @@
         <input class="ob-input" type="text" id="fCVName" placeholder="Ex: Taxa iFood, Embalagem…" maxlength="60" />
       </div>
       <div class="ob-field">
-        <label class="ob-label" for="fCVPct">Percentual da receita (%) *</label>
+        <label class="ob-label">Tipo de custo</label>
+        <div style="display:flex;gap:8px">
+          <button id="cvBtnPct" class="btn-secondary" style="flex:1;margin-top:0;justify-content:center;font-size:13px;background:var(--accent);color:#fff" onclick="cvSetTipo('pct')" type="button">% da receita</button>
+          <button id="cvBtnFixo" class="btn-secondary" style="flex:1;margin-top:0;justify-content:center;font-size:13px" onclick="cvSetTipo('fixo')" type="button">R$ fixo/mês</button>
+        </div>
+      </div>
+      <div class="ob-field" id="cvFieldPct">
+        <label class="ob-label" for="fCVPct">Percentual da receita (%)</label>
         <input class="ob-input" type="number" id="fCVPct" min="0" max="100" step="0.01" placeholder="0,00" />
+      </div>
+      <div class="ob-field" id="cvFieldValor" style="display:none">
+        <label class="ob-label" for="fCVValor">Valor fixo por mês (R$)</label>
+        <input class="ob-input" type="number" id="fCVValor" min="0" step="0.01" placeholder="0,00" />
       </div>
       <div class="form-error" id="cvFormError"></div>
     </div>
@@ -2886,7 +2914,7 @@ function stockAdd(data) {
     id:          genId(),
     icon:        String(data.icon || '').trim(),
     name:        String(data.name || '').trim(),
-    category:    data.category === 'embalagem' ? 'embalagem' : data.category === 'pronto' ? 'pronto' : 'ingrediente',
+    category:    ['embalagem','pronto','limpeza','escritorio'].indexOf(data.category) >= 0 ? data.category : 'ingrediente',
     qty:         Math.max(0, Number(data.qty) || 0),
     unit:        String(data.unit || 'un'),
     minQty:      Math.max(0, Number(data.minQty) || 0),
@@ -2903,7 +2931,7 @@ function stockUpdate(id, data) {
     if (items[i].id === id) {
       items[i].icon        = String(data.icon || '').trim();
       items[i].name        = String(data.name || '').trim();
-      items[i].category    = data.category === 'embalagem' ? 'embalagem' : data.category === 'pronto' ? 'pronto' : 'ingrediente';
+      items[i].category    = ['embalagem','pronto','limpeza','escritorio'].indexOf(data.category) >= 0 ? data.category : 'ingrediente';
       items[i].qty         = Math.max(0, Number(data.qty) || 0);
       items[i].unit        = String(data.unit || 'un');
       items[i].minQty      = Math.max(0, Number(data.minQty) || 0);
@@ -2992,8 +3020,8 @@ function renderStock() {
 
 function buildStockItemHTML(item) {
   var isLow    = Number(item.minQty) > 0 && Number(item.qty) <= Number(item.minQty);
-  var icon     = item.icon || (item.category === 'ingrediente' ? '🥚' : item.category === 'pronto' ? '🍮' : '📦');
-  var catLabel = item.category === 'ingrediente' ? 'Ingrediente' : item.category === 'pronto' ? 'Pronto' : 'Embalagem';
+  var icon     = item.icon || (item.category === 'ingrediente' ? '🥚' : item.category === 'pronto' ? '🍮' : item.category === 'limpeza' ? '🧹' : item.category === 'escritorio' ? '📎' : '📦');
+  var catLabel = item.category === 'ingrediente' ? 'Ingrediente' : item.category === 'pronto' ? 'Pronto' : item.category === 'limpeza' ? 'Limpeza' : item.category === 'escritorio' ? 'Escritório' : 'Embalagem';
   var minInfo   = Number(item.minQty) > 0 ? ' · Mín: ' + item.minQty + ' ' + escHtml(item.unit) : '';
   var priceInfo = Number(item.price) > 0
     ? ' · ' + formatBRL(item.price) + '/' + escHtml(item.unit)
@@ -3224,7 +3252,7 @@ function renderShopAuto() {
   for (var i = 0; i < lowItems.length; i++) {
     var item   = lowItems[i];
     var needed = Math.max(1, Number(item.minQty) - Number(item.qty));
-    var icon   = item.icon || (item.category === 'ingrediente' ? '🥚' : '📦');
+    var icon   = item.icon || (item.category === 'ingrediente' ? '🥚' : item.category === 'limpeza' ? '🧹' : item.category === 'escritorio' ? '📎' : '📦');
     var id     = escHtml(item.id);
     html += '<div class="shop-item">' +
       '<span class="shop-item__icon">' + escHtml(icon) + '</span>' +
@@ -4355,15 +4383,23 @@ function custoVarGetAll()    { return storeGet(STORE.CUSTOS_VAR) || []; }
 function custoVarSave(items) { storeSet(STORE.CUSTOS_VAR, items); }
 function custoVarAdd(data) {
   var items = custoVarGetAll();
-  items.push({ id: genId(), name: String(data.name || '').trim(), pct: Math.min(100, Math.max(0, Number(data.pct) || 0)) });
+  items.push({
+    id:    genId(),
+    name:  String(data.name || '').trim(),
+    tipo:  data.tipo === 'fixo' ? 'fixo' : 'pct',
+    pct:   Math.min(100, Math.max(0, Number(data.pct) || 0)),
+    valor: Math.max(0, Number(data.valor) || 0)
+  });
   custoVarSave(items);
 }
 function custoVarUpdate(id, data) {
   var items = custoVarGetAll();
   for (var i = 0; i < items.length; i++) {
     if (items[i].id === id) {
-      items[i].name = String(data.name || '').trim();
-      items[i].pct  = Math.min(100, Math.max(0, Number(data.pct) || 0));
+      items[i].name  = String(data.name || '').trim();
+      items[i].tipo  = data.tipo === 'fixo' ? 'fixo' : 'pct';
+      items[i].pct   = Math.min(100, Math.max(0, Number(data.pct) || 0));
+      items[i].valor = Math.max(0, Number(data.valor) || 0);
       break;
     }
   }
@@ -4404,11 +4440,14 @@ function finCalcCosts(netRevenue) {
   var vars  = custoVarGetAll();
   var totalFixo = 0;
   for (var i = 0; i < fixos.length; i++) totalFixo += Number(fixos[i].value) || 0;
-  var varRate = 0;
-  for (var j = 0; j < vars.length; j++) varRate += Number(vars[j].pct) || 0;
+  var varRate = 0, varFixed = 0;
+  for (var j = 0; j < vars.length; j++) {
+    if (vars[j].tipo === 'fixo') varFixed += Number(vars[j].valor) || 0;
+    else varRate += Number(vars[j].pct) || 0;
+  }
   varRate = varRate / 100;
-  var totalVar = netRevenue * varRate;
-  return { fixo: totalFixo, varRate: varRate, varAmount: totalVar, total: totalFixo + totalVar };
+  var totalVar = netRevenue * varRate + varFixed;
+  return { fixo: totalFixo, varRate: varRate, varFixed: varFixed, varAmount: totalVar, total: totalFixo + totalVar };
 }
 
 // ── Render Financeiro ──
@@ -4417,6 +4456,7 @@ function renderFinanceiro() {
   renderFinResumo();
   renderCustosFixos();
   renderCustosVar();
+  renderFluxoCaixa();
   renderFinBreakEven();
   renderFinMeta();
 }
@@ -4496,35 +4536,49 @@ function renderCustosVar() {
     el.innerHTML = '<p class="form-hint">Nenhum custo variavel cadastrado.</p>';
     return;
   }
-  var totalPct = 0;
+  var totalPct = 0, totalFixo = 0;
   var html = '';
   for (var i = 0; i < items.length; i++) {
     var c  = items[i];
     var id = escHtml(c.id);
-    totalPct += Number(c.pct) || 0;
+    var valLabel;
+    if (c.tipo === 'fixo') {
+      totalFixo += Number(c.valor) || 0;
+      valLabel = formatBRL(Number(c.valor) || 0) + '/mês';
+    } else {
+      totalPct += Number(c.pct) || 0;
+      valLabel = escHtml(String(c.pct)) + '%';
+    }
     html += '<div class="custo-item">' +
       '<span class="custo-item__name">' + escHtml(c.name) + '</span>' +
-      '<span class="custo-item__value">' + escHtml(String(c.pct)) + '%</span>' +
+      '<span class="custo-item__value">' + valLabel + '</span>' +
       '<div class="custo-item__actions">' +
         '<button class="custo-edit-btn" onclick="openEditCustoVar(\'' + id + '\')" type="button" aria-label="Editar">&#9999;&#65039;</button>' +
         '<button class="custo-del-btn"  onclick="openDeleteCustoVar(\'' + id + '\')" type="button" aria-label="Excluir">&#128465;</button>' +
       '</div>' +
     '</div>';
   }
-  html += '<div style="padding-top:6px;font-size:12px;font-weight:700;color:var(--muted)">Total variavel: ' + totalPct.toFixed(2).replace(/\.?0+$/, '') + '% da receita</div>';
+  var summary = [];
+  if (totalPct > 0) summary.push(totalPct.toFixed(2).replace(/\.?0+$/, '') + '% da receita');
+  if (totalFixo > 0) summary.push(formatBRL(totalFixo) + '/mês fixo');
+  html += '<div style="padding-top:6px;font-size:12px;font-weight:700;color:var(--muted)">Total: ' + (summary.length ? summary.join(' + ') : '0') + '</div>';
   el.innerHTML = html;
 }
 
 function renderFinBreakEven() {
   var el = document.getElementById('finBreakEven');
-  var fixos   = custoFixoGetAll();
-  var vars    = custoVarGetAll();
+  var fixos = custoFixoGetAll();
+  var vars  = custoVarGetAll();
   var totalFixo = 0;
   for (var i = 0; i < fixos.length; i++) totalFixo += Number(fixos[i].value) || 0;
-  var varRate = 0;
-  for (var j = 0; j < vars.length; j++) varRate += Number(vars[j].pct) || 0;
+  var varRate = 0, varFixed = 0;
+  for (var j = 0; j < vars.length; j++) {
+    if (vars[j].tipo === 'fixo') varFixed += Number(vars[j].valor) || 0;
+    else varRate += Number(vars[j].pct) || 0;
+  }
   varRate = varRate / 100;
-  if (totalFixo === 0 && varRate === 0) {
+  var totalCustoFixo = totalFixo + varFixed;
+  if (totalCustoFixo === 0 && varRate === 0) {
     el.innerHTML = '<p class="form-hint">Cadastre seus custos para calcular o ponto de equilibrio.</p>';
     return;
   }
@@ -4532,12 +4586,12 @@ function renderFinBreakEven() {
     el.innerHTML = '<p style="color:var(--red);font-size:13px">&#9888;&#65039; Custos variaveis >= 100% da receita - revise os percentuais.</p>';
     return;
   }
-  var breakEven = totalFixo / (1 - varRate);
+  var breakEven = totalCustoFixo / (1 - varRate);
   el.innerHTML =
     '<div class="breakeven-result">' +
       '<div class="fin-stat__label">Faturamento minimo para cobrir todos os custos</div>' +
       '<div class="breakeven-value">' + formatBRL(breakEven) + '<small style="font-size:14px;font-weight:400"> /mes</small></div>' +
-      '<div class="breakeven-sub">Custos fixos: ' + formatBRL(totalFixo) + ' - Custos variaveis: ' + (varRate * 100).toFixed(1) + '% da receita</div>' +
+      '<div class="breakeven-sub">Custos fixos: ' + formatBRL(totalFixo) + ' - Var fixo: ' + formatBRL(varFixed) + ' - Var %: ' + (varRate * 100).toFixed(1) + '% da receita</div>' +
     '</div>';
 }
 
@@ -4546,24 +4600,120 @@ function renderFinMeta() {
   var targetStr = document.getElementById('finMetaTarget').value;
   if (!targetStr) { el.innerHTML = ''; return; }
   var target = Number(targetStr) || 0;
-  var fixos   = custoFixoGetAll();
-  var vars    = custoVarGetAll();
+  var fixos = custoFixoGetAll();
+  var vars  = custoVarGetAll();
   var totalFixo = 0;
   for (var i = 0; i < fixos.length; i++) totalFixo += Number(fixos[i].value) || 0;
-  var varRate = 0;
-  for (var j = 0; j < vars.length; j++) varRate += Number(vars[j].pct) || 0;
+  var varRate = 0, varFixed = 0;
+  for (var j = 0; j < vars.length; j++) {
+    if (vars[j].tipo === 'fixo') varFixed += Number(vars[j].valor) || 0;
+    else varRate += Number(vars[j].pct) || 0;
+  }
   varRate = varRate / 100;
   if (varRate >= 1) {
     el.innerHTML = '<p style="color:var(--red);font-size:13px">&#9888;&#65039; Custos variaveis >= 100% da receita.</p>';
     return;
   }
-  var required = (totalFixo + target) / (1 - varRate);
+  var required = (totalFixo + varFixed + target) / (1 - varRate);
   el.innerHTML =
     '<div class="meta-result">' +
       '<div class="fin-stat__label">Para lucrar ' + formatBRL(target) + '/mes voce precisa faturar</div>' +
       '<div class="meta-result__value">' + formatBRL(required) + '<small style="font-size:14px;font-weight:400"> /mes</small></div>' +
-      '<div class="meta-result__sub">= ' + formatBRL(totalFixo) + ' (fixos) + ' + formatBRL(target) + ' (lucro) / ' + ((1 - varRate) * 100).toFixed(1) + '% margem liquida</div>' +
+      '<div class="meta-result__sub">= ' + formatBRL(totalFixo + varFixed) + ' (custos) + ' + formatBRL(target) + ' (lucro) / ' + ((1 - varRate) * 100).toFixed(1) + '% margem</div>' +
     '</div>';
+}
+
+// ── Fluxo de Caixa ──
+var fluxoMesOffset = 0;
+
+function fluxoNavMes(dir) {
+  fluxoMesOffset += dir;
+  renderFluxoCaixa();
+}
+
+function renderFluxoCaixa() {
+  var el = document.getElementById('fluxoCaixa');
+  var labelEl = document.getElementById('fluxoMesLabel');
+  if (!el) return;
+
+  var now = new Date();
+  var year  = now.getFullYear();
+  var month = now.getMonth() + fluxoMesOffset;
+  while (month > 11) { month -= 12; year += 1; }
+  while (month < 0)  { month += 12; year -= 1; }
+
+  var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  if (labelEl) labelEl.textContent = meses[month] + ' ' + year;
+
+  // Entradas: vendas do mês
+  var allV = vendaGetAll ? vendaGetAll() : [];
+  var taxas = taxasGet ? taxasGet() : {};
+  var entradas = 0, taxasPagas = 0;
+  var vendasMes = [];
+  for (var i = 0; i < allV.length; i++) {
+    var v = allV[i];
+    if (!v.date) continue;
+    var vd = new Date(v.date);
+    if (vd.getFullYear() === year && vd.getMonth() === month) {
+      var t = Number(v.total) || 0;
+      entradas += t;
+      var taxa = (Number(taxas[v.payment]) || 0) / 100;
+      taxasPagas += t * taxa;
+      vendasMes.push(v);
+    }
+  }
+  var entradasLiq = entradas - taxasPagas;
+
+  // Saídas: custos fixos (mensais) + custos variáveis
+  var fixos = custoFixoGetAll ? custoFixoGetAll() : [];
+  var vars  = custoVarGetAll ? custoVarGetAll() : [];
+  var totalFixo = 0;
+  for (var fi = 0; fi < fixos.length; fi++) totalFixo += Number(fixos[fi].value) || 0;
+  var varRate = 0, varFixed = 0;
+  for (var vi = 0; vi < vars.length; vi++) {
+    if (vars[vi].tipo === 'fixo') varFixed += Number(vars[vi].valor) || 0;
+    else varRate += Number(vars[vi].pct) || 0;
+  }
+  varRate = varRate / 100;
+  var totalVar = entradasLiq * varRate + varFixed;
+  var totalSaidas = totalFixo + totalVar;
+  var saldo = entradasLiq - totalSaidas;
+  var saldoColor = saldo >= 0 ? 'var(--green)' : 'var(--red)';
+
+  var html = '<div style="display:flex;flex-direction:column;gap:10px">';
+
+  // Entradas card
+  html += '<div style="background:rgba(74,140,92,.08);border-radius:10px;padding:12px">' +
+    '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">⬆️ Entradas</div>' +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:3px"><span>Vendas (' + vendasMes.length + ')</span><span>' + formatBRL(entradas) + '</span></div>' +
+    (taxasPagas > 0 ? '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:3px"><span>(-) Taxas cartão</span><span>-' + formatBRL(taxasPagas) + '</span></div>' : '') +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--green);border-top:1px solid rgba(0,0,0,.07);padding-top:5px;margin-top:3px"><span>Receita líquida</span><span>' + formatBRL(entradasLiq) + '</span></div>' +
+  '</div>';
+
+  // Saídas card
+  html += '<div style="background:rgba(220,53,69,.06);border-radius:10px;padding:12px">' +
+    '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">⬇️ Saídas</div>';
+  if (fixos.length > 0) {
+    html += '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:3px"><span>Custos fixos</span><span>' + formatBRL(totalFixo) + '</span></div>';
+  }
+  if (varFixed > 0) {
+    html += '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:3px"><span>Var. fixos (R$)</span><span>' + formatBRL(varFixed) + '</span></div>';
+  }
+  if (varRate > 0) {
+    html += '<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text);margin-bottom:3px"><span>Var. % (' + (varRate * 100).toFixed(1) + '% da receita)</span><span>' + formatBRL(entradasLiq * varRate) + '</span></div>';
+  }
+  html += '<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--red);border-top:1px solid rgba(0,0,0,.07);padding-top:5px;margin-top:3px"><span>Total saídas</span><span>' + formatBRL(totalSaidas) + '</span></div>' +
+  '</div>';
+
+  // Saldo card
+  html += '<div style="background:' + (saldo >= 0 ? 'rgba(74,140,92,.1)' : 'rgba(220,53,69,.1)') + ';border-radius:10px;padding:12px;text-align:center">' +
+    '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">💼 Saldo do Mês</div>' +
+    '<div style="font-size:26px;font-weight:700;color:' + saldoColor + '">' + formatBRL(saldo) + '</div>' +
+    (vendasMes.length === 0 ? '<div style="font-size:11px;color:var(--muted);margin-top:4px">Nenhuma venda registrada neste mês</div>' : '') +
+  '</div>';
+
+  html += '</div>';
+  el.innerHTML = html;
 }
 
 // ── Custo Fixo form ──
@@ -4617,12 +4767,25 @@ function openDeleteCustoFixo(id) {
 // ── Custo Variavel form ──
 var cvEditingId = null;
 
+var cvTipo = 'pct';
+function cvSetTipo(tipo) {
+  cvTipo = tipo;
+  var btnPct   = document.getElementById('cvBtnPct');
+  var btnFixo  = document.getElementById('cvBtnFixo');
+  if (btnPct)  { btnPct.style.background  = tipo === 'pct'  ? 'var(--accent)' : ''; btnPct.style.color  = tipo === 'pct'  ? '#fff' : ''; }
+  if (btnFixo) { btnFixo.style.background = tipo === 'fixo' ? 'var(--accent)' : ''; btnFixo.style.color = tipo === 'fixo' ? '#fff' : ''; }
+  document.getElementById('cvFieldPct').style.display   = tipo === 'pct'  ? '' : 'none';
+  document.getElementById('cvFieldValor').style.display = tipo === 'fixo' ? '' : 'none';
+}
+
 function openAddCustoVar() {
   cvEditingId = null;
   document.getElementById('cvModalTitle').textContent = 'Novo Custo Variavel';
-  document.getElementById('fCVName').value = '';
-  document.getElementById('fCVPct').value  = '';
+  document.getElementById('fCVName').value  = '';
+  document.getElementById('fCVPct').value   = '';
+  document.getElementById('fCVValor').value = '';
   document.getElementById('cvFormError').textContent = '';
+  cvSetTipo('pct');
   openModal('modalCustoVar');
 }
 
@@ -4631,22 +4794,27 @@ function openEditCustoVar(id) {
   if (!c) return;
   cvEditingId = id;
   document.getElementById('cvModalTitle').textContent = 'Editar Custo Variavel';
-  document.getElementById('fCVName').value = c.name;
-  document.getElementById('fCVPct').value  = c.pct;
+  document.getElementById('fCVName').value  = c.name;
+  document.getElementById('fCVPct').value   = c.pct;
+  document.getElementById('fCVValor').value = c.valor || '';
   document.getElementById('cvFormError').textContent = '';
+  cvSetTipo(c.tipo === 'fixo' ? 'fixo' : 'pct');
   openModal('modalCustoVar');
 }
 
 function onSaveCustoVar() {
-  var name = document.getElementById('fCVName').value.trim();
-  var pct  = Number(document.getElementById('fCVPct').value);
-  var err  = document.getElementById('cvFormError');
-  if (!name)          { err.textContent = 'Informe a descricao.'; return; }
-  if (isNaN(pct) || pct < 0) { err.textContent = 'Informe um percentual valido.'; return; }
+  var name  = document.getElementById('fCVName').value.trim();
+  var pct   = Number(document.getElementById('fCVPct').value);
+  var valor = Number(document.getElementById('fCVValor').value);
+  var err   = document.getElementById('cvFormError');
+  if (!name) { err.textContent = 'Informe a descricao.'; return; }
+  if (cvTipo === 'pct' && (isNaN(pct) || pct < 0)) { err.textContent = 'Informe um percentual valido.'; return; }
+  if (cvTipo === 'fixo' && (isNaN(valor) || valor < 0)) { err.textContent = 'Informe um valor valido.'; return; }
+  var data = { name: name, tipo: cvTipo, pct: cvTipo === 'pct' ? pct : 0, valor: cvTipo === 'fixo' ? valor : 0 };
   if (cvEditingId) {
-    custoVarUpdate(cvEditingId, { name: name, pct: pct });
+    custoVarUpdate(cvEditingId, data);
   } else {
-    custoVarAdd({ name: name, pct: pct });
+    custoVarAdd(data);
   }
   closeModal('modalCustoVar');
   renderFinanceiro();
