@@ -7102,14 +7102,14 @@ function ingCostFromStock(qty, unit, stockItem) {
 // Calcula o custo total da receita a partir dos preços do estoque
 // e preenche o campo rfCost. Retorna o valor ou null se nenhum preço encontrado.
 function calcRecipeCostFromStock() {
-  var rows    = document.querySelectorAll('#rfIngList .ing-row');
+  var rows    = document.querySelectorAll('#formIngredientList .ing-row');
   var allStock = stockGetAll();
   var total   = 0;
   var found   = 0;
   var missing = [];
   for (var i = 0; i < rows.length; i++) {
-    var nameEl = rows[i].querySelector('.ing-name-input');
-    var qtyEl  = rows[i].querySelector('.ing-qty-input');
+    var nameEl = rows[i].querySelector('.ing-name');
+    var qtyEl  = rows[i].querySelector('.ing-qty');
     var unitEl = rows[i].querySelector('.ing-unit');
     if (!nameEl || !qtyEl || !unitEl) continue;
     var name = (nameEl.value || '').trim();
@@ -7173,8 +7173,10 @@ function closePrecForm() {
 }
 function precOnMargemChange(val) {
   precFormMargem = Math.max(1, Math.min(95, Number(val) || 30));
-  document.getElementById('precMargemSlider').value = precFormMargem;
-  document.getElementById('precMargemVal').textContent = precFormMargem + '%';
+  var sliderEl = document.getElementById('precMargemSlider');
+  if (sliderEl) sliderEl.value = precFormMargem;
+  var valEl = document.getElementById('precMargemVal');
+  if (valEl) valEl.textContent = precFormMargem + '%';
   renderPrecBreakdown();
 }
 function precSelectSize(sz) {
@@ -7257,7 +7259,8 @@ function calcPrecificacaoCompleta(r, sizeKey, margemOverride) {
     precoSugerido: precoSugerido, precoAtual: precoAtual,
     margemBruta: margemBruta, margemLiquid: margemLiquid,
     valorHora: valorHora, prepMin: prepMin,
-    horasMes: horasMes, prolabore: prolabore, encargos: encargos,
+    horasDia: horasDia, diasMes: diasMes, horasMes: horasMes,
+    prolabore: prolabore, encargos: encargos,
     totalFixoMensal: totalFixoMensal, cmpTotal: cmpTotal,
     moTotal: moTotal, cfTotal: cfTotal
   };
@@ -7382,8 +7385,8 @@ function renderPrecBreakdown() {
     '<div class="prec-assumptions">' +
       '<strong>Premissas usadas:</strong><br>' +
       (p.prolabore > 0 ? '• Pró-labore: ' + formatBRL(p.prolabore) + ' + ' + p.encargos + '% encargos = ' + formatBRL(p.prolabore * (1 + p.encargos / 100)) + '/mês<br>' : '• Pró-labore: não configurado<br>') +
-      '• ' + (storeGet(STORE.SETTINGS) && (storeGet(STORE.SETTINGS).horasDia || 8)) + 'h/dia × ' + (storeGet(STORE.SETTINGS) && (storeGet(STORE.SETTINGS).diasMes || 22)) + ' dias = ' + p.horasMes + 'h/mês · Valor hora: ' + formatBRL(p.valorHora) + '<br>' +
-      (p.totalFixoMensal > 0 ? '• Custos fixos: ' + formatBRL(p.totalFixoMensal) + '/mês → ' + formatBRL(p.totalFixoMensal / p.horasMes) + '/h<br>' : '• Custos fixos: não cadastrados<br>') +
+      '• ' + p.horasDia + 'h/dia × ' + p.diasMes + ' dias = ' + p.horasMes + 'h/mês · Valor hora: ' + formatBRL(p.valorHora) + '<br>' +
+      (p.totalFixoMensal > 0 && p.horasMes > 0 ? '• Custos fixos: ' + formatBRL(p.totalFixoMensal) + '/mês → ' + formatBRL(p.totalFixoMensal / p.horasMes) + '/h<br>' : '• Custos fixos: não cadastrados<br>') +
       '• Rendimento: ' + p.yieldQty + ' unidades por receita' +
     '</div>' +
     '</div>';
