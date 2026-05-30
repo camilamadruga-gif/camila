@@ -1,4 +1,4 @@
-const CACHE_NAME = 'confei-v1';
+const CACHE_NAME = 'confei-v2';
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -33,6 +33,7 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
+  // Fontes: cache-first (não mudam)
   if (url.origin === 'https://fonts.googleapis.com' || url.origin === 'https://fonts.gstatic.com') {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) => {
@@ -48,21 +49,37 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (!response || response.status !== 200 || response.type === 'opaque') {
-          return response;
+  // HTML: network-first — garante que usuários sempre recebam atualizações
+  // quando online; cai para cache quando offline
+  if (event.request.destination === 'document' || url.pathname === '/' || url.pathname.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request).then((response) => {
+        if (response && response.status === 200) {
+          const toCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, toCache));
         }
-        const toCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, toCache));
         return response;
       }).catch(() => {
-        if (event.request.destination === 'document') {
-          return caches.match('/index.html');
+        return caches.match(event.request).then((cached) => {
+          return cached || caches.match('/index.html');
+        });
+      })
+    );
+    return;
+  }
+
+  // Outros arquivos: cache-first, atualiza em background
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      const networkFetch = fetch(event.request).then((response) => {
+        if (response && response.status === 200 && response.type !== 'opaque') {
+          const toCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, toCache));
         }
-      });
+        return response;
+      }).catch(() => cached);
+
+      return cached || networkFetch;
     })
   );
 });

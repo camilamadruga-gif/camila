@@ -1305,7 +1305,7 @@
       <div class="stock-toolbar">
         <div class="stock-search-wrap">
           <span class="stock-search-icon">🔍</span>
-          <input class="stock-search" id="stockSearch" type="search" placeholder="Buscar ingrediente, embalagem ou pronto…" autocomplete="off" />
+          <input class="stock-search" id="stockSearch" type="search" placeholder="Buscar ingrediente, embalagem, limpeza…" autocomplete="off" />
         </div>
       </div>
       <div class="cat-tabs" id="catTabs">
@@ -7393,23 +7393,29 @@ function calcPrecificacaoCompleta(r, sizeKey, margemOverride) {
   // Mão de obra total da receita
   var moTotal  = valorHora * (prepMin / 60);
 
-  // Custos fixos rateados para esta receita
-  var fixedItems     = custoFixoGetAll();
+  // Custos fixos rateados para esta receita (inclui variáveis fixos em R$)
+  var fixedItems      = custoFixoGetAll();
   var totalFixoMensal = 0;
   for (var i = 0; i < fixedItems.length; i++) totalFixoMensal += Number(fixedItems[i].value) || 0;
+
+  // Custos variáveis: separa % da receita de R$ fixo/mês
+  var varItems    = custoVarGetAll();
+  var totalVarPct = 0;
+  var varFixoMes  = 0;
+  for (var j = 0; j < varItems.length; j++) {
+    if (varItems[j].tipo === 'fixo') varFixoMes += Number(varItems[j].valor) || 0;
+    else totalVarPct += Number(varItems[j].pct) || 0;
+  }
+  totalFixoMensal += varFixoMes; // R$ fixo/mês entra no rateio de custo fixo
+
   var cfHora  = horasMes > 0 ? totalFixoMensal / horasMes : 0;
   var cfTotal = cfHora * (prepMin / 60);
 
   // Custo total por unidade
-  var cmpUn = cmpTotal / yieldQty;
-  var moUn  = moTotal  / yieldQty;
-  var cfUn  = cfTotal  / yieldQty;
+  var cmpUn   = cmpTotal / yieldQty;
+  var moUn    = moTotal  / yieldQty;
+  var cfUn    = cfTotal  / yieldQty;
   var custoUn = cmpUn + moUn + cfUn;
-
-  // Custos variáveis %
-  var varItems = custoVarGetAll();
-  var totalVarPct = 0;
-  for (var j = 0; j < varItems.length; j++) totalVarPct += Number(varItems[j].pct) || 0;
 
   // Markup divisor (método SEBRAE): PV = Custo / (1 - CV% - Lucro%)
   var markupDiv = 1 - (totalVarPct / 100) - (margemDes / 100);

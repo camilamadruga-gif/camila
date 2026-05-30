@@ -52,16 +52,16 @@ O Confei tem as seguintes seções:
 | Seção | O que faz |
 |---|---|
 | **Dashboard** | Resumo do negócio — vendas, tarefas, metas |
-| **Estoque** | Cadastro de ingredientes e controle de quantidade |
+| **Estoque** | Ingredientes, embalagens, prontos, limpeza e escritório |
 | **Compras** | Lista de compras baseada no estoque |
 | **Receitas** | Cadastro de receitas com custo automático |
 | **Produção** | Registro do que foi produzido |
-| **Vendas** | Registro de vendas e clientes |
+| **Vendas** | Registro de vendas (produto, quantidade, forma de pagamento) |
 | **Encomendas** | Pedidos com prazo e status |
-| **Financeiro** | Custos fixos, taxas e relatórios |
+| **Financeiro** | Fluxo de caixa, custos fixos, custos variáveis e simulador |
 | **Clientes** | Cadastro de clientes e histórico |
 | **Agenda** | Tarefas e datas comemorativas |
-| **Config** | Perfil, categorias e preferências |
+| **Config** | Perfil, mão de obra, categorias e preferências |
 
 ---
 
@@ -81,9 +81,12 @@ Você pode pular e configurar depois em **Config**.
 ## 6. Dicas rápidas
 
 - **Para adicionar um ingrediente ao estoque:** Vá em Estoque → botão `+`
+- **Estoque também tem:** categorias de limpeza e escritório para controlar todos os seus insumos
 - **Para criar uma receita:** Vá em Receitas → botão `+` → adicione ingredientes do seu estoque
 - **Para ver o custo de uma receita:** O app calcula automaticamente a partir dos preços do estoque
-- **Para registrar uma venda:** Vá em Vendas → botão `+`
+- **Para precificar:** Na receita, toque em **Precificar** — o app aplica o método SEBRAE considerando ingredientes, mão de obra e custos fixos
+- **Para registrar uma venda:** Vá em Vendas → botão `+` → escolha o produto, quantidade e forma de pagamento
+- **Para ver o fluxo de caixa:** Vá em Financeiro → seção Fluxo de Caixa — navega por mês com as setas ‹ ›
 - **Banco de ingredientes:** Em Estoque, há um botão para consultar a tabela TACO com informações nutricionais de ingredientes
 
 ---
